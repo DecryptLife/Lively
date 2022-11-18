@@ -1,0 +1,15 @@
+.apptitle {
+  background-color: #4daa49;
+  text-align: center;
+  margin-top: 0;
+  height: 36px;
+}
+
+.apptitle h2 {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  color: white;
+}
+
+button {
+  font-weight: bold;
+}

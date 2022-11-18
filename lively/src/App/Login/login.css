@@ -1,0 +1,75 @@
+body {
+  height: 100%;
+  background-color: white;
+}
+
+.loginLayout {
+  display: flex;
+  height: 100vh;
+}
+
+.loginLeft {
+  width: 60%;
+  background-color: white;
+  height: 100%;
+}
+
+.loginRight {
+  background-color: #28b498;
+  width: 40%;
+
+  height: 100%;
+}
+
+.loginLeftContent {
+  margin: 0 auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+}
+
+.loginRightContent {
+  margin: 0 auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  color: white;
+}
+
+.signUpBtn {
+  width: 50%;
+  height: 32px;
+  border-radius: 10px;
+  border: none;
+}
+
+.loginBtn {
+  width: 30%;
+  height: 32px;
+  border-radius: 10px;
+  border: none;
+  background-color: #28b498;
+  color: white;
+  margin-top: 24px;
+}
+
+.unameField {
+  width: 60%;
+  height: 32px;
+  padding-left: 10px;
+  background-color: #eef5f3;
+  border: none;
+  border-radius: 10px;
+}
+
+.passwordField {
+  width: 60%;
+  height: 32px;
+  padding-left: 10px;
+  background-color: #eef5f3;
+  border: none;
+  border-radius: 10px;
+  margin-top: 16px;
+}
