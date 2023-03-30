@@ -1,0 +1,94 @@
+body {
+  background-color: white;
+  height: 100%;
+}
+
+.regForm {
+  display: flex;
+  height: 100vh;
+}
+
+.registerLeft {
+  background-color: #28b498;
+  width: 40%;
+  height: 100%;
+}
+
+.registerRight {
+  width: 60%;
+  background-color: white;
+  height: 100%;
+}
+
+.regLeftContent {
+  text-align: center;
+  margin: 0 auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.regRightContent {
+  text-align: center;
+  margin: 0 auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.reg_input {
+  height: 32px;
+  width: 30%;
+  padding-left: 10px;
+  border-radius: 10px;
+  border: none;
+  background-color: #eef5f3;
+}
+
+.confirmPassIp {
+  height: 32px;
+  width: 30%;
+  padding-left: 10px;
+  border-radius: 10px;
+  border: none;
+  margin-top: 24px;
+  background-color: #eef5f3;
+}
+
+.registerBtn {
+  width: 30%;
+  color: white;
+  background-color: #28b498;
+  height: 32px;
+  border: none;
+  border-radius: 10px;
+  margin-top: 24px;
+}
+
+.welcomeText {
+  color: white;
+}
+
+.leftText {
+  color: white;
+}
+
+.signInBtn {
+  height: 32px;
+  margin-top: 24px;
+  color: white;
+  background-color: #28b498;
+  border-color: white;
+  border-width: 2px;
+  width: 30%;
+  border-radius: 10px;
+}
+
+.greenText {
+  color: #28b498;
+}
+
+.redText {
+  color: red;
+  font-size: x-small;
+}
