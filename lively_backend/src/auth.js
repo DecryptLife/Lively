@@ -1,46 +1,17 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const userSchema = require("./userSchema");
-const profileSchema = require("./profileSchema");
-const Profile = mongoose.model("profile", profileSchema);
-const User = mongoose.model("user", userSchema);
+
+const { User, Profile, Article } = require("../server/db");
 
 let sessionUser = {};
 let cookieKey = "sid";
 let userObjs = {};
-const router = express.Router();
+const app = express();
 
 const md5 = require("md5");
 
-router.use((req, res, next) => {
-  console.log("Authenticated: ", req.isAuthenticated());
-  if (!req.cookies) {
-    return res.sendStatus(401);
-  }
-  if (req.isAuthenticated()) {
-    req.username = req.user.name;
-    console.log("It is authenticated");
-    next();
-  } else {
-    console.log("It is not authenticated");
-    let sid = req.cookies[cookieKey];
-    // no sid for cookie key
-    if (!sid) {
-      return res.sendStatus(401);
-    }
-
-    let username = sessionUser[sid];
-    if (username) {
-      req.username = username;
-      next();
-    } else {
-      return res.sendStatus(401);
-    }
-  }
-});
-
-router.post("/register", async (req, res) => {
+app.post("/register", async (req, res) => {
   let username = req.body.username;
   let email = req.body.email;
   let headline = "Please update your headline";
@@ -80,7 +51,34 @@ router.post("/register", async (req, res) => {
   }
 });
 
-module.exports = router;
+// app.use((req, res, next) => {
+//   // console.log("Authenticated: ", req.isAuthenticated());
+//   if (!req.cookies) {
+//     return res.sendStatus(401);
+//   }
+//   if (req.isAuthenticated()) {
+//     req.username = req.user.name;
+//     console.log("It is authenticated");
+//     next();
+//   } else {
+//     console.log("It is not authenticated");
+//     let sid = req.cookies[cookieKey];
+//     // no sid for cookie key
+//     if (!sid) {
+//       return res.sendStatus(401);
+//     }
+
+//     let username = sessionUser[sid];
+//     if (username) {
+//       req.username = username;
+//       next();
+//     } else {
+//       return res.sendStatus(401);
+//     }
+//   }
+// });
+
+module.exports = app;
 
 // const login = (req, res) => {
 //   console.log("logging in");
