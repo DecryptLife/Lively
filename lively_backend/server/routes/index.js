@@ -1,14 +1,9 @@
-require("dotenv").config();
-
-// const profile = require("./profile");
-// const following = require("./following");
 const express = require("express");
 const PORT = process.env.PORT || 3001;
 const app = express();
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
-const auth = require("./src/auth");
-// const articles = require("./articles");
+const auth = require("../routes/auth");
 const cors = require("cors");
 
 const corsOptions = {

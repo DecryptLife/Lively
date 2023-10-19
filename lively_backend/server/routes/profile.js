@@ -2,13 +2,13 @@ require("dotenv").config();
 
 const { default: mongoose } = require("mongoose");
 const asyncHandler = require("express-async-handler");
-const profileSchema = require("./src/profileSchema");
-const userSchema = require("./src/userSchema");
+const profileSchema = require("../../src/profileSchema");
+const userSchema = require("../../src/userSchema");
 const Profile = mongoose.model("profile", profileSchema);
 const User = mongoose.model("user", userSchema);
 const md5 = require("md5");
 const LIVELY_PRESET = process.env["LIVELY_PRESET"];
-const cloudinary = require("./config/cloudinary");
+const cloudinary = require("../../config/cloudinary");
 const getHeadline = (req, res) => {
   console.log("BRO ");
   var username = req.params.user;
