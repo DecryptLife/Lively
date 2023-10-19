@@ -51,37 +51,22 @@ async function register(req, res) {
   }
 }
 
-app.use((req, res, next) => {
-  console.log("Authenticated: ", req.isAuthenticated());
-  if (!req.cookies) {
-    console.log("no cookies");
-    return res.sendStatus(401);
-  }
-  if (req.isAuthenticated()) {
-    req.username = req.user.name;
-    console.log("It is authenticated");
-    next();
-  } else {
-    console.log("It is not authenticated");
-    let sid = req.cookies[cookieKey];
-    // no sid for cookie key
-    if (!sid) {
-      return res.sendStatus(401);
-    }
+async function login(req, res) {
+  console.log("logging in");
+  let exists_sid = req.cookies[cookieKey];
+  let username = req.body.username;
+  let password = req.body.password;
 
-    let username = sessionUser[sid];
-    if (username) {
-      req.username = username;
-      next();
-    } else {
-      return res.sendStatus(401);
-    }
-  }
-});
+  if (!username || !password)
+    return res.status(400).send("Missing username or password");
+  let usern = userObjs[username];
+  console.log("Jack: ", usern);
 
-module.exports = (app) => {
-  app.post("/register", register);
-};
+  let salt = username + "lively";
+  let hash = md5(salt + password);
+
+  const user = await User.findOne({ username });
+}
 
 // const login = (req, res) => {
 //   console.log("logging in");
@@ -166,6 +151,38 @@ module.exports = (app) => {
 //     });
 //   })();
 // };
+
+app.use((req, res, next) => {
+  console.log("Authenticated: ", req.isAuthenticated());
+  if (!req.cookies) {
+    console.log("no cookies");
+    return res.sendStatus(401);
+  }
+  if (req.isAuthenticated()) {
+    req.username = req.user.name;
+    console.log("It is authenticated");
+    next();
+  } else {
+    console.log("It is not authenticated");
+    let sid = req.cookies[cookieKey];
+    // no sid for cookie key
+    if (!sid) {
+      return res.sendStatus(401);
+    }
+
+    let username = sessionUser[sid];
+    if (username) {
+      req.username = username;
+      next();
+    } else {
+      return res.sendStatus(401);
+    }
+  }
+});
+
+module.exports = (app) => {
+  app.post("/register", register);
+};
 
 // console.log("heck 6");
 

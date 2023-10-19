@@ -38,17 +38,10 @@ app.use((req, res, next) => {
 
 auth(app);
 
+// profile(app);
+// articles(app);
+// following(app);
+
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
-
-// app.use((err, req, res, next) => {
-//   console.error(err.stack); // Log the stack trace for debugging purposes
-//   res.status(500).send("Internal Server Error"); // Send an appropriate error response
-// });
-
-// console.log("check 2");
-
-// profile(app);
-// articles(app);
-// following(app);xQ8BdgzsZt1f1iwc
