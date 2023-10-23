@@ -3,7 +3,7 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
-const auth = require("../routes/auth");
+const auth = require("./routes/auth");
 const cors = require("cors");
 
 const corsOptions = {
@@ -12,7 +12,7 @@ const corsOptions = {
   credentials: true,
 };
 
-const connectionString = `mongodb+srv://benson24:MuNHEjbIslhVW3qv@cluster0.9auii05.mongodb.net/Lively?retryWrites=true&w=majority`;
+const connectionString = `mongodb+srv://benson24:MuNHEjbIslhVW3qv@cluster0.9auii05.mongodb.net/lively?retryWrites=true&w=majority`;
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -23,7 +23,7 @@ console.log("check");
 mongoose.connect(connectionString, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  dbName: "Lively",
+  dbName: "lively",
 });
 
 app.use((req, res, next) => {

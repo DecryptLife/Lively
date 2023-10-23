@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  u_id: {
-    type: Number,
-  },
-
   username: {
     type: String,
     required: [true, "Username is required"],
@@ -25,9 +21,6 @@ const userSchema = new mongoose.Schema({
 });
 
 const profileSchema = new mongoose.Schema({
-  u_id: {
-    type: Number,
-  },
   username: {
     type: String,
     required: [true, "Username is required"],
@@ -59,9 +52,6 @@ const profileSchema = new mongoose.Schema({
 });
 
 const articleSchema = new mongoose.Schema({
-  pid: {
-    type: Number,
-  },
   author: {
     type: String,
   },
@@ -80,8 +70,8 @@ const articleSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model("User", userSchema);
-const Profile = mongoose.model("Profile", userSchema);
-const Article = mongoose.model("Article", userSchema);
+const Profile = mongoose.model("Profile", profileSchema);
+const Article = mongoose.model("Article", articleSchema);
 
 module.exports = {
   User,

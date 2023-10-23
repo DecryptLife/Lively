@@ -12,39 +12,40 @@ const md5 = require("md5");
 
 async function register(req, res) {
   console.log("checsjkskjdhs");
+  console.log(req.body);
   let username = req.body.username;
   let email = req.body.email;
   let headline = "Please update your headline";
   let dob = req.body.dob;
   let mobile = req.body.mobile;
   let zipcode = req.body.zipcode;
-  let password = req.body.password;
+  let pass = req.body.password;
   let avatar = req.body.avatar;
-  if (!username || !email || !dob || !zipcode || !password || !headline)
+  if (!username || !email || !dob || !zipcode || !pass || !headline)
     return res.status(400).send("Missing required parameters");
 
   if (!avatar) avatar = "https://www.gstatic.com/webp/gallery3/1.sm.png";
   let salt = username + "lively";
-  let hash = md5(salt + password);
+  let password = md5(salt + pass);
 
-  let createdTime = new Date().getTime();
+  let created = new Date().getTime();
 
   const user = await User.findOne({ username });
 
   if (user) {
     res.status(403).json({ message: "User already exists" });
   } else {
-    const newUser = new User({ username, hash, email, createdTime });
+    console.log("No user exists");
+    const newUser = new User({ username, email, password, created });
     await newUser.save();
     const newUserProfile = new Profile({
       username,
       email,
       headline,
-      mobile,
       dob,
+      mobile,
       zipcode,
       avatar,
-      createdTime,
     });
     await newUserProfile.save();
     res.json({ message: "User created successfully" });
@@ -67,6 +68,128 @@ async function login(req, res) {
 
   const user = await User.findOne({ username });
 }
+
+function isLoggedIn(req, res, next) {
+  console.log("Authenticated: ", req.isAuthenticated());
+  if (!req.cookies) {
+    console.log("no cookies");
+    return res.sendStatus(401);
+  }
+  if (req.isAuthenticated()) {
+    req.username = req.user.name;
+    console.log("It is authenticated");
+    next();
+  } else {
+    console.log("It is not authenticated");
+    let sid = req.cookies[cookieKey];
+    // no sid for cookie key
+    if (!sid) {
+      return res.sendStatus(401);
+    }
+
+    let username = sessionUser[sid];
+    if (username) {
+      req.username = username;
+      next();
+    } else {
+      return res.sendStatus(401);
+    }
+  }
+}
+
+const changePassword = (req, res) => {
+  if (!req.cookies) {
+    return res.sendStatus(401);
+  }
+  let sid = req.cookies[cookieKey];
+
+  let username = sessionUser[sid];
+  const new_password = req.body.password;
+  let salt = username + "lively";
+  let hash = md5(salt + new_password);
+
+  if (!new_password) return res.status(400).send("New password not given");
+
+  User.updateOne({ username: username }, { password: hash }, (err, docs) => {
+    if (err) console.log(err);
+    else {
+      let msg = { username: username, result: "success" };
+      res.send(msg);
+    }
+  });
+};
+
+const logout = (req, res) => {
+  if (!req.cookies) return res.sendStatus(401);
+  // let sid = req.cookies[cookieKey];
+  if (req.isAuthenticated()) {
+    req.logOut();
+  }
+  console.log("Clearing cookie");
+  // if (!req.cookies) return res.sendStatus(401);
+
+  res.clearCookie(cookieKey, { sameSite: "none", secure: true });
+  // delete sessionUser(sid);
+  let msg = "OK";
+  res.send(msg);
+  res.end();
+};
+
+module.exports = (app) => {
+  app.post("/register", register);
+  app.post("/login", login);
+  app.use(isLoggedIn);
+  app.put("/password", changePassword);
+  app.put("/logout", logout);
+};
+
+// console.log("heck 6");
+
+// const changePassword = (req, res) => {
+//   if (!req.cookies) {
+//     return res.sendStatus(401);
+//   }
+//   let sid = req.cookies[cookieKey];
+
+//   let username = sessionUser[sid];
+//   const new_password = req.body.password;
+//   let salt = username + "lively";
+//   let hash = md5(salt + new_password);
+
+//   if (!new_password) return res.status(400).send("New password not given");
+
+//   User.updateOne({ username: username }, { password: hash }, (err, docs) => {
+//     if (err) console.log(err);
+//     else {
+//       let msg = { username: username, result: "success" };
+//       res.send(msg);
+//     }
+//   });
+// };
+
+// const logout = (req, res) => {
+//   // if (!req.cookies) return res.sendStatus(401);
+//   // let sid = req.cookies[cookieKey];
+//   if (req.isAuthenticated()) {
+//     req.logOut();
+//   }
+//   console.log("Clearing cookie");
+//   // if (!req.cookies) return res.sendStatus(401);
+
+//   res.clearCookie(cookieKey, { sameSite: "none", secure: true });
+//   // delete sessionUser(sid);
+//   let msg = "OK";
+//   res.send(msg);
+//   res.end();
+// };
+
+// // module.exports = (app) => {
+// //   app.post("/register", register);
+// //   app.post("/login", login);
+// //   app.use(isLoggedIn);
+// //   app.put("/password", changePassword);
+// //   app.put("/logout", logout);
+// // };
 
 // const login = (req, res) => {
 //   console.log("logging in");
@@ -151,83 +274,3 @@ async function login(req, res) {
 //     });
 //   })();
 // };
-
-app.use((req, res, next) => {
-  console.log("Authenticated: ", req.isAuthenticated());
-  if (!req.cookies) {
-    console.log("no cookies");
-    return res.sendStatus(401);
-  }
-  if (req.isAuthenticated()) {
-    req.username = req.user.name;
-    console.log("It is authenticated");
-    next();
-  } else {
-    console.log("It is not authenticated");
-    let sid = req.cookies[cookieKey];
-    // no sid for cookie key
-    if (!sid) {
-      return res.sendStatus(401);
-    }
-
-    let username = sessionUser[sid];
-    if (username) {
-      req.username = username;
-      next();
-    } else {
-      return res.sendStatus(401);
-    }
-  }
-});
-
-module.exports = (app) => {
-  app.post("/register", register);
-};
-
-// console.log("heck 6");
-
-// const changePassword = (req, res) => {
-//   if (!req.cookies) {
-//     return res.sendStatus(401);
-//   }
-//   let sid = req.cookies[cookieKey];
-
-//   let username = sessionUser[sid];
-//   const new_password = req.body.password;
-//   let salt = username + "lively";
-//   let hash = md5(salt + new_password);
-
-//   if (!new_password) return res.status(400).send("New password not given");
-
-//   User.updateOne({ username: username }, { password: hash }, (err, docs) => {
-//     if (err) console.log(err);
-//     else {
-//       let msg = { username: username, result: "success" };
-//       res.send(msg);
-//     }
-//   });
-// };
-
-// const logout = (req, res) => {
-//   // if (!req.cookies) return res.sendStatus(401);
-//   // let sid = req.cookies[cookieKey];
-//   if (req.isAuthenticated()) {
-//     req.logOut();
-//   }
-//   console.log("Clearing cookie");
-//   // if (!req.cookies) return res.sendStatus(401);
-
-//   res.clearCookie(cookieKey, { sameSite: "none", secure: true });
-//   // delete sessionUser(sid);
-//   let msg = "OK";
-//   res.send(msg);
-//   res.end();
-// };
-
-// // module.exports = (app) => {
-// //   app.post("/register", register);
-// //   app.post("/login", login);
-// //   app.use(isLoggedIn);
-// //   app.put("/password", changePassword);
-// //   app.put("/logout", logout);
-// // };
