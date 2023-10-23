@@ -10,37 +10,16 @@ const md5 = require("md5");
 const LIVELY_PRESET = process.env["LIVELY_PRESET"];
 const cloudinary = require("../../config/cloudinary");
 
-const getHeadline = (req, res) => {
-  console.log("BRO ");
-  var username = req.params.user;
-  var currUser = req.username;
-  if (username) {
-    Profile.findOne({ username: username }, (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        if (!docs) {
-          return res.status(400).send("This user does not exist");
-        } else {
-          let msg = { username: docs["username"], headline: docs["headline"] };
-          res.send(msg);
-        }
-      }
-    });
-  } else {
-    Profile.findOne({ username: currUser }, (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        let msg = { username: docs["username"], headline: docs["headline"] };
-        res.send(msg);
-      }
-    });
-  }
+async function getHeadline(req, res) {
+  const username = req.username;
 
-  // this return the requested user headline
-  // res.send({ username: profile["username"], headline: profile["headline"] });
-};
+  const profile = await Profile.findOne({ username });
+
+  if (profile) {
+    let msg = { username: profile["username"], headline: profile["headline"] };
+    res.send(msg);
+  }
+}
 
 async function updateHeadline(req, res) {
   const new_headline = req.body.headline;
@@ -63,106 +42,50 @@ async function updateHeadline(req, res) {
   }
 }
 
-const getEmail = (req, res) => {
-  const username = req.params.user;
-  const currentUser = req.username;
-  if (!username) {
-    Profile.findOne({ username: currentUser }, (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        let msg = { username: currentUser, email: docs["email"] };
-        res.send(msg);
-      }
-    });
-  } else {
-    Profile.findOne({ username: username }, (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        if (!docs) {
-          return res.status(400).send("User does not exist");
-        } else {
-          let msg = { username: username, email: docs["email"] };
-          res.send(msg);
-        }
-      }
-    });
+async function getEmail(req, res) {
+  const username = req.username;
+
+  const profile = await Profile.findOne({ username });
+
+  if (profile) {
+    let msg = { username: username, email: profile["email"] };
+    res.send(msg);
   }
-};
+}
 
-const updateEmail = (req, res) => {
-  const currUser = req.username;
-  const new_email = req.body.email;
-  Profile.updateOne(
-    { username: currUser },
-    { email: new_email },
-    (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        let msg = { username: currUser, email: new_email };
-        res.send(msg);
-      }
-    }
-  );
-};
+async function updateEmail(req, res) {
+  const username = req.username;
+  const email = req.body.email;
 
-const getDOB = (req, res) => {
-  const username = req.params.user;
-  const currUser = req.username;
+  const profile = await Profile.findOneAndUpdate(username, email, {
+    new: true,
+  });
 
-  if (!username) {
-    Profile.findOne({ username: currUser }, (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        let msg = { username: currUser, dob: docs["dob"] + "ms" };
-        res.send(msg);
-      }
-    });
-  } else {
-    Profile.findOne({ username: username }, (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        if (!docs) {
-          return res.status(400).send("User does not exist");
-        } else {
-          let msg = { username: username, dob: docs["dob"] + "ms" };
-          res.send(msg);
-        }
-      }
-    });
+  if (profile) {
+    let msg = { username: currUser, email: new_email };
+    res.send(msg);
   }
-};
+}
+
+async function getDOB(req, res) {
+  const username = req.username;
+
+  const profile = await Profile.findOne({ username });
+
+  if (profile) {
+    let msg = { username: username, dob: docs["dob"] + "ms" };
+    res.send(msg);
+  }
+}
 
 async function getZipCode(req, res) {
-  const username = req.params.user;
-  const currUser = req.username;
+  const username = req.username;
 
-  if (!username) {
-    Profile.findOne({ username: currUser }, (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        let msg = { username: currUser, zipcode: docs["zipcode"] };
-        res.send(msg);
-      }
-    });
-  } else {
-    Profile.findOne({ username: username }, (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        if (!docs) {
-          return res.status(400).send("User does not exist");
-        } else {
-          let msg = { username: username, zipcode: docs["zipcode"] };
-          res.send(msg);
-        }
-      }
-    });
+  const profile = await Profile.findOne({ username });
+
+  if (profile) {
+    let msg = { username: username, zipcode: docs["zipcode"] };
+    res.send(msg);
   }
 }
 
@@ -192,13 +115,13 @@ async function getAvatar(req, res) {
 }
 
 const updateAvatar = asyncHandler(async (req, res) => {
-  const loggedInUser = req.username;
+  const username = req.username;
 
   //Here, req.body will contain the base_64 encoded image string as 'avatar'
   // console.log("Req.body: Base 64 encoded image string: ", req.body.avatar);
   // console.log("AVATAR: ", req.body);
   //Cloudinary
-  var cloudUploadRes;
+  let cloudUploadRes;
   try {
     cloudUploadRes = await cloudinary.uploader.upload(req.body.avatar, {
       upload_preset: LIVELY_PRESET,
@@ -212,7 +135,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
   //Saving cloudinary res in avatar
   try {
     const updatedUser = await Profile.findOneAndUpdate(
-      { username: loggedInUser },
+      { username: username },
       { avatar: cloudUploadRes },
       { new: true }
     );
@@ -229,110 +152,47 @@ const updateAvatar = asyncHandler(async (req, res) => {
   }
 });
 
-// const updateAvatar = (req, res) => {
-//   let new_avatar = "https://www.gstatic.com/webp/gallery/4.sm.jpg";
-//   let currUser = req.username;
+async function getUserDetails(req, res) {
+  let username = req.username;
 
-//   Profile.updateOne(
-//     { username: currUser },
-//     { avatar: new_avatar },
-//     (err, docs) => {
-//       if (err) {
-//         console.log(err);
-//       } else {
-//         console.log("Avater changed successfully");
-//         Profile.findOne({ username: currUser }, (err, docs) => {
-//           if (err) {
-//             console.log(err);
-//           } else {
-//             let msg = { username: currUser, avatar: docs["avatar"] };
-//             res.send(msg);
-//           }
-//         });
-//       }
-//     }
-//   );
-// };
+  const profile = await Profile.findOne({ username });
 
-const getUserDetails = (req, res) => {
-  let currUser = req.username;
+  if (profile) {
+    let msg = { user: profile };
+    res.send(msg);
+  }
+}
 
-  Profile.findOne({ username: currUser }, (err, docs) => {
-    if (err) {
-      console.log(err);
-    } else {
-      if (docs) {
-        let msg = { user: docs };
-        res.send(msg);
-      }
-    }
-  });
-};
+async function updateDetails(req, res) {
+  let email = req.body.email;
+  let mobile = req.body.mobile;
+  let dob = req.body.dob;
+  let zipcode = req.body.zipcode;
+  let pass = req.body.password;
+  let username = req.username;
+  let salt = currUser + "lively";
+  let password = md5(salt + pass);
 
-const updateDetails = (req, res) => {
-  let u_email = req.body.email;
-  let u_mobile = req.body.mobile;
-  let u_dob = req.body.dob;
-  let u_zipcode = req.body.zipcode;
-  let u_password = req.body.password;
-  let currUser = req.username;
-  User.updateOne({ username: currUser }, { email: u_email }, (err, docs) => {
-    if (err) {
-      console.log(err);
-    } else {
-      Profile.updateOne(
-        { username: currUser },
-        {
-          email: u_email,
-          dob: u_dob,
-          mobile: u_mobile,
-          zipcode: u_zipcode,
-        },
-        (err, docs) => {
-          if (err) {
-            console.log(err);
-          } else {
-            if (u_password) {
-              let salt = currUser + "lively";
-              let hash = md5(salt + u_password);
-              User.updateOne(
-                { username: currUser },
-                { password: hash },
-                (err, docs) => {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    Profile.findOne({ username: currUser }, (err, docs) => {
-                      if (err) {
-                        console.log(err);
-                      } else {
-                        if (docs) {
-                          res.send({ user: docs });
-                        }
-                      }
-                    });
-                  }
-                }
-              );
-            } else {
-              Profile.findOne({ username: currUser }, (err, docs) => {
-                if (err) {
-                  console.log(err);
-                } else {
-                  if (docs) {
-                    let msg = { user: docs };
-                    res.send(msg);
-                  }
-                }
-              });
-            }
-            console.log("profile details updated");
-          }
-        }
-      );
-    }
-  });
-};
+  const user = await User.findOneAndUpdate(
+    username,
+    { email, password },
+    { new: true }
+  );
+  const profile = await Profile.findOne(
+    username,
+    {
+      email,
+      dob,
+      mobile,
+      zipcode,
+    },
+    { new: true }
+  );
+
+  if (user && profile) {
+    res.json({ user: profile });
+  }
+}
 
 module.exports = (app) => {
   app.put("/updateDetails", updateDetails);
