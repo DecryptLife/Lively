@@ -88,30 +88,23 @@ async function login(req, res) {
 }
 
 function isLoggedIn(req, res, next) {
-  console.log("Authenticated: ", req.isAuthenticated());
   if (!req.cookies) {
     console.log("no cookies");
     return res.sendStatus(401);
   }
-  if (req.isAuthenticated()) {
-    req.username = req.user.name;
-    console.log("It is authenticated");
+
+  let sid = req.cookies[cookieKey];
+  // no sid for cookie key
+  if (!sid) {
+    return res.sendStatus(401);
+  }
+
+  let username = sessionUser[sid];
+  if (username) {
+    req.username = username;
     next();
   } else {
-    console.log("It is not authenticated");
-    let sid = req.cookies[cookieKey];
-    // no sid for cookie key
-    if (!sid) {
-      return res.sendStatus(401);
-    }
-
-    let username = sessionUser[sid];
-    if (username) {
-      req.username = username;
-      next();
-    } else {
-      return res.sendStatus(401);
-    }
+    return res.sendStatus(401);
   }
 }
 
