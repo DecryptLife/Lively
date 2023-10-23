@@ -1,14 +1,15 @@
 require("dotenv").config();
 
 const { default: mongoose } = require("mongoose");
+
 const asyncHandler = require("express-async-handler");
-const profileSchema = require("../../src/profileSchema");
-const userSchema = require("../../src/userSchema");
-const Profile = mongoose.model("profile", profileSchema);
-const User = mongoose.model("user", userSchema);
+
+const { User, Profile, Article } = require("../db");
+
 const md5 = require("md5");
 const LIVELY_PRESET = process.env["LIVELY_PRESET"];
 const cloudinary = require("../../config/cloudinary");
+
 const getHeadline = (req, res) => {
   console.log("BRO ");
   var username = req.params.user;
@@ -41,28 +42,26 @@ const getHeadline = (req, res) => {
   // res.send({ username: profile["username"], headline: profile["headline"] });
 };
 
-const updateHeadline = (req, res) => {
-  console.log("Here buddy");
-  console.log("COO: ", res.cookies);
+async function updateHeadline(req, res) {
   const new_headline = req.body.headline;
-  const currUser = req.username;
+  const username = req.username;
   if (!new_headline) {
     return res.status(400).send("Please provide a headline to update");
   }
-  const username = req.username;
-  Profile.updateOne(
-    { username: currUser },
-    { headline: new_headline },
-    (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        let msg = { username: username, headline: new_headline };
-        res.send(msg);
-      }
+  console.log(req.username);
+  const profile = await Profile.findOneAndUpdate(
+    { username: req.username },
+    { headline: req.body.headline },
+    {
+      new: true,
     }
   );
-};
+
+  if (profile) {
+    let msg = { username, headline: new_headline };
+    res.send(msg);
+  }
+}
 
 const getEmail = (req, res) => {
   const username = req.params.user;
@@ -138,7 +137,7 @@ const getDOB = (req, res) => {
   }
 };
 
-const getZipCode = (req, res) => {
+async function getZipCode(req, res) {
   const username = req.params.user;
   const currUser = req.username;
 
@@ -165,48 +164,32 @@ const getZipCode = (req, res) => {
       }
     });
   }
-};
+}
 
-const updateZipCode = (req, res) => {
-  const currUser = req.username;
-  const new_zipcode = req.body.zipcode;
-
+async function updateZipCode(req, res) {
   if (!new_zipcode) {
     return res.status(400).send("New zip code not given");
   }
 
-  Profile.updateOne(
-    { username: currUser },
-    { zipcode: new_zipcode },
-    (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        let msg = { username: currUser, zipcode: new_zipcode };
-        res.send(msg);
-      }
-    }
-  );
-};
-
-const getAvatar = (req, res) => {
-  const loggedInUser = req.username;
-
-  Profile.findOne({ user: loggedInUser }, (err, docs) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(docs);
-      let msg = { avatar: docs["avatar"] };
-      res.send(msg);
-    }
+  const profile = await Profile.findOneAndUpdate(req.username, req.body, {
+    new: true,
   });
 
-  // console.log(user);
+  if (profile) {
+    let msg = { username: currUser, zipcode: new_zipcode };
+    res.send(msg);
+  }
+}
 
-  // res.status(200);
-  // res.json({ username: loggedInUser.username, avatar: user.avatar });
-};
+async function getAvatar(req, res) {
+  const username = req.username;
+  console.log("avatar", username);
+  const profile = await Profile.findOne({ username });
+
+  if (profile) {
+    res.json({ avatar: profile["avatar"] });
+  }
+}
 
 const updateAvatar = asyncHandler(async (req, res) => {
   const loggedInUser = req.username;

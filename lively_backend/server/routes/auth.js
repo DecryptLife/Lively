@@ -71,16 +71,17 @@ async function login(req, res) {
   const user = await User.findOne({ username, password });
 
   if (user) {
-    let cookie = md5(password + username);
-    console.log("cookie being set: ", cookie);
-    res.cookie(cookieKey, cookie, {
+    let sid = md5(password + username);
+    console.log("cookie being set: ", sid);
+    res.cookie(cookieKey, sid, {
       maxAge: 3600 * 1000,
       sameSite: "None",
       httpOnly: true,
       secure: true,
     });
-
-    let msg = { result: "success", cookie };
+    sessionUser[sid] = username;
+    req.username = username;
+    let msg = { result: "success", cookie: sid };
     return res.status(200).json(msg);
   } else {
     return res.status(400).json({ result: "User does not exist" });
@@ -97,14 +98,16 @@ function isLoggedIn(req, res, next) {
   // no sid for cookie key
   if (!sid) {
     return res.sendStatus(401);
-  }
-
-  let username = sessionUser[sid];
-  if (username) {
-    req.username = username;
-    next();
   } else {
-    return res.sendStatus(401);
+    console.log("user exists");
+    let username = sessionUser[sid];
+    console.log("username: ", username);
+    if (username) {
+      req.username = username;
+      next();
+    } else {
+      return res.sendStatus(401);
+    }
   }
 }
 

@@ -4,6 +4,9 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const auth = require("./routes/auth");
+const profile = require("./routes/profile");
+// const articles = require("./routes/articles");
+// const following = require("./routes/following");
 const cors = require("cors");
 
 const corsOptions = {
@@ -38,7 +41,7 @@ app.use((req, res, next) => {
 
 auth(app);
 
-// profile(app);
+profile(app);
 // articles(app);
 // following(app);
 
