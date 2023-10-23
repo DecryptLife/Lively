@@ -33,6 +33,7 @@ async function register(req, res) {
   const user = await User.findOne({ username });
 
   if (user) {
+    console.log("user already exists");
     res.status(403).json({ message: "User already exists" });
   } else {
     console.log("No user exists");
@@ -48,6 +49,7 @@ async function register(req, res) {
       avatar,
     });
     await newUserProfile.save();
+    console.log("user created");
     res.json({ message: "User created successfully" });
   }
 }
@@ -56,17 +58,33 @@ async function login(req, res) {
   console.log("logging in");
   let exists_sid = req.cookies[cookieKey];
   let username = req.body.username;
-  let password = req.body.password;
+  let pass = req.body.password;
 
-  if (!username || !password)
+  if (!username || !pass)
     return res.status(400).send("Missing username or password");
   let usern = userObjs[username];
   console.log("Jack: ", usern);
 
   let salt = username + "lively";
-  let hash = md5(salt + password);
+  let password = md5(salt + pass);
 
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ username, password });
+
+  if (user) {
+    let cookie = md5(password + username);
+    console.log("cookie being set: ", cookie);
+    res.cookie(cookieKey, cookie, {
+      maxAge: 3600 * 1000,
+      sameSite: "None",
+      httpOnly: true,
+      secure: true,
+    });
+
+    let msg = { result: "success", cookie };
+    return res.status(200).json(msg);
+  } else {
+    return res.status(400).json({ result: "User does not exist" });
+  }
 }
 
 function isLoggedIn(req, res, next) {
