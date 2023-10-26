@@ -21,7 +21,7 @@ const Home = () => {
   const currUser = JSON.parse(localStorage.getItem("currUser"));
 
   const newUser = "new" in currUser;
-  const [followers, setFollowers] = useState(currUser["following"]);
+  const [followers, setFollowers] = useState([]);
 
   const [totalPosts, setTotalPosts] = useState("");
   useEffect(() => {

@@ -12,22 +12,6 @@ const Followers = () => {
     require("../images/img10.png"),
   ];
 
-  // let followers_list = [];
-  // followers.forEach((id) => {
-  //   followers_list.push(
-  //     <li>
-  //       <div className="following_container">
-  //         <img className="following_image" src={req[id]}></img>
-  //         <div className="following_container2">
-  //           <span>Benson</span>
-  //           <br></br>
-  //           <span>Fun Status</span>
-  //         </div>
-  //       </div>
-  //     </li>
-  //   );
-  // });
-
   return (
     <div className="followersLayout">
       <p className="followText">

@@ -47,17 +47,17 @@ const Profile = () => {
     fetch(url("/avatar"), {
       method: "GET",
       credentials: "include",
-      withCredentials: true,
+      mode: "cors",
       headers: { "Content-Type": "application/json" },
     })
       .then((res) => {
         return res.json();
       })
       .then((res) => {
-        const avatar = res.avatar;
-        setAvatar(avatar.url);
+        console.log(res);
+        setAvatar(res.avatar);
       });
-  }, [avatar]);
+  });
 
   const transformFile = (file) => {
     const reader = new FileReader();

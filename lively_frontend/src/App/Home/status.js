@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 const Status = ({ handleLogout, goToProfile }) => {
   const url = (path) => `http://localhost:3001${path}`;
 
-  // const cookie = JSON.parse(localStorage.getItem("cookie"));
+  const cookie = JSON.parse(localStorage.getItem("cookie"));
   const currUser = JSON.parse(localStorage.getItem("currUser"));
 
   // let userStatus = currUser["headline"];
@@ -15,13 +15,14 @@ const Status = ({ handleLogout, goToProfile }) => {
       method: "GET",
       credentials: "include",
       mode: "cors",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", Cookie: cookie },
     })
       .then((res) => {
         return res.json();
       })
       .then((res) => {
-        setAvatar(res.avatar.url);
+        console.log(res);
+        setAvatar(res.avatar);
       });
   });
   useEffect(() => {
@@ -33,6 +34,7 @@ const Status = ({ handleLogout, goToProfile }) => {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Credentials": true,
+        Cookie: cookie,
       },
     })
       .then((res) => {
@@ -65,6 +67,7 @@ const Status = ({ handleLogout, goToProfile }) => {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",
+          Cookie: cookie,
         },
         body: JSON.stringify(new_status),
       })
