@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Status from "./status";
 import "./home.css";
+import axios from "axios";
 import ShowPosts from "./showPosts";
 import NewPost from "./newPost";
 import Followers from "./Followers";
@@ -25,19 +26,17 @@ const Home = () => {
 
   const [totalPosts, setTotalPosts] = useState("");
   useEffect(() => {
-    fetch(url("/articles"), {
-      method: "GET",
-      credentials: "include",
-      withCredentials: true,
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        setTotalPosts(res.articles);
+    async function getArticles() {
+      const response = await axios.get(url("/articles"), {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json", Authorization: cookie },
       });
-  }, [followers, newPost]);
+
+      setTotalPosts(response.data.articles);
+    }
+
+    getArticles();
+  }, []);
 
   const handleFollowers = (new_followers) => {
     if (new_followers !== null) {
@@ -48,17 +47,21 @@ const Home = () => {
   };
 
   const logout = () => {
-    fetch(url("/logout"), {
-      method: "PUT",
-      credentials: "include",
-      withCredentials: true,
-      headers: { "Content-Type": "application/json", Cookie: cookie },
-    })
-      .then((res) => {})
-      .then((res) => {
-        navigate("/");
-      });
+    axios
+      .put(
+        url("logout"),
+        {},
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: cookie,
+          },
+        }
+      )
+      .then(navigate("/"));
   };
+
   const profile = () => {
     navigate("/profile");
   };
