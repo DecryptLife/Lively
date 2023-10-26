@@ -8,7 +8,7 @@ async function getFollowing(req, res) {
   const username = req.username;
 
   // no user given find the followers of logged in user
-  const profile = await Profile({ username });
+  const profile = await Profile.findOne({ username });
 
   if (profile) {
     if (profile["following"]) {
@@ -90,23 +90,27 @@ async function getFollowersDetails(req, res) {
 
   const profile = await Profile.findOne({ username });
 
-  Profile.findOne({ username }, (err, docs) => {
-    if (err) {
-      console.log(err);
-    } else {
-      let followers = docs["following"];
-      if (followers.length > 0) {
-        let followersDetails = [];
-        Profile.find({ username: followers }, (err, docs) => {
-          if (err) {
-            console.log(err);
-          } else {
-            res.send({ followers: docs });
-          }
-        });
-      }
-    }
-  });
+  if (profile) {
+    res.send({ followers: profile["following"] });
+  }
+
+  // Profile.findOne({ username }, (err, docs) => {
+  //   if (err) {
+  //     console.log(err);
+  //   } else {
+  //     let followers = docs["following"];
+  //     if (followers.length > 0) {
+  //       let followersDetails = [];
+  //       Profile.find({ username: followers }, (err, docs) => {
+  //         if (err) {
+  //           console.log(err);
+  //         } else {
+  //           res.send({ followers: docs });
+  //         }
+  //       });
+  //     }
+  //   }
+  // });
 }
 
 module.exports = (app) => {
