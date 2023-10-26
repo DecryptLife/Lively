@@ -4,7 +4,6 @@ const { default: mongoose } = require("mongoose");
 const { User, Profile, Article } = require("../db");
 
 async function getFollowing(req, res) {
-  // const username = req.params.user;
   const username = req.username;
 
   // no user given find the followers of logged in user
@@ -91,26 +90,16 @@ async function getFollowersDetails(req, res) {
   const profile = await Profile.findOne({ username });
 
   if (profile) {
-    res.send({ followers: profile["following"] });
-  }
+    let followers = profile["following"];
 
-  // Profile.findOne({ username }, (err, docs) => {
-  //   if (err) {
-  //     console.log(err);
-  //   } else {
-  //     let followers = docs["following"];
-  //     if (followers.length > 0) {
-  //       let followersDetails = [];
-  //       Profile.find({ username: followers }, (err, docs) => {
-  //         if (err) {
-  //           console.log(err);
-  //         } else {
-  //           res.send({ followers: docs });
-  //         }
-  //       });
-  //     }
-  //   }
-  // });
+    let details = [];
+
+    followers.forEach(async (follower) => {
+      const follower_profile = await Profile({ username: follower });
+      if (follower_profile) details.concat(follower);
+    });
+    res.send({ followers: details });
+  }
 }
 
 module.exports = (app) => {
