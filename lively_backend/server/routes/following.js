@@ -12,7 +12,7 @@ async function getFollowing(req, res) {
 
   if (profile) {
     if (profile["following"]) {
-      let msg = { username: currUser, following: docs["following"] };
+      let msg = { username, following: profile["following"] };
       res.send(msg);
     } else {
       return res.status(400).send("No followers for this user yet");
@@ -29,19 +29,25 @@ async function addFollower(req, res) {
   }
 
   const profile = await Profile.findOne({ username });
-  let followers = profile["following"];
-
+  console.log("trying to add follower");
   if (profile) {
+    let followers = profile["following"];
+    console.log(`${profile["username"]} followers: ${followers}`);
     const follower = await Profile.findOne({ username: follower_name });
-    console.log(follower);
     if (follower) {
-      followers.append(follower_name);
+      console.log(`${follower["username"]} exists`);
+      let following = followers.concat(follower_name);
+
+      console.log(`${profile["username"]} followers: ${following}`);
       const new_profile = await Profile.findOneAndUpdate(
-        username,
-        { following: followers },
-        { new: true }
+        { username: username },
+        { following: following },
+        {
+          new: true,
+        }
       );
       if (new_profile) {
+        console.log("Follower successfully added");
         let msg = {
           username,
           following: new_profile["following"],
@@ -84,7 +90,7 @@ async function getFollowersDetails(req, res) {
 
   const profile = await Profile.findOne({ username });
 
-  Profile.findOne({ username: currUser }, (err, docs) => {
+  Profile.findOne({ username }, (err, docs) => {
     if (err) {
       console.log(err);
     } else {
