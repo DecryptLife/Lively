@@ -1,51 +1,45 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 const Status = ({ handleLogout, goToProfile }) => {
   const url = (path) => `http://localhost:3001${path}`;
 
   const cookie = JSON.parse(localStorage.getItem("cookie"));
   const currUser = JSON.parse(localStorage.getItem("currUser"));
 
-  // let userStatus = currUser["headline"];
   const [avatar, setAvatar] = useState("");
   const [status, setUStatus] = useState("");
   const [modStatus, setModStatus] = useState("");
 
   useEffect(() => {
-    fetch(url("/avatar"), {
-      method: "GET",
-      credentials: "include",
-      mode: "cors",
-      headers: { "Content-Type": "application/json", Cookie: cookie },
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        console.log(res);
-        setAvatar(res.avatar);
+    async function getAvatar() {
+      const response = await axios.get(url("/avatar"), {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json" },
       });
+
+      setAvatar(response.data.avatar);
+    }
+
+    getAvatar();
   });
+
   useEffect(() => {
-    fetch(url("/headline"), {
-      method: "GET",
-      credentials: "include",
-      mode: "cors",
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Credentials": true,
-        Cookie: cookie,
-      },
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        setModStatus(res.headline);
+    async function getHeadline() {
+      const response = await axios.get(url("/headline"), {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": true,
+        },
       });
+
+      setModStatus(response.data.headline);
+    }
+
+    getHeadline();
   }, [status]);
 
-  var req = [
+  const req = [
     require("../images/img1.png"),
     require("../images/img2.png"),
     require("../images/img3.png"),
@@ -58,27 +52,19 @@ const Status = ({ handleLogout, goToProfile }) => {
     require("../images/img10.png"),
   ];
 
-  const updateStatus = (e) => {
+  const updateStatus = async (e) => {
     if (status !== "") {
-      var new_status = { headline: status };
-      fetch(url("/headline"), {
-        method: "PUT",
-        credentials: "include",
+      let new_status = { headline: status };
+
+      const response = await axios.put(url("/headline"), new_status, {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",
-          Cookie: cookie,
         },
-        body: JSON.stringify(new_status),
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((res) => {
-          console.log("U: ", res);
-          setModStatus(res.headline);
-          setUStatus("");
-        });
+      });
+
+      setModStatus(response.data.headline);
+      setUStatus("");
     }
   };
 
