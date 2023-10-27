@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 const UpdateInfo = ({ handleUpdate }) => {
   const [name, setName] = useState("");
@@ -71,24 +72,6 @@ const UpdateInfo = ({ handleUpdate }) => {
       }
     }
   };
-
-  // useEffect(() => {
-  //   console.log("checking for errors");
-  //   console.log(emailError, mobError, zipError, pwdError);
-  // }, [nameError, emailError, mobError, zipError, pwdError]);
-
-  // useEffect(() => {
-  //   console.log("Valid Inputs = ", validInputs);
-  //   if (validInputs === true) {
-  //     console.log("valid inputs");
-  //     handleUpdate({ name, email, mobNo, zipCode, pwd });
-  //     setName("");
-  //     setEmail("");
-  //     setMobNo("");
-  //     setZipCode("");
-  //     setPwd("");
-  //   }
-  // }, [validInputs]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

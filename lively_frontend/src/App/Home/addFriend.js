@@ -69,11 +69,12 @@ const AddFriend = ({ handleFollowers }) => {
     let friendList = [];
 
     async function getFollowerDetails() {
-      const response = await axios.get(url("/followerDetails"), {
+      const response = await axios.get(url("/followersDetails"), {
         withCredentials: true,
         headers: { "Content-Type": "application/json" },
       });
 
+      console.log("Followers: ", response.data);
       const followerDetails = response.data.followers;
       followerDetails.forEach((friend) => {
         friendList.push(
@@ -101,7 +102,7 @@ const AddFriend = ({ handleFollowers }) => {
       setFriends(friendList);
     }
     getFollowerDetails();
-  }, [followingList]);
+  }, []);
 
   const [friends, setFriends] = useState(null);
 
