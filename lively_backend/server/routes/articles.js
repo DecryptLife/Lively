@@ -1,11 +1,14 @@
-require("dotenv").config();
+const dotenv = require("dotenv");
+dotenv.config();
 const asyncHandler = require("express-async-handler");
 
 const { User, Profile, Article } = require("../db");
+const { LIVELY_PRESET } = require("../../config/config");
 
-const LIVELY_PRESET = process.env["LIVELY_PRESET"];
+// const LIVELY_PRESET = process.env.LIVELY_PRESET;
 const cloudinary = require("../../config/cloudinary");
 
+console.log(LIVELY_PRESET);
 async function getArticles(req, res) {
   console.log("get articles");
   const username = req.username;
@@ -233,15 +236,17 @@ const addArticle = asyncHandler(async (req, res) => {
 
   if (image) {
     console.log("Both image and text found");
+    console.log("Preset: ", LIVELY_PRESET);
     //Cloudinary
-    var cloudUploadRes;
+    let cloudUploadRes;
     try {
       cloudUploadRes = await cloudinary.uploader.upload(image, {
         upload_preset: LIVELY_PRESET,
       });
     } catch (error) {
+      console.log("error: ", error);
       res.status(500);
-      throw new Error("Some problem with cloudinary");
+      throw new Error("Some problem with cloudinary: ", error.message);
     }
 
     try {
