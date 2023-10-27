@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useMemo } from "react";
-import Pagination from "./Pagination";
+import axios from "axios";
+
 const ShowPosts = ({
   entirePosts,
   searchPost,
@@ -32,7 +32,7 @@ const ShowPosts = ({
   const [updateCommentVal, setUpdateCommentVal] = useState("");
   const [comment, setComment] = useState("");
 
-  const addComment = (e, pid) => {
+  const addComment = async (e, pid) => {
     const addCommentField = document.getElementById(`comments_${pid}`);
     const text = addCommentField.value;
     let new_comment = { comment_id: -1, text: text };
@@ -41,22 +41,14 @@ const ShowPosts = ({
     const post = comment_field[pid];
 
     if (text.length > 0) {
-      fetch(url(`/articles/${pid}`), {
-        method: "PUT",
-        credentials: "include",
+      await axios.put(url(`/articles/${pid}`), new_comment, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(new_comment),
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((res) => {
-          post.style.display =
-            post.style.display === "block" ? "none" : "block";
-          addCommentField.value = "";
-          setCommentMod(true);
-        });
+      });
+
+      post.style.display = post.style.display === "block" ? "none" : "block";
+      addCommentField.value = "";
+      setCommentMod(true);
     }
   };
 
@@ -76,7 +68,6 @@ const ShowPosts = ({
     const updatePost = document.getElementById("updatePostBtn");
     if (typeof dialog.showModal === "function") {
       dialog.showModal();
-    } else {
     }
 
     closeDialog.addEventListener("click", () => {
@@ -89,9 +80,9 @@ const ShowPosts = ({
     setUpdateCmntPstID(e.target.value);
     const commentDialog = document.getElementById("commentDialog");
     const closeCommentDialog = document.getElementById("closeCommentDialogBtn");
+
     if (typeof commentDialog.showModal === "function") {
       commentDialog.showModal();
-    } else {
     }
 
     closeCommentDialog.addEventListener("click", () => {
@@ -316,96 +307,61 @@ const ShowPosts = ({
     }
   }, [postfield, currentPage]);
 
-  const updateComment = () => {
+  const updateComment = async () => {
     const commentDialog = document.getElementById("commentDialog");
     const comment_field = document.getElementsByClassName("comment_field");
     const post = comment_field[updateCmntPstID];
     if (updateCommentVal !== "") {
       let commentDetails = { comment_id: updateCmntID, text: updateCommentVal };
-      fetch(url(`/articles/${updateCmntPstID}`), {
-        method: "PUT",
-        credentials: "include",
+
+      await axios.put(url(`/articles/${updateCmntPstID}`), commentDetails, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(commentDetails),
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((res) => {
-          setCommentMod(true);
-          commentDialog.close();
-          post.style.display =
-            post.style.display === "block" ? "none" : "block";
-          setUpdateCmntID("");
-          setUpdateCmntPstID("");
-          setUpdateCommentVal("");
-        });
+      });
+
+      setCommentMod(true);
+      commentDialog.close();
+      post.style.display = post.style.display === "block" ? "none" : "block";
+      setUpdateCmntID("");
+      setUpdateCmntPstID("");
+      setUpdateCommentVal("");
     }
   };
-  const updatePost = () => {
+
+  const updatePost = async () => {
     const dialog = document.getElementById("updatePostDialog");
     const textField = document.getElementById("modPostText");
     const imageField = document.getElementById("modPostImg");
 
-    var updatedImageURL;
+    let postUpdate;
     if (updatedImage) {
       const reader = new FileReader();
       reader.readAsDataURL(updatedImage);
       reader.onloadend = () => {
         let imageURL = reader.result;
-        let postUpdate;
         if (updatedText) {
           postUpdate = { text: updatedText, image: imageURL };
         } else {
           postUpdate = { image: imageURL };
         }
-
-        fetch(url(`/articles/${updatedPID}`), {
-          method: "PUT",
-          withCredentials: true,
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(postUpdate),
-        })
-          .then((res) => {
-            return res.json();
-          })
-          .then((res) => {
-            textField.value = "";
-            imageField.value = "";
-            setUpdatedPID("");
-            setUpdatedImage("");
-            setUpdatedText("");
-            setUpdatedImageURL("");
-            setNewPost("");
-            dialog.close();
-          });
       };
     } else {
-      let postUpdate = { text: updatedText };
-
-      fetch(url(`/articles/${updatedPID}`), {
-        method: "PUT",
-        withCredentials: true,
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postUpdate),
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((res) => {
-          textField.value = "";
-          imageField.value = "";
-          setUpdatedPID("");
-          setUpdatedImage("");
-          setUpdatedText("");
-          setUpdatedImageURL("");
-          setNewPost("");
-          dialog.close();
-        });
+      postUpdate = { text: updatedText };
     }
+
+    await axios.put(url(`/articles/${updatedPID}`), postUpdate, {
+      withCredentials: true,
+      headers: { "Content-Type": "application/json" },
+    });
+
+    textField.value = "";
+    imageField.value = "";
+    setUpdatedPID("");
+    setUpdatedImage("");
+    setUpdatedText("");
+    setUpdatedImageURL("");
+    setNewPost("");
+    dialog.close();
   };
 
   return (
