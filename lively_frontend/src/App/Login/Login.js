@@ -2,6 +2,7 @@ import { useState } from "react";
 import LoginField from "./LoginField";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
+import axios from "axios";
 const Login = () => {
   const url = (path) => `http://localhost:3001${path}`;
   localStorage.setItem("benson", "thomas");
@@ -9,36 +10,30 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loginError, setLoginError] = useState(false);
 
-  const handleSubmit = (e, uname, pwd) => {
+  const handleSubmit = async (e, uname, pwd) => {
     e.preventDefault();
     setLoginError(false);
     let userDetails = {
       username: uname,
       password: pwd,
     };
-    fetch(url("/login"), {
-      method: "POST",
-      credentials: "include",
+
+    const response = await axios.post(url("/login"), userDetails, {
       withCredentials: true,
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify(userDetails),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        localStorage.setItem("cookie", JSON.stringify(res.cookie));
-        localStorage.setItem("currUser", JSON.stringify(res));
-        if (res.result === "success") {
-          navigate("/home");
-        } else {
-          setErrorMessage(res.result);
-          setLoginError(true);
-        }
-      });
+    });
+
+    localStorage.setItem("cookie", JSON.stringify(response.data.cookie));
+    localStorage.setItem("currUser", JSON.stringify(response.data));
+    if (response.data.result === "success") {
+      navigate("/home");
+    } else {
+      setErrorMessage(response.data.result);
+      setLoginError(true);
+    }
   };
 
   const handleSignUp = () => {
