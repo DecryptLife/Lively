@@ -90,15 +90,23 @@ async function getFollowersDetails(req, res) {
   const profile = await Profile.findOne({ username });
 
   if (profile) {
+    console.log("profile: ", profile);
     let followers = profile["following"];
-
+    console.log("followers: ", followers);
     let details = [];
 
-    followers.forEach(async (follower) => {
-      const follower_profile = await Profile({ username: follower });
-      if (follower_profile) details.concat(follower);
-    });
-    res.send({ followers: details });
+    try {
+      for (const follower of followers) {
+        const follower_profile = await Profile.findOne({ username: follower });
+        console.log("follower_profile", follower_profile);
+        if (follower_profile) details.push(follower);
+      }
+
+      console.log(details);
+      res.send({ followers: details });
+    } catch (error) {
+      res.status(500).send(error);
+    }
   }
 }
 
