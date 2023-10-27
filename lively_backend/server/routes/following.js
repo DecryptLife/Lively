@@ -1,5 +1,4 @@
 const app = require("express");
-const { default: mongoose } = require("mongoose");
 
 const { User, Profile, Article } = require("../db");
 
@@ -85,8 +84,6 @@ async function removeFollower(req, res) {
 
 async function getFollowersDetails(req, res) {
   const username = req.username;
-  const followers = req.body.followers;
-
   const profile = await Profile.findOne({ username });
 
   if (profile) {

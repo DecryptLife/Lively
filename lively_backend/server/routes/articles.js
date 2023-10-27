@@ -208,7 +208,6 @@ const updateArticles = asyncHandler(async (req, res) => {
 
 async function addComment(req, res) {
   let pid = req.params.id;
-  let username = req.username;
   let comment = req.body.comment;
 
   const articles = await Article.findById(pid);
