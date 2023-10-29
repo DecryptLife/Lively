@@ -7,7 +7,8 @@ const asyncHandler = require("express-async-handler");
 const { User, Profile, Article } = require("../db");
 
 const md5 = require("md5");
-const LIVELY_PRESET = process.env["LIVELY_PRESET"];
+
+const { LIVELY_PRESET } = require("../../config/config");
 const cloudinary = require("../../config/cloudinary");
 
 async function getHeadline(req, res) {
@@ -116,39 +117,51 @@ async function getAvatar(req, res) {
 
 const updateAvatar = asyncHandler(async (req, res) => {
   const username = req.username;
+  const image = req.body.avatar;
 
+  console.log("image: ", image);
   //Here, req.body will contain the base_64 encoded image string as 'avatar'
   // console.log("Req.body: Base 64 encoded image string: ", req.body.avatar);
   // console.log("AVATAR: ", req.body);
   //Cloudinary
-  let cloudUploadRes;
-  try {
-    cloudUploadRes = await cloudinary.uploader.upload(req.body.avatar, {
-      upload_preset: LIVELY_PRESET,
-    });
-  } catch (error) {
-    res.status(500);
-    console.log(error);
-    throw new Error("Some problem with cloudinary");
-  }
-  console.log(cloudUploadRes);
-  //Saving cloudinary res in avatar
-  try {
-    const updatedUser = await Profile.findOneAndUpdate(
-      { username: username },
-      { avatar: cloudUploadRes },
-      { new: true }
-    );
 
-    res.status(200);
-    res.json({
-      username: loggedInUser.username,
-      avatar: updatedUser.avatar,
-    });
-  } catch (error) {
-    res.status(500);
-    console.log(error);
-    throw new Error("Some problem while updating Image");
+  if (image) {
+    if (typeof image !== "string")
+      throw new Error("Image is not fo the type String");
+
+    let cloudUploadRes;
+    try {
+      cloudUploadRes = await cloudinary.uploader.upload(image, {
+        upload_preset: LIVELY_PRESET,
+      });
+      console.log(cloudUploadRes);
+      console.log("uploading to cloudinary");
+    } catch (error) {
+      console.log(cloudUploadRes);
+      console.log(error);
+      res.status(500);
+      throw new Error("Some problem with cloudinary");
+    }
+    console.log(cloudUploadRes);
+    //Saving cloudinary res in avatar
+    try {
+      const updatedUser = await Profile.findOneAndUpdate(
+        { username: username },
+        { avatar: cloudUploadRes["url"] },
+        { new: true }
+      );
+
+      console.log("updating the user avatar");
+      res.status(200);
+      res.json({
+        username: username,
+        avatar: updatedUser.avatar,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500);
+      throw new Error("Some problem while updating Image");
+    }
   }
 });
 
