@@ -20,12 +20,21 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const currUser = JSON.parse(localStorage.getItem("currUser"));
-
+  const [userDetails, setUserDetails] = useState("");
   const newUser = "new" in currUser;
   const [followers, setFollowers] = useState([]);
 
   const [totalPosts, setTotalPosts] = useState("");
   useEffect(() => {
+    async function getUser() {
+      const response = await axios.get(url("/userDetails"), {
+        withCredentials: true,
+        headers: { "Content-Type": "application/json", Authorization: cookie },
+      });
+      console.log(response.data);
+
+      setUserDetails(response.data);
+    }
     async function getArticles() {
       const response = await axios.get(url("/articles"), {
         withCredentials: true,
@@ -35,6 +44,7 @@ const Home = () => {
       setTotalPosts(response.data.articles);
     }
 
+    getUser();
     getArticles();
   }, []);
 

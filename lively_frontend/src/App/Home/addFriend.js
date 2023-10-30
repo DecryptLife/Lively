@@ -54,6 +54,7 @@ const AddFriend = ({ handleFollowers }) => {
   ];
 
   const handleUnfollow = async (username) => {
+    console.log("To unfollow: ", username);
     const response = await axios.delete(url(`/following/${username}`), {
       withCredentials: true,
       headers: { "Content-Type": "application/json" },
@@ -76,12 +77,13 @@ const AddFriend = ({ handleFollowers }) => {
 
       console.log("Followers: ", response.data);
       const followerDetails = response.data.followers;
+      console.log("Follower Details: ", followerDetails);
       followerDetails.forEach((friend) => {
         friendList.push(
           <div className="friend1" key={friend["username"]}>
             <img
               className="searchImage2"
-              src={avatar !== "" ? avatar : req[1]}
+              src={friend["avatar"] !== "" ? friend["avatar"] : req[1]}
             ></img>
             <br></br>
             <span className="friendName">{friend["username"]}</span>

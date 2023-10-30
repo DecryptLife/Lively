@@ -20,6 +20,8 @@ const ShowPosts = ({
   const url = (path) => `http://localhost:3001${path}`;
   const totalPosts = entirePosts;
   const [updatedPID, setUpdatedPID] = useState("");
+
+  const cookie = JSON.parse(localStorage.getItem("cookie"));
   const [updatedText, setUpdatedText] = useState("");
   const [updatedImage, setUpdatedImage] = useState("");
   const [updatedImageURL, setUpdatedImageURL] = useState("");
@@ -43,7 +45,7 @@ const ShowPosts = ({
     if (text.length > 0) {
       await axios.put(url(`/articles/${pid}`), new_comment, {
         withCredentials: true,
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: cookie },
       });
 
       post.style.display = post.style.display === "block" ? "none" : "block";
