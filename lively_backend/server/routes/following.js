@@ -9,8 +9,15 @@ async function getFollowing(req, res) {
   const profile = await Profile.findOne({ username });
 
   if (profile) {
-    if (profile["following"]) {
-      let msg = { username, following: profile["following"] };
+    const followers = profile["following"];
+
+    const followers_details = await Profile.find({
+      username: { $in: followers },
+    });
+
+    if (followers_details) {
+      console.log("follower details: ", followers_details);
+      let msg = { username, following: followers_details };
       res.send(msg);
     } else {
       return res.status(400).send("No followers for this user yet");
@@ -63,11 +70,14 @@ async function removeFollower(req, res) {
   const username = req.username;
 
   const profile = await Profile.findOne({ username });
-
+  console.log("Follower to remove: ", follower_name);
   if (profile) {
+    console.log(`${profile["username"]}'s profile`);
     const new_followers = profile["following"].filter(
       (follower) => follower !== follower_name
     );
+
+    console.log("New Followers: ", new_followers);
 
     const new_profile = await Profile.findOneAndUpdate(
       username,
@@ -92,16 +102,13 @@ async function getFollowersDetails(req, res) {
     console.log("followers: ", followers);
     let details = [];
 
-    try {
-      for (const follower of followers) {
-        const follower_profile = await Profile.findOne({ username: follower });
-        console.log("follower_profile", follower_profile);
-        if (follower_profile) details.push(follower);
-      }
+    const follower_details = await Profile.find({
+      username: { $in: followers },
+    });
 
-      console.log(details);
-      res.send({ followers: details });
-    } catch (error) {
+    if (follower_details) {
+      res.send({ followers: follower_details });
+    } else {
       res.status(500).send(error);
     }
   }
