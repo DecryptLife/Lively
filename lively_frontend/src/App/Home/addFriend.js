@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { BASE_URL } from "../../config";
 const AddFriend = ({ handleFollowers }) => {
-  const url = (path) => `http://localhost:3001${path}`;
+  const url = (path) => `${BASE_URL}${path}`;
   const cookie = JSON.parse(localStorage.getItem("cookie"));
   const [isEmpty, setIsEmpty] = useState(null);
   const [invalidUser, setInvalidUser] = useState(null);
@@ -11,8 +12,7 @@ const AddFriend = ({ handleFollowers }) => {
   useEffect(() => {
     async function getAvatar() {
       const response = await axios.get(url("/avatar"), {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: cookie },
       });
 
       setAvatar(response.data.avatar.url);
@@ -25,10 +25,9 @@ const AddFriend = ({ handleFollowers }) => {
   const [followingList, setFollowingList] = useState([]);
 
   useEffect(() => {
-    async function getAvatar() {
+    async function getFollowing() {
       const response = await axios.get(url("/following"), {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
+        headers: { Authorization: cookie },
       });
 
       const userFollowers = response.data.following;
@@ -38,7 +37,7 @@ const AddFriend = ({ handleFollowers }) => {
       }
     }
 
-    getAvatar();
+    getFollowing();
   }, []);
   const req = [
     require("../images/img1.png"),

@@ -8,7 +8,7 @@ const { User, Profile, Article } = require("../db");
 
 const md5 = require("md5");
 
-const { LIVELY_PRESET } = require("../../config/config");
+const { LIVELY_PRESET } = require("../../config");
 const cloudinary = require("../../config/cloudinary");
 
 async function getHeadline(req, res) {

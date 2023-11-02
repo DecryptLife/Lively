@@ -1,3 +1,4 @@
+import { BASE_URL } from "../../config";
 import "./profile.css";
 import UpdateInfo from "./updateInfo";
 import UserInfo from "./userInfo";
@@ -7,7 +8,10 @@ import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const url = (path) => `http://localhost:3001${path}`;
+  const url = (path) => `${BASE_URL}${path}`;
+
+  const cookie = JSON.parse(localStorage.getItem("cookie"));
+  console.log("COkies: ", cookie);
   const [currUser, setCurrUser] = useState("");
   const inputref = useRef(null);
   const [mobile, setMobile] = useState("");
@@ -47,8 +51,7 @@ const Profile = () => {
   useEffect(() => {
     async function getAvatar() {
       const response = await axios(url("/avatar"), {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: cookie },
       });
 
       setAvatar(response.data.avatar);

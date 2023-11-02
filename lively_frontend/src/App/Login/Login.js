@@ -3,9 +3,10 @@ import LoginField from "./LoginField";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
 import axios from "axios";
+import { BASE_URL } from "../../config";
+
 const Login = () => {
-  const url = (path) => `http://localhost:3001${path}`;
-  localStorage.setItem("benson", "thomas");
+  const url = (path) => `${BASE_URL}${path}`;
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [loginError, setLoginError] = useState(false);
@@ -19,10 +20,8 @@ const Login = () => {
     };
 
     const response = await axios.post(url("/login"), userDetails, {
-      withCredentials: true,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
       },
     });
 

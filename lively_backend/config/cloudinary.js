@@ -7,7 +7,7 @@ const {
   CLOUDINARY_NAME,
   CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET,
-} = require("../config/config");
+} = require("../config");
 
 const cloudinary = cloudinaryModule.v2;
 

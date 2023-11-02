@@ -79,9 +79,15 @@ async function login(req, res) {
       httpOnly: true,
       secure: true,
     });
+    // console.log("checking cookie: ", res.cookie);
     sessionUser[sid] = username;
     req.username = username;
     let msg = { result: "success", cookie: sid };
+    // res.writeHead(200, {
+    //   "Set-Cookie": "token=encryptedstring; HttpOnly",
+    //   "Access-Control-Allow-Credentials": "true",
+    // });
+
     return res.status(200).json(msg);
   } else {
     return res.status(400).json({ result: "User does not exist" });
@@ -94,8 +100,13 @@ function isLoggedIn(req, res, next) {
     return res.sendStatus(401);
   }
 
+  console.log("cookie: ", req.headers.authorization);
   let sid = req.cookies[cookieKey];
   // no sid for cookie key
+  // console.log("req: ", req);
+  console.log("req.cookies: ", req.cookies);
+  console.log("checking here: cookie key -", cookieKey);
+  console.log("checking sid: ", sid);
   if (!sid) {
     return res.sendStatus(401);
   } else {

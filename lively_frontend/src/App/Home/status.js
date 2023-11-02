@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { BASE_URL } from "../../config";
 const Status = ({ handleLogout, goToProfile }) => {
-  const url = (path) => `http://localhost:3001${path}`;
+  const url = (path) => `${BASE_URL}${path}`;
 
   const cookie = JSON.parse(localStorage.getItem("cookie"));
   const currUser = JSON.parse(localStorage.getItem("currUser"));
@@ -14,7 +15,10 @@ const Status = ({ handleLogout, goToProfile }) => {
     async function getAvatar() {
       const response = await axios.get(url("/avatar"), {
         withCredentials: true,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Access-Control-Allow-Credentials": true,
+          Cookie: cookie,
+        },
       });
 
       setAvatar(response.data.avatar);
@@ -28,7 +32,6 @@ const Status = ({ handleLogout, goToProfile }) => {
       const response = await axios.get(url("/headline"), {
         withCredentials: true,
         headers: {
-          "Content-Type": "application/json",
           "Access-Control-Allow-Credentials": true,
         },
       });

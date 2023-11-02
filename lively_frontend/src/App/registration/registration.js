@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./registration.css";
+import { BASE_URL } from "../../config";
 
 const Register = () => {
-  const url = (path) => `http://localhost:3001${path}`;
+  const url = (path) => `${BASE_URL}${path}`;
   const navigate = useNavigate();
   const [uname, setUname] = useState("");
   const [email, setEmail] = useState("");

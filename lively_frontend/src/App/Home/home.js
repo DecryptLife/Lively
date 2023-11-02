@@ -8,8 +8,9 @@ import NewPost from "./newPost";
 import Followers from "./Followers";
 import AddFriend from "./addFriend";
 import Pagination from "./Pagination";
+import { BASE_URL } from "../../config";
 const Home = () => {
-  const url = (path) => `http://localhost:3001${path}`;
+  const url = (path) => `${BASE_URL}${path}`;
 
   const navigate = useNavigate();
 
@@ -28,7 +29,6 @@ const Home = () => {
   useEffect(() => {
     async function getUser() {
       const response = await axios.get(url("/userDetails"), {
-        withCredentials: true,
         headers: { "Content-Type": "application/json", Authorization: cookie },
       });
       console.log(response.data);
@@ -37,7 +37,6 @@ const Home = () => {
     }
     async function getArticles() {
       const response = await axios.get(url("/articles"), {
-        withCredentials: true,
         headers: { "Content-Type": "application/json", Authorization: cookie },
       });
 

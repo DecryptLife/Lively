@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { BASE_URL } from "../../config";
 
 const ShowPosts = ({
   entirePosts,
@@ -17,7 +18,7 @@ const ShowPosts = ({
     require("../images/img_2_3.png"),
   ];
 
-  const url = (path) => `http://localhost:3001${path}`;
+  const url = (path) => `${BASE_URL}${path}`;
   const totalPosts = entirePosts;
   const [updatedPID, setUpdatedPID] = useState("");
 

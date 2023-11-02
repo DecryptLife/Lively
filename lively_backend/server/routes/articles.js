@@ -3,7 +3,7 @@ dotenv.config();
 const asyncHandler = require("express-async-handler");
 
 const { User, Profile, Article } = require("../db");
-const { LIVELY_PRESET } = require("../../config/config");
+const { LIVELY_PRESET } = require("../../config");
 
 // const LIVELY_PRESET = process.env.LIVELY_PRESET;
 const cloudinary = require("../../config/cloudinary");
