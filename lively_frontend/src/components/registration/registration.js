@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./registration.css";
-import { BASE_URL } from "../../../config";
+import { BASE_URL } from "../../config";
 
 const Register = () => {
   const url = (path) => `${BASE_URL}${path}`;
