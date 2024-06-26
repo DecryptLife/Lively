@@ -21,9 +21,6 @@ const LoginField = ({ handleSubmit }) => {
     });
   };
 
-  const GoogleSignIn = () => {
-    window.location = "https://selective-field.surge.sh/auth/google";
-  };
   return (
     <div className="loginPage">
       <form onSubmit={(e) => handleSubmit(e, uname, pwd)}>
@@ -56,9 +53,9 @@ const LoginField = ({ handleSubmit }) => {
         </button>
       </form>
 
-      <div>
+      {/* <div>
         <button onClick={() => GoogleSignIn()}> Sign in with Google</button>
-      </div>
+      </div> */}
     </div>
   );
 };

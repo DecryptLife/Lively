@@ -40,16 +40,16 @@ const Login = () => {
   };
 
   return (
-    <div className="loginLayout">
+    <div className="login-layout">
       <div className="loginLeft">
         <div className="loginLeftContent">
-          <h1>Login to Your Account</h1>
+          <h1>Login</h1>
           <LoginField handleSubmit={handleSubmit} />
           {loginError && <span className="redText">{errorMessage}</span>}
         </div>
       </div>
 
-      <div className="loginRight">
+      {/* <div className="loginRight">
         <div className="loginRightContent">
           <h2>New here?</h2>
           <p>Sign up and make your life more lively!</p>
@@ -57,7 +57,7 @@ const Login = () => {
             SignUp
           </button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

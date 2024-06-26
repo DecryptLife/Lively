@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Home from "./home";
-import all_posts from "../../posts";
-import all_users from "../../users";
+import all_posts from "../../../posts";
+import all_users from "../../../users";
 import ShowPosts from "./showPosts";
 import AddFriend from "./addFriend";
 

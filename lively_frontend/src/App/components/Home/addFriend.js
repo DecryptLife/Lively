@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "../../config";
+import { BASE_URL } from "../../../config";
 const AddFriend = ({ handleFollowers }) => {
   const url = (path) => `${BASE_URL}${path}`;
   const cookie = JSON.parse(localStorage.getItem("cookie"));
