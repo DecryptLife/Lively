@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "../../config";
+import { BASE_URL } from "../../../config";
 const Status = ({ handleLogout, goToProfile }) => {
   const url = (path) => `${BASE_URL}${path}`;
 
