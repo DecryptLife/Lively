@@ -41,14 +41,13 @@ const Login = () => {
 
   return (
     <div className="login-layout">
-      <div className="loginLeft">
-        <div className="loginLeftContent">
-          <h1>Login</h1>
-          <LoginField handleSubmit={handleSubmit} />
-          {loginError && <span className="redText">{errorMessage}</span>}
-        </div>
+      <h1>Welcome to Lively.!</h1>
+      <div className="login-container">
+        {/* <h2>Login</h2> */}
+        <LoginField handleSubmit={handleSubmit} />
+        {loginError && <span className="redText">{errorMessage}</span>}
       </div>
-
+      <button className="signup-btn">Sign Up Now</button>
       {/* <div className="loginRight">
         <div className="loginRightContent">
           <h2>New here?</h2>
