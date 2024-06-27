@@ -35,7 +35,7 @@ const Login = () => {
     }
   };
 
-  const handleSignUp = () => {
+  const handleNavigateToRegister = () => {
     navigate("/register");
   };
 
@@ -47,7 +47,9 @@ const Login = () => {
         <LoginField handleSubmit={handleSubmit} />
         {loginError && <span className="redText">{errorMessage}</span>}
       </div>
-      <button className="signup-btn">Sign Up Now</button>
+      <button className="signup-btn" onClick={handleNavigateToRegister}>
+        Sign Up Now
+      </button>
       {/* <div className="loginRight">
         <div className="loginRightContent">
           <h2>New here?</h2>

@@ -27,7 +27,6 @@ const LoginField = ({ handleSubmit }) => {
         className="login-form"
         onSubmit={(e) => handleSubmit(e, uname, pwd)}
       >
-        <br />
         <input
           data-testid="username_field"
           type="text"
@@ -39,7 +38,6 @@ const LoginField = ({ handleSubmit }) => {
           onChange={(e) => setUname(e.target.value)}
           required
         />
-        <br></br>
         <input
           data-testid="password_field"
           type="password"
@@ -50,7 +48,6 @@ const LoginField = ({ handleSubmit }) => {
           onChange={(e) => setPwd(e.target.value)}
           required
         />
-        <br></br>
         <button type="submit" className="login-btn" name="login">
           Sign in
         </button>

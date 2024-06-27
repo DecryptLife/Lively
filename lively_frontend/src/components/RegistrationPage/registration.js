@@ -108,11 +108,10 @@ const Register = () => {
   const goToSignIn = () => {
     navigate("/");
   };
-  // useEffect(() => {
-  //   if (formValidated && pwdMatch) {
 
-  //   }
-  // }, [formValidated]);
+  const handleNavigateToLogin = () => {
+    navigate("/");
+  };
 
   useEffect(() => {
     if (pwd !== "" && pwd === coPwd) {
@@ -127,114 +126,91 @@ const Register = () => {
   }, [isRegistered]);
 
   return (
-    <div className="regForm">
-      <div className="registerLeft">
-        <div className="regLeftContent">
-          <h2 className="welcomeText">Welcome Back!</h2>
-          <p className="leftText">
-            To keep connected with us please<br></br> login with your personal
-            info
-          </p>
-          <button className="signInBtn" onClick={() => goToSignIn()}>
-            Sign in
+    <div className="registration-layout">
+      <div className="registration__form-container">
+        <h2>Create Account</h2>
+        <form
+          className="registration-form"
+          method="POST"
+          onSubmit={(e) => handleValidation(e)}
+        >
+          <input
+            className="reg_input"
+            type="text"
+            placeholder="Username"
+            value={uname}
+            onChange={(e) => setUname(e.target.value)}
+          />
+          {usernameError && (
+            <span className="redText">Username can't be empty</span>
+          )}
+
+          <input
+            className="reg_input"
+            type="text"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          {emailError && <span className="redText">Not a valid email-id</span>}
+
+          <input
+            className="reg_input"
+            type="text"
+            placeholder="Mobile no (XXX-XXX-XXXX)"
+            value={mobNo}
+            onChange={(e) => setMobNo(e.target.value)}
+          />
+          {mobError && <span className="redText">Not a valid number</span>}
+
+          <input
+            type="number"
+            className="reg_input"
+            placeholder="Pincode (XXXXX)"
+            value={pincode}
+            onChange={(e) => setPinCode(e.target.value)}
+          />
+          {zipError && <span className="redText">Not a valid zip-code</span>}
+
+          <input
+            type="date"
+            className="reg_input"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
+          <input
+            type="password"
+            className="reg_input"
+            placeholder="Password(Minimum 6 and no special characters)"
+            value={pwd}
+            onChange={(e) => setPwd(e.target.value)}
+          />
+          <input
+            type="password"
+            className="confirmPassIp"
+            placeholder="Confirm password"
+            value={coPwd}
+            onChange={(e) => setCoPwd(e.target.value)}
+          />
+
+          {pwdMatch && <span className="greenText">Passwords matc</span>}
+          {pwdFormatError && (
+            <span className="redText">Invalid password format</span>
+          )}
+          <button
+            data-testid="submit_btn"
+            className="register-btn"
+            type="submit"
+          >
+            Register
           </button>
-        </div>
+        </form>
       </div>
-      <div className="registerRight">
-        <div className="regRightContent">
-          <h2>Create an account</h2>
-          <div className="registrationLayout">
-            <form method="POST" onSubmit={(e) => handleValidation(e)}>
-              <br></br>
-              <input
-                className="reg_input"
-                type="text"
-                placeholder="Username"
-                value={uname}
-                onChange={(e) => setUname(e.target.value)}
-              />
-              <br />
-              {usernameError && (
-                <span className="redText">Username can't be empty</span>
-              )}
-              <br></br>
-              <input
-                className="reg_input"
-                type="text"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <br />
-              {emailError && (
-                <span className="redText">Not a valid email-id</span>
-              )}
-              <br></br>
-              <input
-                className="reg_input"
-                type="text"
-                placeholder="Mobile no (XXX-XXX-XXXX)"
-                value={mobNo}
-                onChange={(e) => setMobNo(e.target.value)}
-              />
-              <br />
-              {mobError && <span className="redText">Not a valid number</span>}
-              <br></br>
-              <input
-                type="number"
-                className="reg_input"
-                placeholder="Pincode (XXXXX)"
-                value={pincode}
-                onChange={(e) => setPinCode(e.target.value)}
-              />
-              <br />
-              {zipError && (
-                <span className="redText">Not a valid zip-code</span>
-              )}
-              <br></br>
-              <input
-                type="date"
-                className="reg_input"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              />
-              <br />
-              <br />
-              <input
-                type="password"
-                className="reg_input"
-                placeholder="Password(Minimum 6 and no special characters)"
-                value={pwd}
-                onChange={(e) => setPwd(e.target.value)}
-              />
-              <br />
-              <input
-                type="password"
-                className="confirmPassIp"
-                placeholder="Confirm password"
-                value={coPwd}
-                onChange={(e) => setCoPwd(e.target.value)}
-              />
-              <br></br>
-              {pwdMatch && (
-                <span className="greenText">
-                  Passwords match<br></br>
-                </span>
-              )}
-              {pwdFormatError && (
-                <span className="redText">Invalid password format</span>
-              )}
-              <br />
-              <button
-                data-testid="submit_btn"
-                className="registerBtn"
-                type="submit"
-              >
-                Register
-              </button>
-            </form>
-          </div>
-        </div>
+
+      <div className="navigate__to__login-text">
+        <span onClick={handleNavigateToLogin}>
+          Already signed up? Login here
+        </span>
       </div>
     </div>
   );

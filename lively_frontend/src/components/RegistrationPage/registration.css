@@ -1,4 +1,12 @@
-body {
+.registration-layout {
+  display: flex;
+}
+
+.navigate__to__login-text {
+  cursor: pointer;
+}
+
+/* body {
   background-color: white;
   height: 100%;
 }
@@ -91,4 +99,4 @@ body {
 .redText {
   color: red;
   font-size: x-small;
-}
+} */
