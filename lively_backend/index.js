@@ -9,18 +9,32 @@ const articles = require("./server/routes/articles");
 const following = require("./server/routes/following");
 const { MONGODB_STRING } = require("./config");
 const cors = require("cors");
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+const allowedOrigins = ["http://localhost:3000"];
 
 const corsOptions = {
-  "Access-Control-Allow-Origin": "http://localhost:3000",
+  origin: function (origin, callback) {
+    // Check if origin is allowed
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: "GET,POST,PUT,DELETE,PATCH",
+  allowedHeaders: "Content-Type,Authorization",
+  credentials: true,
+  optionsSuccessStatus: 200,
 };
 
-const connectionString = `mongodb+srv://benson24:${MONGODB_STRING}@cluster0.9auii05.mongodb.net/lively?retryWrites=true&w=majority`;
-
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: false }));
+app.use(cors(corsOptions));
+app.use(express.json());
 app.use(cookieParser());
 
-console.log("check");
+const connectionString = `mongodb+srv://benson24:${MONGODB_STRING}@cluster0.9auii05.mongodb.net/lively?retryWrites=true&w=majority`;
 
 mongoose.connect(connectionString, {
   useNewUrlParser: true,
@@ -28,33 +42,13 @@ mongoose.connect(connectionString, {
   dbName: "lively",
 });
 
-app.use(function (req, res, next) {
-  res.header(
-    "Access-Control-Allow-Origin",
-    "https://lively-frontend-5tunqwswe-decryptlife.vercel.app"
-  );
+app.use("/auth", authRoutes);
+app.use("/profile", profileRoutes);
+app.use("/article", articleRoutes);
+app.use("/following", followingRoutes);
+// auth(app);
 
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET,HEAD,OPTIONS,POST,PUT,DELETE"
-  );
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization,Access-Control-Allow-Credentials"
-  );
-
-  console.log(req.method);
-  if (req.method === "OPTIONS") {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
-
-auth(app);
-
-profile(app);
+// profile(app);
 articles(app);
 following(app);
 
