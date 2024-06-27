@@ -1,18 +1,14 @@
-require("dotenv").config();
 const express = require("express");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
 
 const { User, Profile, Article } = require("../db");
 
-let sessionUser = {};
-let cookieKey = "sid";
-let userObjs = {};
 const app = express();
 
 const md5 = require("md5");
 
 async function register(req, res) {
-  console.log("checsjkskjdhs");
-  console.log(req.body);
   let username = req.body.username;
   let email = req.body.email;
   let headline = "Please update your headline";
@@ -55,35 +51,41 @@ async function register(req, res) {
 }
 
 async function login(req, res) {
-  console.log("logging in");
-  let exists_sid = req.cookies[cookieKey];
-  let username = req.body.username;
-  let pass = req.body.password;
+  const { username, password } = req.body;
 
-  if (!username || !pass)
+  if (!username || !password)
     return res.status(400).send("Missing username or password");
+
   let usern = userObjs[username];
   console.log("Jack: ", usern);
 
   let salt = username + "lively";
-  let password = md5(salt + pass);
+  let hashed_password = md5(salt + password);
 
-  const user = await User.findOne({ username, password });
+  const user = await User.findOne({ username, hashed_password });
 
   if (user) {
-    let sid = md5(password + username);
-    console.log("cookie being set: ", sid);
-    res.cookie(cookieKey, sid, {
-      maxAge: 3600 * 1000,
-      sameSite: "None",
-      httpOnly: true,
-      secure: true,
-    });
-    sessionUser[sid] = username;
-    req.username = username;
-    let msg = { result: "success", cookie: sid };
+    const token = jwt.sign(
+      { id: user.id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
 
-    return res.status(200).json(msg);
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "Lax",
+      secure: false,
+      maxAge: 3600000,
+    });
+
+    // res.cookie(cookieKey, sid, {
+    //   maxAge: 3600 * 1000,
+    //   sameSite: "None",
+    //   httpOnly: true,
+    //   secure: true,
+    // });
+
+    res.status(200).json({ message: "Login successful" });
   } else {
     return res.status(400).json({ result: "User does not exist" });
   }
