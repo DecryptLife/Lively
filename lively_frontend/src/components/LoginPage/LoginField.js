@@ -22,8 +22,11 @@ const LoginField = ({ handleSubmit }) => {
   };
 
   return (
-    <div className="loginPage">
-      <form onSubmit={(e) => handleSubmit(e, uname, pwd)}>
+    <div className="login-fields">
+      <form
+        className="login-form"
+        onSubmit={(e) => handleSubmit(e, uname, pwd)}
+      >
         <br />
         <input
           data-testid="username_field"
@@ -48,7 +51,7 @@ const LoginField = ({ handleSubmit }) => {
           required
         />
         <br></br>
-        <button type="submit" className="loginBtn" name="login">
+        <button type="submit" className="login-btn" name="login">
           Sign in
         </button>
       </form>

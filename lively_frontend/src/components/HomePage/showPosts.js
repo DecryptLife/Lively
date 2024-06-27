@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { BASE_URL } from "../../../config";
+import { BASE_URL } from "../../config";
 
 const ShowPosts = ({
   entirePosts,
@@ -13,9 +13,9 @@ const ShowPosts = ({
   currentPage,
 }) => {
   const req = [
-    require("../images/img_2_1.png"),
-    require("../images/img_2_2.png"),
-    require("../images/img_2_3.png"),
+    require("../../images/img_2_1.png"),
+    require("../../images/img_2_2.png"),
+    require("../../images/img_2_3.png"),
   ];
 
   const url = (path) => `${BASE_URL}${path}`;
