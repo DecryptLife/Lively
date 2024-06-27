@@ -79,14 +79,9 @@ async function login(req, res) {
       httpOnly: true,
       secure: true,
     });
-    // console.log("checking cookie: ", res.cookie);
     sessionUser[sid] = username;
     req.username = username;
     let msg = { result: "success", cookie: sid };
-    // res.writeHead(200, {
-    //   "Set-Cookie": "token=encryptedstring; HttpOnly",
-    //   "Access-Control-Allow-Credentials": "true",
-    // });
 
     return res.status(200).json(msg);
   } else {
