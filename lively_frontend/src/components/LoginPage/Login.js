@@ -50,15 +50,6 @@ const Login = () => {
       <button className="signup-btn" onClick={handleNavigateToRegister}>
         Sign Up Now
       </button>
-      {/* <div className="loginRight">
-        <div className="loginRightContent">
-          <h2>New here?</h2>
-          <p>Sign up and make your life more lively!</p>
-          <button className="signUpBtn" onClick={() => handleSignUp()}>
-            SignUp
-          </button>
-        </div>
-      </div> */}
     </div>
   );
 };
