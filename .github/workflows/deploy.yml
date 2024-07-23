@@ -30,6 +30,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y awscli
     
+    - name: Delete remote main branch
+      run: |
+        aws codecommit delete-branch --repository-name Lively-AWS --branch-name main || echo "Branch not found, proceeding with push"
+    
     - name: Add CodeCommit remote
       run: |
         git remote | grep codecommit || git remote add codecommit https://git-codecommit.us-east-1.amazonaws.com/v1/repos/Lively-AWS
