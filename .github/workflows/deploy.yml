@@ -20,6 +20,11 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
+    - name: Configure Git for CodeCommit
+      run: |
+        git config --global credential.helper '!aws codecommit credential-helper $@'
+        git config --global credential.UseHttpPath true
+
     - name: Install AWS CLI
       run: |
         sudo apt-get update
