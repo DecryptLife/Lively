@@ -6,32 +6,18 @@ on:
       - main
 
 jobs:
-  deploy: 
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up AWS CLI
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
-
-    - name: Configure Git for CodeCommit
-      run: |
-        git config --global credential.helper '!aws codecommit credential-helper $@'
-        git config --global credential.UseHttpPath true
-
-    - name: Install AWS CLI
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y awscli
-    
-    - name: Sync up to CodeCommit
-      uses: DecryptLife/Lively@main
-      with:
-          repository_name: Lively-AWS
-          aws_region: us-east-1
+  to_codecommit:                                        # <-- different jobs are executed in parallel.
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+        - uses: pixta-dev/repository-mirroring-action@v1
+          with:
+            target_repo_url:
+              ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/Lively-AWS
+            ssh_private_key:
+              ${{ secrets.AWS_ACCESS_KEY_ID }}
+            ssh_username:                                 # <-- (for codecommit) you need to specify ssh-key-id as ssh username.
+              ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  
