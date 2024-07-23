@@ -9,6 +9,7 @@ import Followers from "./Followers";
 import AddFriend from "./addFriend";
 import Pagination from "./Pagination";
 import { BASE_URL } from "../../config";
+
 const Home = () => {
   const url = (path) => `${BASE_URL}${path}`;
 

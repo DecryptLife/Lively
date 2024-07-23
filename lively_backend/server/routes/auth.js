@@ -7,7 +7,7 @@ const { User, Profile, Article } = require("../db");
 const app = express();
 
 const md5 = require("md5");
-
+dotenv.config();
 console.log("Inside auth route");
 
 async function register(req, res) {
@@ -59,15 +59,17 @@ async function login(req, res) {
   if (!username || !password)
     return res.status(400).send("Missing username or password");
 
-  let usern = userObjs[username];
-  console.log("Jack: ", usern);
-
   let salt = username + "lively";
   let hashed_password = md5(salt + password);
 
   const user = await User.findOne({ username, hashed_password });
 
+  console.log("User details: ", user);
+
   if (user) {
+    console.log(
+      `ID: ${user.id}, name: ${user.username}, secret: ${process.env.JWT_SECRET}`
+    );
     const token = jwt.sign(
       { id: user.id, username: user.username },
       process.env.JWT_SECRET,
