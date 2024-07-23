@@ -29,8 +29,12 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y awscli
+    
+    - name: Add CodeCommit remote
+      run: |
+        git remote | grep codecommit || git remote add codecommit https://git-codecommit.us-east-1.amazonaws.com/v1/repos/Lively-AWS
+
 
     - name: Push to AWS CodeCommit
       run: |
-        git remote add codecommit https://git-codecommit.us-east-1.amazonaws.com/v1/repos/Lively-AWS
         git push codecommit main --force
