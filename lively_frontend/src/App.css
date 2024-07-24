@@ -1,3 +1,7 @@
+:root{
+  --primary-color: #28b498;
+}
+
 .apptitle {
   background-color: #4daa49;
   text-align: center;

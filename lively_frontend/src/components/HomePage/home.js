@@ -108,7 +108,7 @@ const Home = () => {
   };
 
   return (
-    <div className="Home">
+    <div className="container">
       <div className="home_container1">
         <Status handleLogout={logout} goToProfile={profile} />
         <div className="home_container2">
