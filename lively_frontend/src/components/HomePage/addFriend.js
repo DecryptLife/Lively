@@ -4,7 +4,6 @@ import { BASE_URL } from "../../config";
 
 const AddFriend = ({ handleFollowers }) => {
   const url = (path) => `${BASE_URL}${path}`;
-  const cookie = JSON.parse(localStorage.getItem("cookie"));
   const [isEmpty, setIsEmpty] = useState(null);
   const [invalidUser, setInvalidUser] = useState(null);
 
@@ -13,7 +12,7 @@ const AddFriend = ({ handleFollowers }) => {
   useEffect(() => {
     async function getAvatar() {
       const response = await axios.get(url("/avatar"), {
-        headers: { "Content-Type": "application/json", Authorization: cookie },
+        headers: { "Content-Type": "application/json" },
       });
 
       setAvatar(response.data.avatar.url);
@@ -27,9 +26,7 @@ const AddFriend = ({ handleFollowers }) => {
 
   useEffect(() => {
     async function getFollowing() {
-      const response = await axios.get(url("/following"), {
-        headers: { Authorization: cookie },
-      });
+      const response = await axios.get(url("/following"));
 
       const userFollowers = response.data.following;
 

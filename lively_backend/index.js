@@ -60,9 +60,9 @@ app.get("/check", (req, res) => {
 // app.use("/following", followingRoutes);
 authRoutes(app);
 //
-// profile(app);
-// articles(app);
-// following(app);
+profile(app);
+articles(app);
+following(app);
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);

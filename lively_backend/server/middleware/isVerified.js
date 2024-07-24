@@ -9,7 +9,7 @@ function isVerified(req, res, next) {
 
   if (!token) return res.status(401).json({ error: "access denied" });
 
-  console.log("JWT Secret: ", process.env.JWT_SECRET);
+  console.log("Middle ware JWT Secret: ", process.env.JWT_SECRET);
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {

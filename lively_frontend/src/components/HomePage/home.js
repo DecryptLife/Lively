@@ -15,8 +15,6 @@ const Home = () => {
 
   const navigate = useNavigate();
 
-  const cookie = JSON.parse(localStorage.getItem("cookie"));
-
   const [searchPost, setSearchPost] = useState("");
   const [newPost, setNewPost] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,17 +27,21 @@ const Home = () => {
   const [totalPosts, setTotalPosts] = useState("");
   useEffect(() => {
     async function getUser() {
-      const response = await axios.get(url("/userDetails"), {
-        headers: { "Content-Type": "application/json", Authorization: cookie },
-      });
-      console.log(response.data);
+      const response = await axios
+        .get(url("/userDetails"), {
+          headers: { "Content-Type": "application/json" },
+        })
+        .catch((err) => console.log(err));
+      console.log(response);
 
       setUserDetails(response.data);
     }
     async function getArticles() {
-      const response = await axios.get(url("/articles"), {
-        headers: { "Content-Type": "application/json", Authorization: cookie },
-      });
+      const response = await axios
+        .get(url("/articles"), {
+          headers: { "Content-Type": "application/json" },
+        })
+        .catch((err) => console.log(err));
 
       setTotalPosts(response.data.articles);
     }
@@ -62,10 +64,8 @@ const Home = () => {
         url("logout"),
         {},
         {
-          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
-            Authorization: cookie,
           },
         }
       )
@@ -89,7 +89,7 @@ const Home = () => {
         method: "POST",
         withCredentials: true,
         credentials: "include",
-        headers: { "Content-Type": "application/json", Cookie: cookie },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(post),
       })
         .then((res) => {

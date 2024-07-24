@@ -5,22 +5,13 @@ import { BASE_URL } from "../../config";
 const Status = ({ handleLogout, goToProfile }) => {
   const url = (path) => `${BASE_URL}${path}`;
 
-  const cookie = JSON.parse(localStorage.getItem("cookie"));
-  const currUser = JSON.parse(localStorage.getItem("currUser"));
-
   const [avatar, setAvatar] = useState("");
   const [status, setUStatus] = useState("");
   const [modStatus, setModStatus] = useState("");
 
   useEffect(() => {
     async function getAvatar() {
-      const response = await axios.get(url("/avatar"), {
-        withCredentials: true,
-        headers: {
-          "Access-Control-Allow-Credentials": true,
-          Cookie: cookie,
-        },
-      });
+      const response = await axios.get(url("/avatar"));
 
       setAvatar(response.data.avatar);
     }
@@ -30,12 +21,8 @@ const Status = ({ handleLogout, goToProfile }) => {
 
   useEffect(() => {
     async function getHeadline() {
-      const response = await axios.get(url("/headline"), {
-        withCredentials: true,
-        headers: {
-          "Access-Control-Allow-Credentials": true,
-        },
-      });
+      const response = await axios.get(url("/headline"));
+      console.log("Response: ", response);
 
       setModStatus(response.data.headline);
     }
@@ -81,7 +68,7 @@ const Status = ({ handleLogout, goToProfile }) => {
         src={avatar !== "" ? avatar : req[1]}
       ></img>
       <br></br>
-      <span className="statusUsername">{currUser["username"]}</span>
+      <span className="statusUsername">{}</span>
       <br></br>
       <div className="userCatchPhrase">
         <span className="statusStatus">{modStatus}</span>

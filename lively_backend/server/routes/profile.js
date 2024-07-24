@@ -12,7 +12,7 @@ const { LIVELY_PRESET } = require("../../config");
 const cloudinary = require("../../config/cloudinary");
 
 async function getHeadline(req, res) {
-  const username = req.username;
+  const username = req.user.username;
 
   const profile = await Profile.findOne({ username });
 
@@ -24,13 +24,13 @@ async function getHeadline(req, res) {
 
 async function updateHeadline(req, res) {
   const new_headline = req.body.headline;
-  const username = req.username;
+  const username = req.user.username;
   if (!new_headline) {
     return res.status(400).send("Please provide a headline to update");
   }
-  console.log(req.username);
+  console.log(req.user.username);
   const profile = await Profile.findOneAndUpdate(
-    { username: req.username },
+    { username: req.user.username },
     { headline: req.body.headline },
     {
       new: true,
@@ -44,7 +44,7 @@ async function updateHeadline(req, res) {
 }
 
 async function getEmail(req, res) {
-  const username = req.username;
+  const username = req.user.username;
 
   const profile = await Profile.findOne({ username });
 
@@ -55,7 +55,7 @@ async function getEmail(req, res) {
 }
 
 async function updateEmail(req, res) {
-  const username = req.username;
+  const username = req.user.username;
   const email = req.body.email;
 
   const profile = await Profile.findOneAndUpdate(username, email, {
@@ -69,7 +69,7 @@ async function updateEmail(req, res) {
 }
 
 async function getDOB(req, res) {
-  const username = req.username;
+  const username = req.user.username;
 
   const profile = await Profile.findOne({ username });
 
@@ -80,7 +80,7 @@ async function getDOB(req, res) {
 }
 
 async function getZipCode(req, res) {
-  const username = req.username;
+  const username = req.user.username;
 
   const profile = await Profile.findOne({ username });
 
@@ -95,7 +95,7 @@ async function updateZipCode(req, res) {
     return res.status(400).send("New zip code not given");
   }
 
-  const profile = await Profile.findOneAndUpdate(req.username, req.body, {
+  const profile = await Profile.findOneAndUpdate(req.user.username, req.body, {
     new: true,
   });
 
@@ -106,7 +106,7 @@ async function updateZipCode(req, res) {
 }
 
 async function getAvatar(req, res) {
-  const username = req.username;
+  const username = req.user.username;
   console.log("avatar", username);
   const profile = await Profile.findOne({ username });
 
@@ -116,7 +116,7 @@ async function getAvatar(req, res) {
 }
 
 const updateAvatar = asyncHandler(async (req, res) => {
-  const username = req.username;
+  const username = req.user.username;
   const image = req.body.avatar;
 
   console.log("image: ", image);
@@ -166,7 +166,11 @@ const updateAvatar = asyncHandler(async (req, res) => {
 });
 
 async function getUserDetails(req, res) {
-  let username = req.username;
+  console.log("In get user details");
+  // console.log(req);
+  let username = req.user.username;
+
+  console.log(" Get user details: ", req.user);
 
   const profile = await Profile.findOne({ username });
 
@@ -182,7 +186,7 @@ async function updateDetails(req, res) {
   let dob = req.body.dob;
   let zipcode = req.body.zipcode;
   let pass = req.body.password;
-  let username = req.username;
+  let username = req.user.username;
   let salt = currUser + "lively";
   let password = md5(salt + pass);
 
