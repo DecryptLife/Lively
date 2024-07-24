@@ -1,11 +1,6 @@
 .flex-center{
     display: flex;
     align-items: center;
-<<<<<<< Updated upstream
-    justify-content: center;
-}
-=======
     justify-content: space-evenly;
 }
 
->>>>>>> Stashed changes

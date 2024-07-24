@@ -3,10 +3,7 @@
     background-color: hsl(165, 26%, 15%);
     height: 3rem;
     color: wheat;
-<<<<<<< Updated upstream
-=======
     font-size: large;
->>>>>>> Stashed changes
 }
 
 
@@ -21,10 +18,7 @@
 
 .title_container__right{
     flex-grow: 1;
-<<<<<<< Updated upstream
-=======
     column-gap: 10px;
->>>>>>> Stashed changes
 }
 
 .titlebar_item {
