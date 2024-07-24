@@ -108,14 +108,12 @@ const Home = () => {
   };
 
   return (
-    <div className="container">
-      <div className="home_container1">
+    <div className="home_container">
+      <div className="home_container-top">
         <Status handleLogout={logout} goToProfile={profile} />
-        <div className="home_container2">
-          <div className="home_container3">
-            <NewPost handlePost={handlePost} />
-            <Followers />
-          </div>
+        <div className="home_container-top-right">
+          <NewPost handlePost={handlePost} />
+          <Followers />
           <div className="searchField">
             <input
               className="searchInputField"
@@ -128,7 +126,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div className="home2Layout">
+      <div className="home_container-bottom">
         <div className="layer2">
           <AddFriend followers={followers} handleFollowers={handleFollowers} />
           <ShowPosts

@@ -1,3 +1,44 @@
+.home_container{
+  display: flex;
+  flex-direction: column;
+}
+
+.home_container-top{
+  display: flex;
+}
+
+
+.home_profile {
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  width: 40%;
+  text-align: center;
+}
+
+.home_container-top-right{
+  display: flex;
+}
+
+
+.addPostLayout {
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
+  position: relative;
+  background-color: white;
+  width: 60%;
+}
+
+.quote-layout {
+  text-align: center;
+  padding: 5px;
+  width: 40%;
+  background-color: white;
+}
+
+.quote-text {
+  color: #28b498;
+  font-weight: bold;
+}
+/* Old */
 body {
   background-color: white;
   height: 100vh;
@@ -9,16 +50,7 @@ body {
   width: 100%;
 }
 
-.homeProfile {
-  margin-left: 32px;
-  background-color: white;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
-  height: 90%;
-  width: 30%;
-  text-align: center;
-  margin-top: 16px;
-}
+
 
 .homeImg {
   height: 150px;
@@ -43,28 +75,9 @@ body {
   display: flex;
   height: 60%;
 }
-.addPostLayout {
-  width: 100%;
-  height: 100%;
-  margin-left: 32px;
-  margin-top: 16px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
-  border-radius: 10px;
-  position: relative;
-}
 
-.followersLayout {
-  width: 50%;
-  height: 90%;
-  text-align: center;
-  padding: 5px;
-  background-color: #28b498;
-  margin: 0 auto;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-}
+
+
 
 .btnContainer {
   display: flex;
@@ -417,10 +430,7 @@ body {
   font-weight: bold;
 }
 
-.followText {
-  color: #28b498;
-  font-weight: bold;
-}
+
 
 .statusUsername {
   font-weight: bold;

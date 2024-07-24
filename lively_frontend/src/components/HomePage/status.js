@@ -47,12 +47,7 @@ const Status = ({ handleLogout, goToProfile }) => {
     if (status !== "") {
       let new_status = { headline: status };
 
-      const response = await axios.put(url("/headline"), new_status, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.put(url("/headline"), new_status);
 
       setModStatus(response.data.headline);
       setUStatus("");
@@ -60,7 +55,7 @@ const Status = ({ handleLogout, goToProfile }) => {
   };
 
   return (
-    <div className="homeProfile">
+    <div className="home_profile">
       <img
         className="homeImg"
         id="user_image"
@@ -88,14 +83,14 @@ const Status = ({ handleLogout, goToProfile }) => {
         </button>
       </div>
 
-      <div className="btnContainer">
+      {/* <div className="btnContainer">
         <button className="logoutBtn" onClick={() => handleLogout()}>
           Logout
         </button>
         <button className="profileBtn" onClick={() => goToProfile()}>
           Profile
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
