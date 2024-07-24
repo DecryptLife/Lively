@@ -1,5 +1,6 @@
+import "./layout.css";
 const { useLocation } = require("react-router-dom");
-const { default: TitleBar } = require("./TitleBar/TitleBar");
+const { default: TitleBar } = require("../TitleBar/TitleBar");
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -7,7 +8,7 @@ const Layout = ({ children }) => {
   const hideTitleBar = location.pathname === "/";
 
   return (
-    <div>
+    <div className="layout">
       {!hideTitleBar && <TitleBar />}
       {children}
     </div>
