@@ -109,8 +109,12 @@ const Home = () => {
 
   return (
     <div className="home_container">
-      <div className="home_container-top">
+      <div className="home_container-left">
         <Status handleLogout={logout} goToProfile={profile} />
+
+        <AddFriend followers={followers} handleFollowers={handleFollowers} />
+      </div>
+      <div className="home_container-right">
         <div className="home_container-top-right">
           <NewPost handlePost={handlePost} />
           <Followers />
@@ -125,10 +129,7 @@ const Home = () => {
             ></input>
           </div>
         </div>
-      </div>
-      <div className="home_container-bottom">
         <div className="layer2">
-          <AddFriend followers={followers} handleFollowers={handleFollowers} />
           <ShowPosts
             entirePosts={totalPosts}
             searchPost={searchPost}
