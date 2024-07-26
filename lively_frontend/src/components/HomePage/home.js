@@ -9,12 +9,11 @@ import Followers from "./Followers";
 import AddFriend from "./addFriend";
 import Pagination from "./Pagination";
 import { BASE_URL } from "../../config";
+
 const Home = () => {
   const url = (path) => `${BASE_URL}${path}`;
 
   const navigate = useNavigate();
-
-  const cookie = JSON.parse(localStorage.getItem("cookie"));
 
   const [searchPost, setSearchPost] = useState("");
   const [newPost, setNewPost] = useState(null);
@@ -28,17 +27,21 @@ const Home = () => {
   const [totalPosts, setTotalPosts] = useState("");
   useEffect(() => {
     async function getUser() {
-      const response = await axios.get(url("/userDetails"), {
-        headers: { "Content-Type": "application/json", Authorization: cookie },
-      });
-      console.log(response.data);
+      const response = await axios
+        .get(url("/userDetails"), {
+          headers: { "Content-Type": "application/json" },
+        })
+        .catch((err) => console.log(err));
+      console.log(response);
 
       setUserDetails(response.data);
     }
     async function getArticles() {
-      const response = await axios.get(url("/articles"), {
-        headers: { "Content-Type": "application/json", Authorization: cookie },
-      });
+      const response = await axios
+        .get(url("/articles"), {
+          headers: { "Content-Type": "application/json" },
+        })
+        .catch((err) => console.log(err));
 
       setTotalPosts(response.data.articles);
     }
@@ -61,10 +64,8 @@ const Home = () => {
         url("logout"),
         {},
         {
-          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
-            Authorization: cookie,
           },
         }
       )
@@ -88,7 +89,7 @@ const Home = () => {
         method: "POST",
         withCredentials: true,
         credentials: "include",
-        headers: { "Content-Type": "application/json", Cookie: cookie },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(post),
       })
         .then((res) => {
@@ -107,15 +108,19 @@ const Home = () => {
   };
 
   return (
-    <div className="Home">
-      <div className="home_container1">
+    <div className="home_container">
+      <div className="home_container-left">
         <Status handleLogout={logout} goToProfile={profile} />
-        <div className="home_container2">
-          <div className="home_container3">
-            <NewPost handlePost={handlePost} />
-            <Followers />
-          </div>
-          <div className="searchField">
+
+        <AddFriend followers={followers} handleFollowers={handleFollowers} />
+      </div>
+      <div className="home_container-right">
+        <div className="home_container-right-top">
+          <NewPost handlePost={handlePost} />
+          <Followers />
+        </div>
+        <div className="home_container-right-bottom">
+          <div className="search-container">
             <input
               className="searchInputField"
               type="text"
@@ -125,11 +130,6 @@ const Home = () => {
               onChange={(e) => setSearchPost(e.target.value)}
             ></input>
           </div>
-        </div>
-      </div>
-      <div className="home2Layout">
-        <div className="layer2">
-          <AddFriend followers={followers} handleFollowers={handleFollowers} />
           <ShowPosts
             entirePosts={totalPosts}
             searchPost={searchPost}

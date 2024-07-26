@@ -1,4 +1,4 @@
-const BASE_URL = "https://lively-backend-62e7fc72618b.herokuapp.com";
+const BASE_URL = "http://localhost:8000";
 
 module.exports = {
   BASE_URL,

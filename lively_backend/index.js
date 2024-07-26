@@ -1,9 +1,9 @@
 const express = require("express");
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 const app = express();
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
-const auth = require("./server/routes/auth");
+const authRoutes = require("./server/routes/auth");
 const profile = require("./server/routes/profile");
 const articles = require("./server/routes/articles");
 const following = require("./server/routes/following");
@@ -36,19 +36,31 @@ app.use(cookieParser());
 
 const connectionString = `mongodb+srv://benson24:${MONGODB_STRING}@cluster0.9auii05.mongodb.net/lively?retryWrites=true&w=majority`;
 
-mongoose.connect(connectionString, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  dbName: "lively",
+try {
+  console.log("connecting to mongodb");
+  mongoose.connect(connectionString, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    dbName: "lively",
+  });
+} catch (err) {
+  console.log("Error: " + err);
+}
+
+mongoose.connection.on("connected", () => console.log("connected"));
+
+app.get("/check", (req, res) => {
+  console.log("In ");
+  res.json({ message: "Test" });
 });
 
-app.use("/auth", authRoutes);
-app.use("/profile", profileRoutes);
-app.use("/article", articleRoutes);
-app.use("/following", followingRoutes);
-// auth(app);
-
-// profile(app);
+// app.use("/auth", authRoutes);
+// app.use("/profile", profileRoutes);
+// app.use("/article", articleRoutes);
+// app.use("/following", followingRoutes);
+authRoutes(app);
+//
+profile(app);
 articles(app);
 following(app);
 

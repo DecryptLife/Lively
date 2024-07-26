@@ -11,7 +11,7 @@ import { buildTimeValue } from "@testing-library/user-event/dist/utils";
 import login from "surge/lib/middleware/login";
 import { all_posts } from "../../posts";
 import all_users from "../../users";
-import Home from "../Home/home";
+import Home from "../HomePage/home";
 
 const currentUser = {
   id: 2,

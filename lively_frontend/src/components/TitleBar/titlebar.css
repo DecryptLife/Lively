@@ -1,0 +1,26 @@
+.title_container{
+    display: flex;
+    background-color: hsl(165, 26%, 15%);
+    height: 3rem;
+    color: wheat;
+    font-size: large;
+}
+
+
+.title_container__left{
+    flex-grow: 1;
+    column-gap: 10px;
+}
+
+.title_container__center{
+    flex-grow: 2;
+}
+
+.title_container__right{
+    flex-grow: 1;
+    column-gap: 10px;
+}
+
+.titlebar_item {
+    cursor: pointer;
+}

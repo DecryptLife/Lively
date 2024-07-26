@@ -1,12 +1,15 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const isVerified = require("../middleware/isVerified");
 
 const { User, Profile, Article } = require("../db");
 
 const app = express();
 
 const md5 = require("md5");
+dotenv.config();
+console.log("Inside auth route");
 
 async function register(req, res) {
   let username = req.body.username;
@@ -51,20 +54,23 @@ async function register(req, res) {
 }
 
 async function login(req, res) {
+  console.log("Inside login");
   const { username, password } = req.body;
 
   if (!username || !password)
     return res.status(400).send("Missing username or password");
-
-  let usern = userObjs[username];
-  console.log("Jack: ", usern);
 
   let salt = username + "lively";
   let hashed_password = md5(salt + password);
 
   const user = await User.findOne({ username, hashed_password });
 
+  console.log("User details: ", user);
+
   if (user) {
+    console.log(
+      `ID: ${user.id}, name: ${user.username}, secret: ${process.env.JWT_SECRET}`
+    );
     const token = jwt.sign(
       { id: user.id, username: user.username },
       process.env.JWT_SECRET,
@@ -91,33 +97,33 @@ async function login(req, res) {
   }
 }
 
-function isLoggedIn(req, res, next) {
-  if (!req.cookies) {
-    console.log("no cookies");
-    return res.sendStatus(401);
-  }
+// function isLoggedIn(req, res, next) {
+//   if (!req.cookies) {
+//     console.log("no cookies");
+//     return res.sendStatus(401);
+//   }
 
-  console.log("cookie: ", req.headers.authorization);
-  let sid = req.cookies[cookieKey];
-  // no sid for cookie key
-  // console.log("req: ", req);
-  console.log("req.cookies: ", req.cookies);
-  console.log("checking here: cookie key -", cookieKey);
-  console.log("checking sid: ", sid);
-  if (!sid) {
-    return res.sendStatus(401);
-  } else {
-    console.log("user exists");
-    let username = sessionUser[sid];
-    console.log("username: ", username);
-    if (username) {
-      req.username = username;
-      next();
-    } else {
-      return res.sendStatus(401);
-    }
-  }
-}
+//   console.log("cookie: ", req.headers.authorization);
+//   let sid = req.cookies[cookieKey];
+//   // no sid for cookie key
+//   // console.log("req: ", req);
+//   console.log("req.cookies: ", req.cookies);
+//   console.log("checking here: cookie key -", cookieKey);
+//   console.log("checking sid: ", sid);
+//   if (!sid) {
+//     return res.sendStatus(401);
+//   } else {
+//     console.log("user exists");
+//     let username = sessionUser[sid];
+//     console.log("username: ", username);
+//     if (username) {
+//       req.username = username;
+//       next();
+//     } else {
+//       return res.sendStatus(401);
+//     }
+//   }
+// }
 
 const changePassword = (req, res) => {
   if (!req.cookies) {
@@ -159,7 +165,7 @@ const logout = (req, res) => {
 module.exports = (app) => {
   app.post("/register", register);
   app.post("/login", login);
-  app.use(isLoggedIn);
+  app.use(isVerified);
   app.put("/password", changePassword);
   app.put("/logout", logout);
 };

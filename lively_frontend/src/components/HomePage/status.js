@@ -5,22 +5,13 @@ import { BASE_URL } from "../../config";
 const Status = ({ handleLogout, goToProfile }) => {
   const url = (path) => `${BASE_URL}${path}`;
 
-  const cookie = JSON.parse(localStorage.getItem("cookie"));
-  const currUser = JSON.parse(localStorage.getItem("currUser"));
-
   const [avatar, setAvatar] = useState("");
   const [status, setUStatus] = useState("");
   const [modStatus, setModStatus] = useState("");
 
   useEffect(() => {
     async function getAvatar() {
-      const response = await axios.get(url("/avatar"), {
-        withCredentials: true,
-        headers: {
-          "Access-Control-Allow-Credentials": true,
-          Cookie: cookie,
-        },
-      });
+      const response = await axios.get(url("/avatar"));
 
       setAvatar(response.data.avatar);
     }
@@ -30,12 +21,8 @@ const Status = ({ handleLogout, goToProfile }) => {
 
   useEffect(() => {
     async function getHeadline() {
-      const response = await axios.get(url("/headline"), {
-        withCredentials: true,
-        headers: {
-          "Access-Control-Allow-Credentials": true,
-        },
-      });
+      const response = await axios.get(url("/headline"));
+      console.log("Response: ", response);
 
       setModStatus(response.data.headline);
     }
@@ -60,12 +47,7 @@ const Status = ({ handleLogout, goToProfile }) => {
     if (status !== "") {
       let new_status = { headline: status };
 
-      const response = await axios.put(url("/headline"), new_status, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.put(url("/headline"), new_status);
 
       setModStatus(response.data.headline);
       setUStatus("");
@@ -73,7 +55,7 @@ const Status = ({ handleLogout, goToProfile }) => {
   };
 
   return (
-    <div className="homeProfile">
+    <div className="home_profile">
       <img
         className="homeImg"
         id="user_image"
@@ -81,34 +63,34 @@ const Status = ({ handleLogout, goToProfile }) => {
         src={avatar !== "" ? avatar : req[1]}
       ></img>
       <br></br>
-      <span className="statusUsername">{currUser["username"]}</span>
+      <span className="statusUsername">{}</span>
       <br></br>
       <div className="userCatchPhrase">
         <span className="statusStatus">{modStatus}</span>
       </div>
 
       <br></br>
-      <div className="newStatusContainer">
+      <div className="update-status__container">
         <input
           type="text"
-          className="changeStatus"
+          className="update-status__input "
           placeholder="New status"
           onChange={(e) => setUStatus(e.target.value)}
           value={status}
         />
-        <button className="updateStatusBtn" onClick={(e) => updateStatus(e)}>
+        <button className="update-status__btn" onClick={(e) => updateStatus(e)}>
           Update
         </button>
       </div>
 
-      <div className="btnContainer">
+      {/* <div className="btnContainer">
         <button className="logoutBtn" onClick={() => handleLogout()}>
           Logout
         </button>
         <button className="profileBtn" onClick={() => goToProfile()}>
           Profile
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
