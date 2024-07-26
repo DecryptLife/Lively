@@ -2,11 +2,11 @@
 
 :root{
   --primary-color: #28b498;
+  --home-buttons-color:  hsl(165, 26%, 15%)
 }
 
 #root {
   height: 100vh;
-  
   background-color: #f0f5f4;
 }
 

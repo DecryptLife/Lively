@@ -70,15 +70,15 @@ const Status = ({ handleLogout, goToProfile }) => {
       </div>
 
       <br></br>
-      <div className="newStatusContainer">
+      <div className="update-status__container">
         <input
           type="text"
-          className="changeStatus"
+          className="update-status__input "
           placeholder="New status"
           onChange={(e) => setUStatus(e.target.value)}
           value={status}
         />
-        <button className="updateStatusBtn" onClick={(e) => updateStatus(e)}>
+        <button className="update-status__btn" onClick={(e) => updateStatus(e)}>
           Update
         </button>
       </div>

@@ -4,6 +4,12 @@
   column-gap: 0.5rem;
 }
 
+.home_container  button {
+  background-color: var(--home-buttons-color);
+  color: wheat;
+  font-weight:normal
+}
+
 .home_container-left{
   display: flex;
   flex-direction: column;
@@ -14,6 +20,7 @@
   background-color: white;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   text-align: center;
+  border-radius: 1rem 1rem 0 0;
 }
 
 
@@ -29,6 +36,33 @@
 }
 
 
+.update-status__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 1rem;
+  margin-top: 1rem;
+  padding: 0.5rem;
+}
+.update-status__input {
+  background-color: #eef5f3;
+  height: 2rem;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 10px;
+}
+.update-status__btn {
+  height: 2rem;
+  background-color: var(--home-buttons-color);
+  color: wheat;
+  border: none;
+  border-radius: 10px;
+}
+
+.quote-text {
+  color: var(--home-buttons-color);
+  font-weight: bold;
+}
 
 
 .addPostLayout {
@@ -47,10 +81,7 @@
   border-radius: 0.5rem;
 }
 
-.quote-text {
-  color: #28b498;
-  font-weight: bold;
-}
+
 
 .home_container-right-bottom{
   display: flex;
@@ -152,15 +183,7 @@ body {
   margin-top: 16px;
 }
 
-.updateStatusBtn {
-  height: 32px;
-  background-color: #28b498;
-  color: white;
-  margin-left: 16px;
-  border: none;
-  border-radius: 10px;
-  width: 20%;
-}
+
 
 .imagePostContainer {
   display: flex;
@@ -226,14 +249,7 @@ body {
   border-radius: 10px;
 }
 
-.changeStatus {
-  background-color: #eef5f3;
-  height: 32px;
-  border: none;
-  border-radius: 10px;
-  width: 60%;
-  padding-left: 10px;
-}
+
 
 
 
@@ -243,6 +259,7 @@ body {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
   text-align: center;
+  border-radius: 0 0 1rem 1rem;
 }
 
 .topSearchFriends {
@@ -451,11 +468,7 @@ body {
   font-weight: bold;
 }
 
-.newStatusContainer {
-  display: flex;
-  justify-content: center;
-  margin-top: 8px;
-}
+
 
 dialog {
   border: none;
