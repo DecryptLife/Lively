@@ -115,10 +115,12 @@ const Home = () => {
         <AddFriend followers={followers} handleFollowers={handleFollowers} />
       </div>
       <div className="home_container-right">
-        <div className="home_container-top-right">
+        <div className="home_container-right-top">
           <NewPost handlePost={handlePost} />
           <Followers />
-          <div className="searchField">
+        </div>
+        <div className="home_container-right-bottom">
+          <div className="search-container">
             <input
               className="searchInputField"
               type="text"
@@ -128,8 +130,6 @@ const Home = () => {
               onChange={(e) => setSearchPost(e.target.value)}
             ></input>
           </div>
-        </div>
-        <div className="layer2">
           <ShowPosts
             entirePosts={totalPosts}
             searchPost={searchPost}

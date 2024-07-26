@@ -366,7 +366,7 @@ const ShowPosts = ({
   };
 
   return (
-    <div className="postLayout">
+    <div className="posts-container">
       {totalPosts.length === 0 || totalPosts === undefined ? (
         <h3>No posts yet</h3>
       ) : (

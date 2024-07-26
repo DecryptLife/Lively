@@ -16,10 +16,19 @@
   text-align: center;
 }
 
-.home_container-top-right{
+
+.home_container-right{
+  display: flex;
+  flex-direction: column;
+  row-gap: 2rem;
+}
+
+.home_container-right-top{
   display: flex;
   column-gap: 10px;
 }
+
+
 
 
 .addPostLayout {
@@ -42,6 +51,40 @@
   color: #28b498;
   font-weight: bold;
 }
+
+.home_container-right-bottom{
+  display: flex;
+  flex-direction: column;
+  row-gap: 2rem;
+}
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  height: 2rem;
+}
+
+.searchInputField {
+  width: 100%;
+  height: 32px;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 10px;
+  padding-left: 10px;
+}
+
+.posts-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+}
+
+
+
+
+
 /* Old */
 body {
   background-color: white;
@@ -192,25 +235,7 @@ body {
   padding-left: 10px;
 }
 
-.searchField {
-  width: 90%;
-  left: 20px;
-  right: 20px;
-  bottom: 32px;
-  display: flex;
-  justify-content: center;
-  position: absolute;
-  text-align: center;
-}
 
-.searchInputField {
-  width: 100%;
-  height: 32px;
-  background-color: #eef5f3;
-  border: none;
-  border-radius: 10px;
-  padding-left: 10px;
-}
 
 .AddFriendLayout {
   height: fit-content;
@@ -289,18 +314,7 @@ body {
   padding: 32px;
 }
 
-.postLayout {
-  height: 95%;
-  width: 70%;
-  margin-left: 32px;
-  margin-top: 16px;
-  margin-right: 64px;
-  padding: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  /* pointer-events: none; */
-  justify-content: space-between;
-}
+
 
 .Post {
   width: 40%;

@@ -4,6 +4,12 @@
   --primary-color: #28b498;
 }
 
+#root {
+  height: 100vh;
+  
+  background-color: #f0f5f4;
+}
+
 .apptitle {
   background-color: #4daa49;
   text-align: center;
