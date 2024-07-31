@@ -3,7 +3,7 @@ const app = require("express");
 const { User, Profile, Article } = require("../db");
 
 async function getFollowing(req, res) {
-  const username = req.username;
+  const username = req.user.username;
 
   // no user given find the followers of logged in user
   const profile = await Profile.findOne({ username });
@@ -27,7 +27,7 @@ async function getFollowing(req, res) {
 
 async function addFollower(req, res) {
   const follower_name = req.params.user;
-  const username = req.username;
+  const username = req.user.username;
 
   if (username === follower_name) {
     return res.status(400).send("Can't follow the same user");
@@ -67,7 +67,7 @@ async function addFollower(req, res) {
 
 async function removeFollower(req, res) {
   const follower_name = req.params.user;
-  const username = req.username;
+  const username = req.user.username;
 
   const profile = await Profile.findOne({ username });
   console.log("Follower to remove: ", follower_name);
@@ -93,7 +93,7 @@ async function removeFollower(req, res) {
 }
 
 async function getFollowersDetails(req, res) {
-  const username = req.username;
+  const username = req.user.username;
   const profile = await Profile.findOne({ username });
 
   if (profile) {

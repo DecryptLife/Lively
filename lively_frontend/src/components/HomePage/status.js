@@ -48,6 +48,7 @@ const Status = ({ handleLogout, goToProfile }) => {
       let new_status = { headline: status };
 
       const response = await axios.put(url("/headline"), new_status);
+      console.log("Updated headline: ", response.data.headline);
 
       setModStatus(response.data.headline);
       setUStatus("");

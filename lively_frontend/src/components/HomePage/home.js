@@ -8,6 +8,7 @@ import NewPost from "./newPost";
 import Followers from "./Followers";
 import AddFriend from "./addFriend";
 import Pagination from "./Pagination";
+import { getUser } from "../../API/homeAPI";
 import { BASE_URL } from "../../config";
 
 const Home = () => {
@@ -26,16 +27,11 @@ const Home = () => {
 
   const [totalPosts, setTotalPosts] = useState("");
   useEffect(() => {
-    async function getUser() {
-      const response = await axios
-        .get(url("/userDetails"), {
-          headers: { "Content-Type": "application/json" },
-        })
-        .catch((err) => console.log(err));
-      console.log(response);
-
-      setUserDetails(response.data);
+    async function fetchUserDetails() {
+      const details = await getUser;
+      setUserDetails(details);
     }
+
     async function getArticles() {
       const response = await axios
         .get(url("/articles"), {
@@ -46,9 +42,11 @@ const Home = () => {
       setTotalPosts(response.data.articles);
     }
 
-    getUser();
+    fetchUserDetails();
     getArticles();
   }, []);
+
+  console.log(userDetails);
 
   const handleFollowers = (new_followers) => {
     if (new_followers !== null) {
@@ -76,30 +74,43 @@ const Home = () => {
     navigate("/profile");
   };
 
-  const handlePost = (postBody, setPostContent, postImage, setPostImage) => {
+  const handlePost = async (
+    postBody,
+    setPostContent,
+    postImage,
+    setPostImage
+  ) => {
     const text = postBody;
-    var post;
+    let post;
     if (postImage) {
       post = { text: text, image: postImage };
     } else {
       post = { text: text };
     }
+
+    console.log(post);
     if (text !== "") {
-      fetch(url("/article"), {
-        method: "POST",
-        withCredentials: true,
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(post),
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((res) => {
-          setNewPost(postBody);
-          setPostContent("");
-          setPostImage("");
-        });
+      const response = await axios
+        .post(url("/article"), post)
+        .then((response) => response.data);
+
+      console.log(response);
+
+      // fetch(url("/article"), {
+      //   method: "POST",
+      //   withCredentials: true,
+      //   credentials: "include",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(post),
+      // })
+      //   .then((res) => {
+      //     return res.json();
+      //   })
+      //   .then((res) => {
+      //     setNewPost(postBody);
+      //     setPostContent("");
+      //     setPostImage("");
+      //   });
     }
   };
 
