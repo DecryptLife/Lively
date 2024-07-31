@@ -25,7 +25,8 @@ const Home = () => {
   const newUser = "new" in currUser;
   const [followers, setFollowers] = useState([]);
 
-  const [totalPosts, setTotalPosts] = useState("");
+  const [displayArticles, setDisplayArticles] = useState([]);
+  const [articles, setArticles] = useState([]);
   useEffect(() => {
     async function fetchUserDetails() {
       const details = await getUser();
@@ -36,7 +37,10 @@ const Home = () => {
       const articles = await getArticles();
       console.log(articles);
 
-      setTotalPosts(articles);
+      setArticles(articles);
+
+      // use use-effect for post updates
+      setDisplayArticles(articles);
     }
 
     fetchUserDetails();
@@ -123,7 +127,7 @@ const Home = () => {
             ></input>
           </div>
           <ShowPosts
-            entirePosts={totalPosts}
+            articles={displayArticles}
             searchPost={searchPost}
             newPost={newPost}
             setNewPost={setNewPost}
@@ -137,7 +141,7 @@ const Home = () => {
         <Pagination
           className="paginationLayout"
           postsPerPage={10}
-          totalPosts={totalPosts.length}
+          totalPosts={articles.length}
           paginate={paginate}
         ></Pagination>
         <div className="paginationLayout"></div>
