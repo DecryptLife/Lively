@@ -7,6 +7,7 @@ import axios from "axios";
 
 // include credentials in axios globally
 axios.defaults.withCredentials = true;
+axios.defaults.headers.common["Content-Type"] = "application/json";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

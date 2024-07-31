@@ -8,7 +8,7 @@ import NewPost from "./newPost";
 import Followers from "./Followers";
 import AddFriend from "./addFriend";
 import Pagination from "./Pagination";
-import { getUser } from "../../API/homeAPI";
+import { getUser, getArticles } from "../../API/homeAPI";
 import { BASE_URL } from "../../config";
 
 const Home = () => {
@@ -28,22 +28,19 @@ const Home = () => {
   const [totalPosts, setTotalPosts] = useState("");
   useEffect(() => {
     async function fetchUserDetails() {
-      const details = await getUser;
+      const details = await getUser();
       setUserDetails(details);
     }
 
-    async function getArticles() {
-      const response = await axios
-        .get(url("/articles"), {
-          headers: { "Content-Type": "application/json" },
-        })
-        .catch((err) => console.log(err));
+    async function fetchArticles() {
+      const articles = await getArticles();
+      console.log(articles);
 
-      setTotalPosts(response.data.articles);
+      setTotalPosts(articles);
     }
 
     fetchUserDetails();
-    getArticles();
+    fetchArticles();
   }, []);
 
   console.log(userDetails);
@@ -95,22 +92,6 @@ const Home = () => {
         .then((response) => response.data);
 
       console.log(response);
-
-      // fetch(url("/article"), {
-      //   method: "POST",
-      //   withCredentials: true,
-      //   credentials: "include",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(post),
-      // })
-      //   .then((res) => {
-      //     return res.json();
-      //   })
-      //   .then((res) => {
-      //     setNewPost(postBody);
-      //     setPostContent("");
-      //     setPostImage("");
-      //   });
     }
   };
 

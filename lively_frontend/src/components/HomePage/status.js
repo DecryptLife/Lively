@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../config";
+import { getHeadline } from "../../API/homeAPI";
 
 const Status = ({ handleLogout, goToProfile }) => {
   const url = (path) => `${BASE_URL}${path}`;
@@ -20,14 +21,14 @@ const Status = ({ handleLogout, goToProfile }) => {
   });
 
   useEffect(() => {
-    async function getHeadline() {
-      const response = await axios.get(url("/headline"));
-      console.log("Response: ", response);
+    async function fetchHeadline() {
+      const headline = await getHeadline();
+      console.log("Headline: ", headline);
 
-      setModStatus(response.data.headline);
+      setModStatus(headline);
     }
 
-    getHeadline();
+    fetchHeadline();
   }, [status]);
 
   const req = [
