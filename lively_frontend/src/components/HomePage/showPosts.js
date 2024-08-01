@@ -7,7 +7,7 @@ import useMeasureWidth from "../../hooks/useFindWidth";
 
 const ShowPosts = ({
   articles,
-  searchPost,
+  setOpenDialog,
   newPost,
   setNewPost,
   newUser,
@@ -52,6 +52,14 @@ const ShowPosts = ({
 
     return readableTime;
   };
+
+  useEffect(() => {
+    console.log("Post options clicked");
+
+    if (postFeaturesDisplayed.options) {
+      console.log("Open dialog box");
+    }
+  }, [postFeaturesDisplayed.options]);
   return (
     <div className="posts-container">
       {articles &&
@@ -85,7 +93,7 @@ const ShowPosts = ({
                 </div>
                 <div
                   className="options-container"
-                  onClick={() => handleFeatureClick("options")}
+                  onClick={() => setOpenDialog((prev) => !prev)}
                 >
                   <span>Options</span>
                 </div>

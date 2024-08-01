@@ -27,6 +27,8 @@ const Home = () => {
 
   const [displayArticles, setDisplayArticles] = useState([]);
   const [articles, setArticles] = useState([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(true);
+
   useEffect(() => {
     async function fetchUserDetails() {
       const details = await getUser();
@@ -105,6 +107,25 @@ const Home = () => {
 
   return (
     <div className="home_container">
+      {isDialogOpen && (
+        <div className="post-dialog-layout">
+          <div className="post-options-dialog">
+            <h2>Edit Post</h2>
+            <div className="dialog-input__field">
+              <input></input>
+            </div>
+            <div className="dialog-image__layout">
+              <img></img>
+            </div>
+            <div className="dialog-btn__layout">
+              <button>Update</button>
+              <button onClick={() => setIsDialogOpen((prev) => !prev)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="home_container-left">
         <Status handleLogout={logout} goToProfile={profile} />
 
@@ -128,13 +149,7 @@ const Home = () => {
           </div>
           <ShowPosts
             articles={displayArticles}
-            searchPost={searchPost}
-            newPost={newPost}
-            setNewPost={setNewPost}
-            newUser={newUser}
-            followers={followers}
-            handleFollowers={handleFollowers}
-            currentPage={currentPage}
+            setOpenDialog={setIsDialogOpen}
           />
         </div>
 

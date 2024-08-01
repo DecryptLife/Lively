@@ -146,8 +146,53 @@
   flex-direction: column;
 }
 
+.post-dialog-layout{
+  position:fixed ;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.post-options-dialog{
+  position: relative;
+  background-color: white;
+  width: 40vw;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 1rem;
+  padding: 1rem;
 
+}
+
+.dialog-input__field, 
+.dialog-input__field>input {
+  width: 100%;
+}
+
+.dialog-input__field > input{
+  height: 4rem;
+  border-radius: 1rem;
+}
+
+.dialog-image__layout{
+  width: 100%;
+}
+
+.dialog-btn__layout{
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  column-gap: 1rem;
+}
+
+.dialog-btn__layout button {
+  border-radius: 5px;
+  padding: 0.25rem;
+}
 
 .comments-container, .options-container{
   display: flex;
