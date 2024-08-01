@@ -3,6 +3,7 @@ import { FaArrowDown, FaArrowUp } from "react-icons/fa"; // Example using react-
 
 import axios from "axios";
 import { BASE_URL } from "../../config";
+import useMeasureWidth from "../../hooks/useFindWidth";
 
 const ShowPosts = ({
   articles,
@@ -25,6 +26,8 @@ const ShowPosts = ({
     options: false,
   });
 
+  // const [divRef, width] = useMeasureWidth();
+
   console.log(postFeaturesDisplayed);
   const NoPosts = () => {
     return (
@@ -40,12 +43,30 @@ const ShowPosts = ({
       [feature]: !prev[feature],
     }));
   };
+
+  const convertISOString = (iso_string) => {
+    const date = new Date(iso_string);
+
+    const readableTime = date.toLocaleString();
+    console.log("Date: ", readableTime);
+
+    return readableTime;
+  };
   return (
     <div className="posts-container">
       {articles &&
         articles.map((article) => {
           return (
             <div className="post-item">
+              <div className="post-header">
+                <img className="post-header-img"></img>
+                <div className="post-header-details">
+                  <span style={{ fontWeight: "bold" }}>{article.author}</span>
+                  <span style={{ fontWeight: "lighter" }}>
+                    {convertISOString(article.date)}
+                  </span>
+                </div>
+              </div>
               <div className="post-image-container">
                 <img className="post-image" src={article.image.url}></img>
               </div>
@@ -57,9 +78,9 @@ const ShowPosts = ({
                   <span>Comment</span>
 
                   {postFeaturesDisplayed.comments ? (
-                    <FaArrowUp />
-                  ) : (
                     <FaArrowDown />
+                  ) : (
+                    <FaArrowUp />
                   )}
                 </div>
                 <div
@@ -67,11 +88,6 @@ const ShowPosts = ({
                   onClick={() => handleFeatureClick("options")}
                 >
                   <span>Options</span>
-                  {postFeaturesDisplayed.options ? (
-                    <FaArrowUp />
-                  ) : (
-                    <FaArrowDown />
-                  )}
                 </div>
               </div>
               {postFeaturesDisplayed.comments && (
