@@ -8,6 +8,7 @@ import NewPost from "./newPost";
 import Followers from "./Followers";
 import AddFriend from "./addFriend";
 import Pagination from "./Pagination";
+import { getUser, getArticles } from "../../API/homeAPI";
 import { BASE_URL } from "../../config";
 
 const Home = () => {
@@ -16,7 +17,6 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [searchPost, setSearchPost] = useState("");
-  const [newPost, setNewPost] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const currUser = JSON.parse(localStorage.getItem("currUser"));
@@ -24,31 +24,32 @@ const Home = () => {
   const newUser = "new" in currUser;
   const [followers, setFollowers] = useState([]);
 
-  const [totalPosts, setTotalPosts] = useState("");
+  const [updatedArticle, setUpdatedArticle] = useState();
+  const [displayArticles, setDisplayArticles] = useState([]);
+  const [articles, setArticles] = useState([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   useEffect(() => {
-    async function getUser() {
-      const response = await axios
-        .get(url("/userDetails"), {
-          headers: { "Content-Type": "application/json" },
-        })
-        .catch((err) => console.log(err));
-      console.log(response);
-
-      setUserDetails(response.data);
-    }
-    async function getArticles() {
-      const response = await axios
-        .get(url("/articles"), {
-          headers: { "Content-Type": "application/json" },
-        })
-        .catch((err) => console.log(err));
-
-      setTotalPosts(response.data.articles);
+    async function fetchUserDetails() {
+      const details = await getUser();
+      setUserDetails(details);
     }
 
-    getUser();
-    getArticles();
+    async function fetchArticles() {
+      const articles = await getArticles();
+      console.log(articles);
+
+      setArticles(articles);
+
+      // use use-effect for post updates
+      setDisplayArticles(articles);
+    }
+
+    fetchUserDetails();
+    fetchArticles();
   }, []);
+
+  console.log(userDetails);
 
   const handleFollowers = (new_followers) => {
     if (new_followers !== null) {
@@ -56,6 +57,11 @@ const Home = () => {
     } else {
       setFollowers("");
     }
+  };
+
+  const handleOptionsClick = (article) => {
+    setUpdatedArticle(article);
+    setIsDialogOpen((prev) => !prev);
   };
 
   const logout = () => {
@@ -76,30 +82,27 @@ const Home = () => {
     navigate("/profile");
   };
 
-  const handlePost = (postBody, setPostContent, postImage, setPostImage) => {
+  const handlePost = async (
+    postBody,
+    setPostContent,
+    postImage,
+    setPostImage
+  ) => {
     const text = postBody;
-    var post;
+    let post;
     if (postImage) {
       post = { text: text, image: postImage };
     } else {
       post = { text: text };
     }
+
+    console.log(post);
     if (text !== "") {
-      fetch(url("/article"), {
-        method: "POST",
-        withCredentials: true,
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(post),
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((res) => {
-          setNewPost(postBody);
-          setPostContent("");
-          setPostImage("");
-        });
+      const response = await axios
+        .post(url("/article"), post)
+        .then((response) => response.data);
+
+      console.log(response);
     }
   };
 
@@ -109,6 +112,33 @@ const Home = () => {
 
   return (
     <div className="home_container">
+      {isDialogOpen && (
+        <div className="post-dialog-layout">
+          <div className="post-options-dialog">
+            <h2>Edit Post</h2>
+            <div className="dialog-input__field">
+              <input value={updatedArticle?.text}></input>
+            </div>
+            <div className="dialog-image__layout">
+              <img
+                src={
+                  updatedArticle &&
+                  updatedArticle.image &&
+                  updatedArticle.image.url
+                }
+                width={80}
+                height={80}
+              ></img>
+            </div>
+            <div className="dialog-btn__layout">
+              <button>Update</button>
+              <button onClick={() => setIsDialogOpen((prev) => !prev)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="home_container-left">
         <Status handleLogout={logout} goToProfile={profile} />
 
@@ -131,21 +161,15 @@ const Home = () => {
             ></input>
           </div>
           <ShowPosts
-            entirePosts={totalPosts}
-            searchPost={searchPost}
-            newPost={newPost}
-            setNewPost={setNewPost}
-            newUser={newUser}
-            followers={followers}
-            handleFollowers={handleFollowers}
-            currentPage={currentPage}
+            articles={displayArticles}
+            handleOptionsClick={handleOptionsClick}
           />
         </div>
 
         <Pagination
           className="paginationLayout"
           postsPerPage={10}
-          totalPosts={totalPosts.length}
+          totalPosts={articles.length}
           paginate={paginate}
         ></Pagination>
         <div className="paginationLayout"></div>

@@ -11,7 +11,8 @@ const cloudinary = require("../../config/cloudinary");
 console.log(LIVELY_PRESET);
 async function getArticles(req, res) {
   console.log("get articles");
-  const username = req.username;
+  console.log("Req header: ", req.user.username);
+  const username = req.user.username;
   let pid = req.params.id;
 
   if (!req.cookies) {
@@ -19,7 +20,6 @@ async function getArticles(req, res) {
     return res.sendStatus(401);
   }
 
-  console.log("PID: ", pid);
   const articles = await Article.find({ author: username });
 
   if (pid) {

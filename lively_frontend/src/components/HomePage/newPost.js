@@ -9,7 +9,6 @@ const NewPost = ({ handlePost }) => {
     inputref.current.click();
   };
 
-  const [postImage, setPostImage] = useState("");
   const handleChange = (e) => {
     const fileObj = e.target.files && e.target.files[0];
 
@@ -27,10 +26,10 @@ const NewPost = ({ handlePost }) => {
     if (file) {
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        setPostImage(reader.result);
+        setAddImage(reader.result.slice(0, 10));
       };
     } else {
-      setPostImage("");
+      setAddImage("");
     }
   };
 
@@ -39,51 +38,83 @@ const NewPost = ({ handlePost }) => {
     setPostContent("");
   };
 
-  const clearPost = () => {
+  const handleReset = () => {
+    setAddImage("Add Image");
     setPostContent("");
   };
+
+  console.log(addImage, postContent);
+
   return (
-    <div className="addPostLayout">
-      <div className="newPostLayout">
-        <div className="imagePostContainer">
-          <div className="addImage" id="addImageLayout">
-            <input
-              style={{ display: "none" }}
-              type="file"
-              ref={inputref}
-              onChange={handleChange}
-            ></input>
-            <button className="addImageBtn" onClick={() => handleClick()}>
-              {addImage}
-            </button>
-          </div>
-          <div className="addPost">
-            <textarea
-              className="addPostField"
-              placeholder="Post new content"
-              value={postContent}
-              onChange={(e) => setPostContent(e.target.value)}
-            ></textarea>
-          </div>
+    <div className="add-post-container">
+      <div className="add-post__content">
+        <div className="add-post__image">
+          <input
+            style={{ display: "none" }}
+            type="file"
+            ref={inputref}
+            onChange={handleChange}
+          ></input>
+          <button className="addImageBtn" onClick={() => handleClick()}>
+            {addImage}
+          </button>
+        </div>
+        <div className="add-post__text">
+          <textarea
+            placeholder="Add text"
+            className="add-post__text-input"
+            onChange={(e) => setPostContent(e.target.value)}
+          >
+            {postContent}
+          </textarea>
         </div>
       </div>
-
-      <div className="postBtnLayout">
-        <div className="postBtnsContainer">
-          <button className="cancelPostBtn" onClick={() => handleCancel()}>
-            Cancel
-          </button>
-          <button
-            className="postBtn"
-            onClick={() => {
-              handlePost(postContent, setPostContent, postImage, setPostImage);
-            }}
-          >
-            Post
-          </button>
-        </div>
+      <div className="add-post__buttons">
+        <button onClick={() => handleReset()}>Reset</button>
+        <button>Post</button>
       </div>
     </div>
+    // <div className="addPostLayout">
+    //   <div className="newPostLayout">
+    //     <div className="imagePostContainer">
+    //       <div className="addImage" id="addImageLayout">
+    //         <input
+    //           style={{ display: "none" }}
+    //           type="file"
+    //           ref={inputref}
+    //           onChange={handleChange}
+    //         ></input>
+    //         <button className="addImageBtn" onClick={() => handleClick()}>
+    //           {addImage}
+    //         </button>
+    //       </div>
+    //       <div className="addPost">
+    //         <textarea
+    //           className="addPostField"
+    //           placeholder="Post new content"
+    //           value={postContent}
+    //           onChange={(e) => setPostContent(e.target.value)}
+    //         ></textarea>
+    //       </div>
+    //     </div>
+    //   </div>
+
+    //   <div className="postBtnLayout">
+    //     <div className="postBtnsContainer">
+    //       <button className="cancelPostBtn" onClick={() => handleCancel()}>
+    //         Cancel
+    //       </button>
+    //       <button
+    //         className="postBtn"
+    //         onClick={() => {
+    //           handlePost(postContent, setPostContent, postImage, setPostImage);
+    //         }}
+    //       >
+    //         Post
+    //       </button>
+    //     </div>
+    //   </div>
+    // </div>
   );
 };
 
