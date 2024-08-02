@@ -17,7 +17,6 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [searchPost, setSearchPost] = useState("");
-  const [newPost, setNewPost] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const currUser = JSON.parse(localStorage.getItem("currUser"));
@@ -25,7 +24,11 @@ const Home = () => {
   const newUser = "new" in currUser;
   const [followers, setFollowers] = useState([]);
 
-  const [totalPosts, setTotalPosts] = useState("");
+  const [updatedArticle, setUpdatedArticle] = useState();
+  const [displayArticles, setDisplayArticles] = useState([]);
+  const [articles, setArticles] = useState([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   useEffect(() => {
     async function fetchUserDetails() {
       const details = await getUser();
@@ -36,7 +39,10 @@ const Home = () => {
       const articles = await getArticles();
       console.log(articles);
 
-      setTotalPosts(articles);
+      setArticles(articles);
+
+      // use use-effect for post updates
+      setDisplayArticles(articles);
     }
 
     fetchUserDetails();
@@ -51,6 +57,11 @@ const Home = () => {
     } else {
       setFollowers("");
     }
+  };
+
+  const handleOptionsClick = (article) => {
+    setUpdatedArticle(article);
+    setIsDialogOpen((prev) => !prev);
   };
 
   const logout = () => {
@@ -101,6 +112,33 @@ const Home = () => {
 
   return (
     <div className="home_container">
+      {isDialogOpen && (
+        <div className="post-dialog-layout">
+          <div className="post-options-dialog">
+            <h2>Edit Post</h2>
+            <div className="dialog-input__field">
+              <input value={updatedArticle?.text}></input>
+            </div>
+            <div className="dialog-image__layout">
+              <img
+                src={
+                  updatedArticle &&
+                  updatedArticle.image &&
+                  updatedArticle.image.url
+                }
+                width={80}
+                height={80}
+              ></img>
+            </div>
+            <div className="dialog-btn__layout">
+              <button>Update</button>
+              <button onClick={() => setIsDialogOpen((prev) => !prev)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="home_container-left">
         <Status handleLogout={logout} goToProfile={profile} />
 
@@ -123,21 +161,15 @@ const Home = () => {
             ></input>
           </div>
           <ShowPosts
-            entirePosts={totalPosts}
-            searchPost={searchPost}
-            newPost={newPost}
-            setNewPost={setNewPost}
-            newUser={newUser}
-            followers={followers}
-            handleFollowers={handleFollowers}
-            currentPage={currentPage}
+            articles={displayArticles}
+            handleOptionsClick={handleOptionsClick}
           />
         </div>
 
         <Pagination
           className="paginationLayout"
           postsPerPage={10}
-          totalPosts={totalPosts.length}
+          totalPosts={articles.length}
           paginate={paginate}
         ></Pagination>
         <div className="paginationLayout"></div>
