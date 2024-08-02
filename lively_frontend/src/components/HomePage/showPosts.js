@@ -1,13 +1,9 @@
 import { useState, useEffect } from "react";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa"; // Example using react-icons
 
-import axios from "axios";
-import { BASE_URL } from "../../config";
-import useMeasureWidth from "../../hooks/useFindWidth";
-
 const ShowPosts = ({
   articles,
-  setOpenDialog,
+  handleOptionsClick,
   newPost,
   setNewPost,
   newUser,
@@ -93,7 +89,8 @@ const ShowPosts = ({
                 </div>
                 <div
                   className="options-container"
-                  onClick={() => setOpenDialog((prev) => !prev)}
+                  data-id="2345"
+                  onClick={() => handleOptionsClick(article)}
                 >
                   <span>Options</span>
                 </div>

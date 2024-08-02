@@ -31,4 +31,22 @@ const getHeadline = async () => {
   }
 };
 
-export { getArticles, getUser, getHeadline };
+const getAvatar = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/avatar`);
+    return response.data.avatar;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const updateStatus = async (new_headline) => {
+  try {
+    const res = await axios.put(`${BASE_URL}/headline`, new_headline);
+    return res.data.headline;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export { getArticles, getUser, getHeadline, getAvatar, updateStatus };

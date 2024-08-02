@@ -9,7 +9,6 @@ const NewPost = ({ handlePost }) => {
     inputref.current.click();
   };
 
-  const [postImage, setPostImage] = useState("Add Image");
   const handleChange = (e) => {
     const fileObj = e.target.files && e.target.files[0];
 
@@ -27,10 +26,10 @@ const NewPost = ({ handlePost }) => {
     if (file) {
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        setPostImage(reader.result);
+        setAddImage(reader.result.slice(0, 10));
       };
     } else {
-      setPostImage("");
+      setAddImage("");
     }
   };
 
@@ -43,6 +42,8 @@ const NewPost = ({ handlePost }) => {
     setAddImage("Add Image");
     setPostContent("");
   };
+
+  console.log(addImage, postContent);
 
   return (
     <div className="add-post-container">

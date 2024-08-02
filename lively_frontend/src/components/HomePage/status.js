@@ -1,36 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../config";
-import { getHeadline } from "../../API/homeAPI";
+import { getHeadline, getAvatar } from "../../API/homeAPI";
+import { updateStatus } from "../../API/homeAPI";
 
-const Status = ({ handleLogout, goToProfile }) => {
-  const url = (path) => `${BASE_URL}${path}`;
-
-  const [avatar, setAvatar] = useState("");
-  const [status, setUStatus] = useState("");
-  const [modStatus, setModStatus] = useState("");
-
-  useEffect(() => {
-    async function getAvatar() {
-      const response = await axios.get(url("/avatar"));
-
-      setAvatar(response.data.avatar);
-    }
-
-    getAvatar();
-  });
-
-  useEffect(() => {
-    async function fetchHeadline() {
-      const headline = await getHeadline();
-      console.log("Headline: ", headline);
-
-      setModStatus(headline);
-    }
-
-    fetchHeadline();
-  }, [status]);
-
+const Status = ({ goToProfile }) => {
   const req = [
     require("../../images/img1.png"),
     require("../../images/img2.png"),
@@ -43,15 +17,43 @@ const Status = ({ handleLogout, goToProfile }) => {
     require("../../images/img9.png"),
     require("../../images/img10.png"),
   ];
+  const url = (path) => `${BASE_URL}${path}`;
 
-  const updateStatus = async (e) => {
+  const [avatar, setAvatar] = useState("");
+  const [status, setUStatus] = useState("");
+  const [modStatus, setModStatus] = useState("");
+
+  useEffect(() => {
+    async function fetchAvatar() {
+      const response = await getAvatar();
+
+      setAvatar(response);
+    }
+
+    fetchAvatar();
+  }, []);
+
+  console.log(avatar);
+
+  useEffect(() => {
+    async function fetchHeadline() {
+      const headline = await getHeadline();
+      console.log("Headline: ", headline);
+
+      setModStatus(headline);
+    }
+
+    fetchHeadline();
+  }, [status]);
+
+  const modifyStatus = async (e) => {
     if (status !== "") {
       let new_status = { headline: status };
 
-      const response = await axios.put(url("/headline"), new_status);
-      console.log("Updated headline: ", response.data.headline);
+      const new_headline = await updateStatus(new_status);
+      console.log("Updated headline: ", new_headline);
 
-      setModStatus(response.data.headline);
+      setModStatus(new_headline);
       setUStatus("");
     }
   };
@@ -80,19 +82,10 @@ const Status = ({ handleLogout, goToProfile }) => {
           onChange={(e) => setUStatus(e.target.value)}
           value={status}
         />
-        <button className="update-status__btn" onClick={(e) => updateStatus(e)}>
+        <button className="update-status__btn" onClick={(e) => modifyStatus(e)}>
           Update
         </button>
       </div>
-
-      {/* <div className="btnContainer">
-        <button className="logoutBtn" onClick={() => handleLogout()}>
-          Logout
-        </button>
-        <button className="profileBtn" onClick={() => goToProfile()}>
-          Profile
-        </button>
-      </div> */}
     </div>
   );
 };
