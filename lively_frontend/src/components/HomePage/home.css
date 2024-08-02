@@ -65,9 +65,55 @@
 }
 
 
+.add-post-container{
+  display: flex;
+  background-color: white;
+  flex-direction: column;
+  width: 70%;
+  row-gap: 1rem;
+  padding: 0.5rem;
+  column-gap: 0.5rem;
+  border-radius: 1rem;
+}
+
+.add-post__content{
+  display: flex;
+  height: 70%;
+  column-gap: 0.5rem;
+}
+
+.add-post__image{
+  width: 30%;
+}
+
+.add-post__text{
+  width: 70%;
+
+}
+
+
+.add-post__text-input {
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  border: 2px solid black;
+}
+
+.add-post__buttons {
+  display: flex;
+  height: 20%;
+  column-gap: 0.5rem;
+}
+
+.add-post__buttons button {
+  width: 50%;
+  border-radius: 0.5rem;
+}
+
 .addPostLayout {
   /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
-  position: relative;
+  
   background-color: white;
   width: 70%;
   border-radius: 0.5rem;
@@ -153,6 +199,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .post-options-dialog{
@@ -165,6 +212,7 @@
   align-items: center;
   border-radius: 1rem;
   padding: 1rem;
+  z-index: 1000;
 
 }
 
@@ -198,9 +246,10 @@
   display: flex;
   align-items: center;
   column-gap: 0.5rem;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem ;
   border: 2px solid black;
   border-radius: 1rem;
+  ;
 }
 
 .comments-list{
