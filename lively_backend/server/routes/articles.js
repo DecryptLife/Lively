@@ -207,10 +207,14 @@ const updateArticles = asyncHandler(async (req, res) => {
 });
 
 async function addComment(req, res) {
-  let pid = req.params.id;
+  console.log("In add comment");
+  let pid = req.params.id.replace(/^:/, "");
+  console.log("Post id: ", pid);
   let comment = req.body.comment;
 
   const articles = await Article.findById(pid);
+
+  console.log("Article test: ", articles);
 
   if (articles) {
     let comments = articles["comments"];
@@ -302,6 +306,6 @@ const addArticle = asyncHandler(async (req, res) => {
 module.exports = (app) => {
   app.get("/articles/:id?", getArticles);
   app.put("/articles/:id", updateArticles);
-  app.put("/articles/comments:id", addComment);
+  app.post("/articles/comments:id", addComment);
   app.post("/article", addArticle);
 };

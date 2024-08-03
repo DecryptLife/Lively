@@ -8,7 +8,7 @@ import NewPost from "./newPost";
 import Followers from "./Followers";
 import AddFriend from "./addFriend";
 import Pagination from "./Pagination";
-import { getUser, getArticles } from "../../API/homeAPI";
+import { getUser, getArticles, addComment } from "../../API/homeAPI";
 import { BASE_URL } from "../../config";
 
 const Home = () => {
@@ -48,9 +48,7 @@ const Home = () => {
     fetchArticles();
   }, []);
 
-  console.log(userDetails);
-
-  const handleFollowers = (new_followers) => {
+  const handleFollowers = async (new_followers) => {
     if (new_followers !== null) {
       setFollowers(new_followers);
     } else {
@@ -58,21 +56,29 @@ const Home = () => {
     }
   };
 
-  const handleAddComment = (articleID, newComment) => {
+  const handleAddComment = async (articleID, newComment) => {
     console.log("Adding a comment: ", articleID, newComment);
 
     const commentContent = {
       comment: newComment,
       author_image: userDetails.avatar,
     };
-    articles.forEach((article) => {
-      if (article._id === articleID) {
-        return {
-          ...article,
-          comments: comments.push({ newComment }),
-        };
-      } else return article;
-    });
+
+    try {
+      const comment = await addComment(articleID, commentContent);
+
+      console.log("Comment: ", comment);
+    } catch (err) {
+      console.log(err);
+    }
+    // articles.forEach((article) => {
+    //   if (article._id === articleID) {
+    //     return {
+    //       ...article,
+    //       comments: article.comments.push(articleID, commentContent),
+    //     };
+    //   } else return article;
+    // });
   };
 
   const handleOptionsClick = (article) => {

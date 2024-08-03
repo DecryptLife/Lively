@@ -24,9 +24,6 @@ const ShowPosts = ({
 
   const [comment, setComment] = useState("Add a comment");
 
-  // const [divRef, width] = useMeasureWidth();
-
-  console.log(postFeaturesDisplayed);
   const NoPosts = () => {
     return (
       <div>
@@ -46,16 +43,12 @@ const ShowPosts = ({
     const date = new Date(iso_string);
 
     const readableTime = date.toLocaleString();
-    console.log("Date: ", readableTime);
 
     return readableTime;
   };
 
   useEffect(() => {
-    console.log("Post options clicked");
-
     if (postFeaturesDisplayed.options) {
-      console.log("Open dialog box");
     }
   }, [postFeaturesDisplayed.options]);
   return (

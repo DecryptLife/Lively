@@ -16,7 +16,6 @@ const NewPost = ({ user }) => {
   const handleFileSelect = (e) => {
     const fileObj = e.target.files && e.target.files[0];
 
-    console.log("File object: ", fileObj);
     if (!fileObj) {
       return;
     } else {
@@ -26,7 +25,6 @@ const NewPost = ({ user }) => {
   };
 
   const transformFile = (file) => {
-    console.log("In transform file");
     const reader = new FileReader();
 
     if (file) {
@@ -46,9 +44,6 @@ const NewPost = ({ user }) => {
   };
 
   const handleAddPost = async () => {
-    console.log("Post content: ", postContent);
-    console.log("User: ", user.username);
-
     const newArticle = {
       author: user.username,
       author_image: user.avatar,
@@ -57,24 +52,6 @@ const NewPost = ({ user }) => {
     };
 
     const response = await addPost(newArticle);
-
-    console.log("New post: ", response);
-    // const text = postBody;
-    // let post;
-    // if (postImage) {
-    //   post = { text: text, image: postImage };
-    // } else {
-    //   post = { text: text };
-    // }
-
-    // console.log(post);
-    // if (text !== "") {
-    //   const response = await axios
-    //     .post(url("/article"), post)
-    //     .then((response) => response.data);
-
-    //   console.log(response);
-    // }
   };
 
   const handleReset = () => {

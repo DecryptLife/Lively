@@ -59,9 +59,13 @@ const addPost = async (article) => {
   }
 };
 
-const addComment = async (comment) => {
+const addComment = async (articleID, comment) => {
+  console.log("inside add comment");
   try {
-    const response = await axios.post(`${BASE_URL}/comment`, comment);
+    const response = await axios.post(
+      `${BASE_URL}/articles/comments:${articleID}`,
+      comment
+    );
     console.log("Comment: ", response.data);
   } catch (err) {
     console.log(err.message);

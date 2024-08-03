@@ -33,12 +33,9 @@ const Status = ({ goToProfile }) => {
     fetchAvatar();
   }, []);
 
-  console.log(avatar);
-
   useEffect(() => {
     async function fetchHeadline() {
       const headline = await getHeadline();
-      console.log("Headline: ", headline);
 
       setModStatus(headline);
     }
@@ -51,7 +48,6 @@ const Status = ({ goToProfile }) => {
       let new_status = { headline: status };
 
       const new_headline = await updateStatus(new_status);
-      console.log("Updated headline: ", new_headline);
 
       setModStatus(new_headline);
       setUStatus("");
