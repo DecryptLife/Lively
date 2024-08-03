@@ -1,49 +1,86 @@
 import { useState, useRef } from "react";
+import { addPost } from "../../API/homeAPI";
 
-const NewPost = ({ handlePost }) => {
-  const [postContent, setPostContent] = useState("");
+const NewPost = ({ user }) => {
+  const [imageText, setImageText] = useState("Add image");
+  const [postContent, setPostContent] = useState({
+    image: "",
+    text: "",
+  });
 
   const inputref = useRef(null);
-  const [addImage, setAddImage] = useState("Add Image");
-  const handleClick = () => {
+  const handleImageSelect = () => {
     inputref.current.click();
   };
 
-  const handleChange = (e) => {
+  const handleFileSelect = (e) => {
     const fileObj = e.target.files && e.target.files[0];
 
+    console.log("File object: ", fileObj);
     if (!fileObj) {
       return;
     } else {
-      setAddImage(fileObj.name);
+      setImageText(fileObj.name);
       transformFile(fileObj);
     }
   };
 
   const transformFile = (file) => {
+    console.log("In transform file");
     const reader = new FileReader();
 
     if (file) {
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        setAddImage(reader.result.slice(0, 10));
+        setPostContent((prev) => ({
+          ...prev,
+          image: reader.result,
+        }));
       };
     } else {
-      setAddImage("");
+      setPostContent((prev) => ({
+        ...prev,
+        image: "",
+      }));
     }
   };
 
-  const handleCancel = () => {
-    setAddImage("Add Image");
-    setPostContent("");
+  const handleAddPost = async () => {
+    console.log("Post content: ", postContent);
+    console.log("User: ", user.username);
+
+    const newArticle = {
+      author: user.username,
+      author_image: user.avatar,
+      text: postContent.text,
+      post_image: postContent.image,
+    };
+
+    const response = await addPost(newArticle);
+
+    console.log("New post: ", response);
+    // const text = postBody;
+    // let post;
+    // if (postImage) {
+    //   post = { text: text, image: postImage };
+    // } else {
+    //   post = { text: text };
+    // }
+
+    // console.log(post);
+    // if (text !== "") {
+    //   const response = await axios
+    //     .post(url("/article"), post)
+    //     .then((response) => response.data);
+
+    //   console.log(response);
+    // }
   };
 
   const handleReset = () => {
-    setAddImage("Add Image");
-    setPostContent("");
+    setImageText("Add image");
+    setPostContent({ image: "", text: "" });
   };
-
-  console.log(addImage, postContent);
 
   return (
     <div className="add-post-container">
@@ -53,25 +90,29 @@ const NewPost = ({ handlePost }) => {
             style={{ display: "none" }}
             type="file"
             ref={inputref}
-            onChange={handleChange}
+            onChange={(e) => handleFileSelect(e)}
           ></input>
-          <button className="addImageBtn" onClick={() => handleClick()}>
-            {addImage}
+          <button className="addImageBtn" onClick={() => handleImageSelect()}>
+            {imageText}
           </button>
         </div>
         <div className="add-post__text">
           <textarea
             placeholder="Add text"
             className="add-post__text-input"
-            onChange={(e) => setPostContent(e.target.value)}
-          >
-            {postContent}
-          </textarea>
+            onChange={(e) =>
+              setPostContent((prev) => ({
+                ...prev,
+                text: e.target.value,
+              }))
+            }
+            value={postContent.text}
+          ></textarea>
         </div>
       </div>
       <div className="add-post__buttons">
         <button onClick={() => handleReset()}>Reset</button>
-        <button>Post</button>
+        <button onClick={() => handleAddPost()}>Post</button>
       </div>
     </div>
     // <div className="addPostLayout">

@@ -49,4 +49,13 @@ const updateStatus = async (new_headline) => {
   }
 };
 
-export { getArticles, getUser, getHeadline, getAvatar, updateStatus };
+const addPost = async (article) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/article`, article);
+    console.log(response.data.article);
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+export { getArticles, getUser, getHeadline, getAvatar, addPost, updateStatus };

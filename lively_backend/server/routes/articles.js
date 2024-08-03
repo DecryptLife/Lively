@@ -226,8 +226,10 @@ async function addComment(req, res) {
 
 const addArticle = asyncHandler(async (req, res) => {
   // const { body, name, image } = req.body;
-  const text = req.body.text;
-  const image = req.body.image;
+  console.log(req.user);
+
+  const { text, post_image: image, author, author_image } = req.body;
+
   const loggedInUser = req.username;
   if (!text) {
     return res.status(200).send({ msg: "Text body not found" });
@@ -250,8 +252,9 @@ const addArticle = asyncHandler(async (req, res) => {
 
     try {
       const newArticle = new Article({
-        text: text,
-        author: loggedInUser,
+        text,
+        author,
+        author_image,
         image: cloudUploadRes,
         date: new Date().getTime(),
       });

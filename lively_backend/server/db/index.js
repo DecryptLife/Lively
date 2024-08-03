@@ -52,12 +52,15 @@ const profileSchema = new mongoose.Schema({
 });
 
 const articleSchema = new mongoose.Schema({
-  author: {
-    type: String,
-  },
   text: {
     type: String,
     required: [true, "Post body can't be empty"],
+  },
+  author: {
+    type: String,
+  },
+  author_image: {
+    type: String,
   },
   image: {
     type: Object,

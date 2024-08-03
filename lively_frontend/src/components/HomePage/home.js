@@ -21,7 +21,6 @@ const Home = () => {
 
   const currUser = JSON.parse(localStorage.getItem("currUser"));
   const [userDetails, setUserDetails] = useState("");
-  const newUser = "new" in currUser;
   const [followers, setFollowers] = useState([]);
 
   const [updatedArticle, setUpdatedArticle] = useState();
@@ -37,7 +36,7 @@ const Home = () => {
 
     async function fetchArticles() {
       const articles = await getArticles();
-      console.log(articles);
+      console.log("Articles:  ", articles);
 
       setArticles(articles);
 
@@ -82,30 +81,6 @@ const Home = () => {
     navigate("/profile");
   };
 
-  const handlePost = async (
-    postBody,
-    setPostContent,
-    postImage,
-    setPostImage
-  ) => {
-    const text = postBody;
-    let post;
-    if (postImage) {
-      post = { text: text, image: postImage };
-    } else {
-      post = { text: text };
-    }
-
-    console.log(post);
-    if (text !== "") {
-      const response = await axios
-        .post(url("/article"), post)
-        .then((response) => response.data);
-
-      console.log(response);
-    }
-  };
-
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -146,13 +121,13 @@ const Home = () => {
       </div>
       <div className="home_container-right">
         <div className="home_container-right-top">
-          <NewPost handlePost={handlePost} />
+          <NewPost user={userDetails} />
           <Followers />
         </div>
         <div className="home_container-right-bottom">
           <div className="search-container">
             <input
-              className="searchInputField"
+              className="search-field"
               type="text"
               placeholder="search"
               data-testid="search_posts"

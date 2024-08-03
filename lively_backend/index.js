@@ -10,6 +10,7 @@ const following = require("./server/routes/following");
 const { MONGODB_STRING } = require("./config");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
 
 dotenv.config();
 
@@ -31,8 +32,11 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+
 app.use(express.json());
-app.use(cookieParser());
+app.use(cookieParser()); // Set the limit to 50mb (adjust as needed)
 
 const connectionString = `mongodb+srv://benson24:${MONGODB_STRING}@cluster0.9auii05.mongodb.net/lively?retryWrites=true&w=majority`;
 

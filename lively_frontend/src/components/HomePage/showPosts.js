@@ -63,7 +63,10 @@ const ShowPosts = ({
           return (
             <div className="post-item">
               <div className="post-header">
-                <img className="post-header-img"></img>
+                <img
+                  className="post-header-img"
+                  src={article.author_image && article.author_image}
+                ></img>
                 <div className="post-header-details">
                   <span style={{ fontWeight: "bold" }}>{article.author}</span>
                   <span style={{ fontWeight: "lighter" }}>
@@ -71,6 +74,7 @@ const ShowPosts = ({
                   </span>
                 </div>
               </div>
+              <div className="post-text-container">{article.text}</div>
               <div className="post-image-container">
                 <img className="post-image" src={article.image.url}></img>
               </div>
