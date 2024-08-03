@@ -58,6 +58,23 @@ const Home = () => {
     }
   };
 
+  const handleAddComment = (articleID, newComment) => {
+    console.log("Adding a comment: ", articleID, newComment);
+
+    const commentContent = {
+      comment: newComment,
+      author_image: userDetails.avatar,
+    };
+    articles.forEach((article) => {
+      if (article._id === articleID) {
+        return {
+          ...article,
+          comments: comments.push({ newComment }),
+        };
+      } else return article;
+    });
+  };
+
   const handleOptionsClick = (article) => {
     setUpdatedArticle(article);
     setIsDialogOpen((prev) => !prev);
@@ -138,6 +155,7 @@ const Home = () => {
           <ShowPosts
             articles={displayArticles}
             handleOptionsClick={handleOptionsClick}
+            handleAddComment={handleAddComment}
           />
         </div>
 

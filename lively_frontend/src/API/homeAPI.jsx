@@ -53,9 +53,27 @@ const addPost = async (article) => {
   try {
     const response = await axios.post(`${BASE_URL}/article`, article);
     console.log(response.data.article);
+    return response.data.article;
   } catch (err) {
     console.log(err.message);
   }
 };
 
-export { getArticles, getUser, getHeadline, getAvatar, addPost, updateStatus };
+const addComment = async (comment) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/comment`, comment);
+    console.log("Comment: ", response.data);
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+export {
+  getArticles,
+  getUser,
+  getHeadline,
+  getAvatar,
+  addPost,
+  updateStatus,
+  addComment,
+};
