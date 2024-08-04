@@ -2,7 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const asyncHandler = require("express-async-handler");
 
-const { User, Profile, Article } = require("../db");
+const { User, Profile, Article, Comments } = require("../db");
 const { LIVELY_PRESET } = require("../../config");
 
 // const LIVELY_PRESET = process.env.LIVELY_PRESET;
@@ -210,21 +210,36 @@ async function addComment(req, res) {
   console.log("In add comment");
   let pid = req.params.id.replace(/^:/, "");
   console.log("Post id: ", pid);
-  let comment = req.body.comment;
 
-  const articles = await Article.findById(pid);
+  console.log("Body: ", req.body);
+  const comment = req.body;
 
-  console.log("Article test: ", articles);
+  const article = await Article.findById(pid);
 
-  if (articles) {
-    let comments = articles["comments"];
-    let new_comments = comments.concat(comment);
+  // console.log("Article test: ", articles);
 
-    await Article.findByIdAndUpdate(
-      pid,
-      { comments: new_comments },
-      { new: true }
-    );
+  if (article) {
+    console.log("Article found: ", article);
+
+    // prepare the comment content
+
+    let prevComments = article["comments"];
+    console.log("Previous: ", prevComments);
+
+    let updatedComments = prevComments.concat(comment);
+    console.log("Updated comments: ", updatedComments);
+
+    try {
+      const response = await Article.findByIdAndUpdate(
+        pid,
+        { comments: updatedComments },
+        { new: true }
+      );
+      console.log("Comment added: ", response);
+      res.status(200).send({ msg: "success" });
+    } catch (err) {
+      console.log("error adding the comment");
+    }
   }
 }
 

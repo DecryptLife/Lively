@@ -22,7 +22,7 @@ const ShowPosts = ({
     options: false,
   });
 
-  const [comment, setComment] = useState("Add a comment");
+  const [comment, setComment] = useState("");
 
   const NoPosts = () => {
     return (
@@ -95,17 +95,41 @@ const ShowPosts = ({
                 </div>
               </div>
               {postFeaturesDisplayed.comments && (
-                <div className="add-comment-layout">
-                  <input
-                    className="add-comment__input"
-                    placeholder="Add a comment"
-                  ></input>
-                  <button
-                    className="post-comment__btn"
-                    onClick={() => handleAddComment(article._id, comment)}
-                  >
-                    Comment
-                  </button>
+                <div className="comments-list">
+                  {article.comments?.map((comment) => (
+                    <div className="comment-item-container">
+                      <div className="comment-item__img-container">
+                        <img
+                          className="comment-item__img"
+                          width={40}
+                          height={40}
+                          src={comment.author_image}
+                        ></img>
+                      </div>
+                      <div className="comment-item-details">
+                        <span className="comment-item__author">
+                          {comment.author}
+                        </span>
+                        <span className="comment-item__content">
+                          {comment.comment}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="add-comment-layout">
+                    <input
+                      className="add-comment__input"
+                      placeholder="Add a comment"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                    ></input>
+                    <button
+                      className="post-comment__btn"
+                      onClick={() => handleAddComment(article._id, comment)}
+                    >
+                      Comment
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

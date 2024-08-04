@@ -299,8 +299,9 @@
 }
 
 .comment-item__img {
+  padding: 0.5rem;
   border-radius: 50%;
-  background-color: #28b498;
+  border: 2px solid black;
 }
 
 .comment-item__author {

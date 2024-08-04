@@ -61,24 +61,30 @@ const Home = () => {
 
     const commentContent = {
       comment: newComment,
+      author: userDetails.username,
       author_image: userDetails.avatar,
     };
 
     try {
-      const comment = await addComment(articleID, commentContent);
+      console.log("In add comment try block");
+      const response = await addComment(articleID, commentContent);
 
-      console.log("Comment: ", comment);
+      setArticles((prev) =>
+        prev.map((article) => {
+          console.log("Article: ", article);
+          if (article._id === articleID) {
+            console.log("Id match");
+            return {
+              ...article,
+              comments: [...article.comments, commentContent],
+            };
+          }
+          return article;
+        })
+      );
     } catch (err) {
       console.log(err);
     }
-    // articles.forEach((article) => {
-    //   if (article._id === articleID) {
-    //     return {
-    //       ...article,
-    //       comments: article.comments.push(articleID, commentContent),
-    //     };
-    //   } else return article;
-    // });
   };
 
   const handleOptionsClick = (article) => {
@@ -107,6 +113,12 @@ const Home = () => {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  useEffect(() => {
+    console.log("Articles modified: ", articles);
+
+    setDisplayArticles(articles);
+  }, [articles]);
 
   return (
     <div className="home_container">
@@ -168,7 +180,7 @@ const Home = () => {
         <Pagination
           className="paginationLayout"
           postsPerPage={10}
-          totalPosts={articles.length}
+          totalPosts={10}
           paginate={paginate}
         ></Pagination>
         <div className="paginationLayout"></div>

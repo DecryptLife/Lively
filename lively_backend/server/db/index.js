@@ -72,12 +72,28 @@ const articleSchema = new mongoose.Schema({
   comments: [],
 });
 
+const commentsSchema = new mongoose.Schema({
+  text: {
+    type: String,
+    required: [true, "Comment field must not be empty"],
+  },
+  author: {
+    type: String,
+    required: [true, "Comment must have an author"],
+  },
+  author_image: {
+    type: String,
+  },
+});
+
 const User = mongoose.model("User", userSchema);
 const Profile = mongoose.model("Profile", profileSchema);
 const Article = mongoose.model("Article", articleSchema);
+const Comments = mongoose.model("Comments", commentsSchema);
 
 module.exports = {
   User,
   Profile,
   Article,
+  Comments,
 };
