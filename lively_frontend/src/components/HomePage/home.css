@@ -275,6 +275,8 @@
   flex-grow: 1;
   border-radius: 1rem 0 0 1rem;
   padding-left: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .post-comment__btn {
