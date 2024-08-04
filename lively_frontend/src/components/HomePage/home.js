@@ -19,6 +19,8 @@ const Home = () => {
   const [searchPost, setSearchPost] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
+  const [comment, setComment] = useState("");
+
   const currUser = JSON.parse(localStorage.getItem("currUser"));
   const [userDetails, setUserDetails] = useState("");
   const [followers, setFollowers] = useState([]);
@@ -38,10 +40,12 @@ const Home = () => {
       const articles = await getArticles();
       console.log("Articles:  ", articles);
 
-      setArticles(articles);
-
-      // use use-effect for post updates
-      setDisplayArticles(articles);
+      setArticles(
+        articles.map((article) => ({
+          ...article,
+          commentsDisplayed: false,
+        }))
+      );
     }
 
     fetchUserDetails();
@@ -54,6 +58,21 @@ const Home = () => {
     } else {
       setFollowers("");
     }
+  };
+
+  const handleCommentsClick = (articleID) => {
+    console.log("Article ID: ", articleID);
+    setArticles(
+      articles.map((article) => {
+        if (article._id === articleID) {
+          return {
+            ...article,
+            commentsDisplayed: !article["commentsDisplayed"],
+          };
+        }
+        return article;
+      })
+    );
   };
 
   const handleAddComment = async (articleID, newComment) => {
@@ -82,6 +101,8 @@ const Home = () => {
           return article;
         })
       );
+
+      setComment("");
     } catch (err) {
       console.log(err);
     }
@@ -173,7 +194,10 @@ const Home = () => {
           <ShowPosts
             articles={displayArticles}
             handleOptionsClick={handleOptionsClick}
+            handleCommentsClick={handleCommentsClick}
             handleAddComment={handleAddComment}
+            comment={comment}
+            setComment={setComment}
           />
         </div>
 

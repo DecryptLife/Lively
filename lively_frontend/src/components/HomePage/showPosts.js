@@ -4,8 +4,10 @@ import { FaArrowDown, FaArrowUp } from "react-icons/fa"; // Example using react-
 const ShowPosts = ({
   articles,
   handleOptionsClick,
+  handleCommentsClick,
   handleAddComment,
-  setNewPost,
+  comment,
+  setComment,
   newUser,
   followers,
   handleFollowers,
@@ -22,7 +24,7 @@ const ShowPosts = ({
     options: false,
   });
 
-  const [comment, setComment] = useState("");
+  const [postCommentID, setPostCommentID] = useState("");
 
   const NoPosts = () => {
     return (
@@ -32,13 +34,6 @@ const ShowPosts = ({
     );
   };
 
-  const handleFeatureClick = (feature) => {
-    setPostFeatureDisplayed((prev) => ({
-      ...prev,
-      [feature]: !prev[feature],
-    }));
-  };
-
   const convertISOString = (iso_string) => {
     const date = new Date(iso_string);
 
@@ -46,6 +41,15 @@ const ShowPosts = ({
 
     return readableTime;
   };
+
+  useEffect(() => {
+    if (postCommentID !== "") {
+      postFeaturesDisplayed((prev) => ({
+        ...prev,
+        comments: !prev.comments,
+      }));
+    }
+  }, [postCommentID]);
 
   useEffect(() => {
     if (postFeaturesDisplayed.options) {
@@ -76,15 +80,11 @@ const ShowPosts = ({
               <div className="post-features-container">
                 <div
                   className="comments-container"
-                  onClick={() => handleFeatureClick("comments")}
+                  onClick={() => handleCommentsClick(article._id)}
                 >
                   <span>Comment</span>
 
-                  {postFeaturesDisplayed.comments ? (
-                    <FaArrowDown />
-                  ) : (
-                    <FaArrowUp />
-                  )}
+                  {article.commentsDisplayed ? <FaArrowDown /> : <FaArrowUp />}
                 </div>
                 <div
                   className="options-container"
@@ -94,7 +94,7 @@ const ShowPosts = ({
                   <span>Options</span>
                 </div>
               </div>
-              {postFeaturesDisplayed.comments && (
+              {article.commentsDisplayed && (
                 <div className="comments-list">
                   {article.comments?.map((comment) => (
                     <div className="comment-item-container">
