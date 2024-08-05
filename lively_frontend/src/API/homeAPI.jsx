@@ -15,7 +15,7 @@ const getArticles = async () => {
   console.log("In get articles API");
   try {
     const res = await axios.get(`${BASE_URL}/articles`);
-    console.log("Articles: ", res);
+    console.log("Articles API: ", res.data.articles);
     return res.data.articles;
   } catch (err) {
     console.log(err);

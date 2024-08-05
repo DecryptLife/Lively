@@ -38,7 +38,7 @@ const Home = () => {
 
     async function fetchArticles() {
       const articles = await getArticles();
-      console.log("Articles:  ", articles);
+      console.log("Articles home:  ", articles);
 
       setArticles(
         articles.map((article) => ({

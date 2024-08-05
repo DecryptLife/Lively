@@ -51,13 +51,18 @@ const ShowPosts = ({
     }
   }, [postCommentID]);
 
+  console.log("Show posts articles: ", articles);
+  articles.forEach((article) => {
+    console.log(article._id);
+  });
+
   useEffect(() => {
     if (postFeaturesDisplayed.options) {
     }
   }, [postFeaturesDisplayed.options]);
   return (
     <div className="posts-container">
-      {articles &&
+      {articles.length > 0 &&
         articles.map((article) => {
           return (
             <div className="post-item">

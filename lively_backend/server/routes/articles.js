@@ -2,79 +2,45 @@ const dotenv = require("dotenv");
 dotenv.config();
 const asyncHandler = require("express-async-handler");
 
-const { User, Profile, Article, Comments } = require("../db");
+const { Profile, Article } = require("../db");
 const { LIVELY_PRESET } = require("../../config");
 
 // const LIVELY_PRESET = process.env.LIVELY_PRESET;
 const cloudinary = require("../../config/cloudinary");
 
-console.log(LIVELY_PRESET);
 async function getArticles(req, res) {
-  console.log("get articles");
-  console.log("Req header: ", req.user.username);
   const username = req.user.username;
-  let pid = req.params.id;
+  const userID = req.user.id;
+  // let pid = req.params.id;
 
-  if (!req.cookies) {
-    console.log("no cookies");
-    return res.sendStatus(401);
-  }
+  // const articles = await Article.find({ author: username });
 
-  const articles = await Article.find({ author: username });
-
-  console.log("B Articles: ", articles);
-  if (pid) {
-    let articles = [];
-    Article.find({ pid: pid }, (err, docs) => {
+  let feed_articles = [];
+  let userList = [];
+  try {
+    await Profile.findById(userID, async (err, profile) => {
       if (err) {
-        console.log(err);
       } else {
-        if (docs.length > 0) {
-          articles = articles.concat(docs);
-        }
+        const followers = [username, ...profile.following];
+        console.log("User followers: ", followers);
 
-        Article.find({ author: pid }, (err, docs) => {
-          if (err) {
-            console.log(err);
-          } else {
-            if (docs.length > 0) {
-              articles = articles.concat(docs);
-            }
-            if (articles.length > 0) {
-              res.send({ articles: articles });
-            } else {
-              res.status(200).send("No article with this id or author");
-            }
-          }
-        });
+        const articles = await Promise.all(
+          followers.map(async (follower) => {
+            const followerArticles = await Article.find({ author: follower });
+            return followerArticles;
+          })
+        );
+
+        console.log("Followed articles: ", articles);
+
+        // flatten articles
+        const flattened_articles = articles.flat();
+        console.log("Fallttened: ", flattened_articles);
+        res.status(200).send({ articles });
       }
     });
-  } else {
-    let feed_articles = [];
-    let users = [username];
-    let followers = Profile.findOne({ username }, (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        if (docs) {
-          users = users.concat(docs["following"]);
-          Article.find(
-            { author: users },
-            null,
-            { sort: { date: -1 } },
-            (err, docs) => {
-              if (err) {
-                console.log(err);
-              } else {
-                if (docs.length > 0) {
-                  res.send({ articles: docs });
-                }
-              }
-            }
-          );
-        }
-      }
-    });
+  } catch (err) {
+    console.log("Error: ", err.message);
   }
 }
 
