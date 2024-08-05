@@ -181,38 +181,49 @@ async function getUserDetails(req, res) {
 }
 
 async function updateDetails(req, res) {
-  let email = req.body.email;
-  let mobile = req.body.mobile;
-  let dob = req.body.dob;
-  let zipcode = req.body.zipcode;
-  let pass = req.body.password;
-  let username = req.user.username;
-  let salt = currUser + "lively";
-  let password = md5(salt + pass);
+  console.log(req.body);
+  let { userID, name: username, ...values } = req.body;
+  values["username"] = username;
+  let updatedDetails = {};
+  console.log("Values: ", values);
+  for (const [key, value] of Object.entries(values)) {
+    if (value !== "") updatedDetails[key] = value;
+  }
 
-  const user = await User.findOneAndUpdate(
-    username,
-    { email, password },
-    { new: true }
-  );
-  const profile = await Profile.findOne(
-    username,
-    {
-      email,
-      dob,
-      mobile,
-      zipcode,
-    },
-    { new: true }
-  );
+  try {
+    console.log("Updated values: ", updatedDetails);
+    const profile = await Profile.findByIdAndUpdate(userID, updatedDetails, {
+      new: true, // Return the updated document
+      runValidators: true, // Ensure the update adheres to the schema
+    });
 
-  if (user && profile) {
-    res.json({ user: profile });
+    console.log("Profile: ", profile);
+
+    return res.status(200).send({ ...profile });
+  } catch (err) {
+    console.log(err.message);
   }
 }
 
+// for (let [key, value] of Object.entries()) {
+// }
+
+// const profile = await Profile.findOne(
+//   username,
+//   {
+//     email,
+//     dob,
+//     mobile,
+//     zipcode,
+//   },
+//   { new: true }
+// );
+
+// if (user && profile) {
+//   res.json({ user: profile });
+// }
+
 module.exports = (app) => {
-  app.put("/updateDetails", updateDetails);
   app.get("/headline/:user?", getHeadline);
   app.put("/headline", updateHeadline);
   app.get("/email/:user?", getEmail);
@@ -222,5 +233,6 @@ module.exports = (app) => {
   app.put("/zipcode", updateZipCode);
   app.get("/avatar/:user?", getAvatar);
   app.get("/userDetails", getUserDetails);
+  app.patch("/userDetails", updateDetails);
   app.put("/avatar", updateAvatar);
 };
