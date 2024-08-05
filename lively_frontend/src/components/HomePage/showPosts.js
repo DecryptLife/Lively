@@ -51,11 +51,6 @@ const ShowPosts = ({
     }
   }, [postCommentID]);
 
-  console.log("Show posts articles: ", articles);
-  articles.forEach((article) => {
-    console.log(article._id);
-  });
-
   useEffect(() => {
     if (postFeaturesDisplayed.options) {
     }

@@ -11,36 +11,26 @@ const cloudinary = require("../../config/cloudinary");
 async function getArticles(req, res) {
   const username = req.user.username;
   const userID = req.user.id;
-  // let pid = req.params.id;
 
-  // const articles = await Article.find({ author: username });
-
-  let feed_articles = [];
-  let userList = [];
   try {
     await Profile.findById(userID, async (err, profile) => {
       if (err) {
+        console.log("Caught here: ", err.message);
       } else {
         const followers = [username, ...profile.following];
         console.log("User followers: ", followers);
 
-        const articles = await Promise.all(
-          followers.map(async (follower) => {
-            const followerArticles = await Article.find({ author: follower });
-            return followerArticles;
-          })
-        );
+        const articles = await Article.find({
+          author: { $in: followers },
+        }).sort({ date: -1 });
 
-        console.log("Followed articles: ", articles);
+        console.log("Articles backend: ", articles);
 
-        // flatten articles
-        const flattened_articles = articles.flat();
-        console.log("Fallttened: ", flattened_articles);
-        res.status(200).send({ articles });
+        res.status(200).send({ articles: articles });
       }
     });
   } catch (err) {
-    console.log("Error: ", err.message);
+    console.log("Articles Error: ", err.message);
   }
 }
 
@@ -210,81 +200,33 @@ async function addComment(req, res) {
   }
 }
 
-const addArticle = asyncHandler(async (req, res) => {
-  // const { body, name, image } = req.body;
-  // console.log(req.user);
-  // console.log(req.body);
+const addArticle = async (req, res) => {
+  const { text, post_image: image = "", author, author_image } = req.body;
 
-  const { text, post_image: image, author, author_image } = req.body;
+  let cloudUploadRes;
+  try {
+    cloudUploadRes =
+      image !== ""
+        ? await cloudinary.uploader.upload(image, {
+            upload_preset: LIVELY_PRESET,
+          })
+        : "";
 
-  const loggedInUser = req.username;
-  if (!text) {
-    return res.status(200).send({ msg: "Text body not found" });
+    const newArticle = new Article({
+      text,
+      author,
+      author_image,
+      image: cloudUploadRes,
+      date: new Date().getTime(),
+    });
+
+    const response = await newArticle.save();
+    console.log("Add Response: ", response);
+    res.status(200).send({ article: newArticle });
+  } catch (error) {
+    console.log("Error: ", error.message);
   }
-
-  if (image) {
-    console.log("Both image and text found");
-    console.log("Preset: ", LIVELY_PRESET);
-    //Cloudinary
-    let cloudUploadRes;
-    try {
-      cloudUploadRes = await cloudinary.uploader.upload(image, {
-        upload_preset: LIVELY_PRESET,
-      });
-    } catch (error) {
-      console.log("error: ", error);
-      res.status(500);
-      throw new Error("Some problem with cloudinary: ", error.message);
-    }
-
-    try {
-      const newArticle = new Article({
-        text,
-        author,
-        author_image,
-        image: cloudUploadRes,
-        date: new Date().getTime(),
-      });
-
-      await newArticle.save((err, docs) => {
-        if (err) {
-          console.log(err);
-        } else {
-          res.status(200).json({ article: newArticle });
-        }
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500);
-      throw new Error("Some Mongo Error occured");
-    }
-  } else {
-    console.log("Only text found");
-
-    try {
-      const newArticle = new Article({
-        text: text,
-        author: loggedInUser,
-        image: {
-          url: "",
-        },
-        date: new Date().getTime(),
-      });
-
-      await newArticle.save((err, docs) => {
-        if (err) {
-          console.log(err);
-        } else {
-          res.status(200).json({ article: newArticle });
-        }
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500);
-      throw new Error("Some Mongo Error occured");
-    }
-  }
-});
+};
 
 module.exports = (app) => {
   app.get("/articles/:id?", getArticles);

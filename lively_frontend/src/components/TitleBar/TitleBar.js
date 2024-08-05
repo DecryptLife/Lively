@@ -10,6 +10,9 @@ const TitleBar = () => {
       case "profile":
         navigate("/profile");
         break;
+      case "home":
+        navigate("/home");
+        break;
       default:
         console.log("no page");
     }
@@ -18,7 +21,7 @@ const TitleBar = () => {
     <div className="title_container">
       <div className="flex-center title_container__left">
         {/* Home */}
-        <div className="titlebar_item">
+        <div className="titlebar_item" onClick={() => handleNavigation("home")}>
           <span>Home</span>
         </div>
         <div
