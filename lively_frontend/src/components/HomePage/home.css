@@ -315,6 +315,56 @@
 .comment-item__content {
   font-size: medium;
 }
+
+.add-friend-layout{
+  background-color: white;
+  border-top: 1px solid black;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;;
+}
+
+.add-friend-layout > h3 {
+  text-align: center;
+}
+
+.friend-search-container{
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.friend-search__input {
+  border-radius: 1rem;
+  padding: 0.5rem;
+}
+.friend-search__button {
+  width: 100%;
+  border-radius: 1rem;
+}
+
+.friend-list-item{
+  display: flex;
+  column-gap: 0.25rem;
+}
+
+.friend-list-item > span {
+  margin-left: 0.5rem;
+}
+
+.follower-button__remove {
+  border-radius: 1rem;
+  font-size: 0.75rem;
+}
+
+.follower-image {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #28b498;
+}
 /* Old */
 body {
   background-color: white;

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../config";
+import { addFollower } from "../../API/followersAPI";
 
 const AddFriend = ({ handleFollowers }) => {
   const url = (path) => `${BASE_URL}${path}`;
@@ -106,43 +107,56 @@ const AddFriend = ({ handleFollowers }) => {
   const [friends, setFriends] = useState(null);
 
   const addNewFriend = async (e) => {
-    const response = await axios.put(
-      url(`/following/${newFriend}`),
-      {},
-      { withCredentials: true, headers: { "Content-Type": "application/json" } }
-    );
+    const response = await addFollower(follower);
 
-    setFollowingList(response.data.following);
-    handleFollowers(response.data.following);
-    setNewFriend("");
+    // axios.put(
+    //   url(`/following/${newFriend}`),
+    //   {},
+    //   { withCredentials: true, headers: { "Content-Type": "application/json" } }
+    // );
+
+    // setFollowingList(response.data.following);
+    // handleFollowers(response.data.following);
+    // setNewFriend("");
   };
 
   return (
-    <div className="AddFriendLayout">
+    <div className="add-friend-layout">
       <h3>Follow users</h3>
-      <div className="topSearchFriends">
-        {followingList.length > 0 ? friends : <h3>Not following any user</h3>}
-        <div className="searchForFriends">
+      <div className="add-friend-list">
+        {/* {followingList.length > 0 ? friends : <h4>Not following any user</h4>} */}
+        <div className="friend-list-item">
+          <img className="follower-image" style={{ flex: 1 }}></img>
+          <span style={{ flex: 3 }}>Author</span>
+          <button className="follower-button__remove" style={{ flex: 1 }}>
+            Remove
+          </button>
+        </div>
+      </div>
+      <div className="friend-search-container">
+        <div>
           <input
-            className="followFriendsEt"
+            className="friend-search__input"
             type="text"
             data-testid="addFriendField"
             placeholder="Add a friend "
             value={newFriend}
             onChange={(e) => setNewFriend(e.target.value)}
           ></input>
-
-          <button className="addFriendBtn" onClick={(e) => addNewFriend(e)}>
+        </div>
+        <div>
+          <button
+            className="friend-search__button"
+            onClick={(e) => addNewFriend(e)}
+          >
             Add
           </button>
-          <br></br>
-          {isEmpty && (
-            <span className="redText">Can't add a nameless friend</span>
-          )}
-
-          {invalidUser && <span className="redText">Not an existing user</span>}
         </div>
       </div>
+
+      {isEmpty && <span className="redText">Can't add a nameless friend</span>}
+
+      {invalidUser && <span className="redText">Not an existing user</span>}
     </div>
   );
 };
