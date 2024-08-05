@@ -22,6 +22,7 @@ async function getArticles(req, res) {
 
   const articles = await Article.find({ author: username });
 
+  console.log("B Articles: ", articles);
   if (pid) {
     let articles = [];
     Article.find({ pid: pid }, (err, docs) => {
@@ -245,7 +246,8 @@ async function addComment(req, res) {
 
 const addArticle = asyncHandler(async (req, res) => {
   // const { body, name, image } = req.body;
-  console.log(req.user);
+  // console.log(req.user);
+  // console.log(req.body);
 
   const { text, post_image: image, author, author_image } = req.body;
 

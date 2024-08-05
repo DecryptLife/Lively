@@ -168,15 +168,24 @@ const updateAvatar = asyncHandler(async (req, res) => {
 async function getUserDetails(req, res) {
   console.log("In get user details");
   // console.log(req);
-  let username = req.user.username;
+  // console.log("Req user: ", req);
+  let userID = req.user.id;
 
-  console.log(" Get user details: ", req.user);
+  console.log(userID);
 
-  const profile = await Profile.findOne({ username });
+  try {
+    const profile = await Profile.findById(userID);
 
-  if (profile) {
-    let msg = { user: profile };
-    res.send(msg);
+    console.log("Profile: ", profile);
+
+    if (profile) {
+      console.log("Before");
+      let msg = { user: profile };
+      console.log("Msg: ", msg);
+      res.send(msg);
+    }
+  } catch (err) {
+    console.log(err.message);
   }
 }
 

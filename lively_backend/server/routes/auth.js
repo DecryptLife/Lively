@@ -8,6 +8,7 @@ const { User, Profile, Article } = require("../db");
 const app = express();
 
 const md5 = require("md5");
+const { default: mongoose } = require("mongoose");
 dotenv.config();
 console.log("Inside auth route");
 
@@ -36,9 +37,19 @@ async function register(req, res) {
     res.status(403).json({ message: "User already exists" });
   } else {
     console.log("No user exists");
-    const newUser = new User({ username, email, password, created });
+    const userID = new mongoose.Types.ObjectId();
+
+    console.log("ID new: ", userID);
+    const newUser = new User({
+      _id: userID,
+      username,
+      email,
+      password,
+      created,
+    });
     await newUser.save();
     const newUserProfile = new Profile({
+      _id: userID,
       username,
       email,
       headline,

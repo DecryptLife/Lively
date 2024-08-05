@@ -4,6 +4,7 @@ const getUser = async () => {
   try {
     const res = await axios.get(`${BASE_URL}/userDetails`);
     // console.log(res.data.user);
+    console.log("In get user: ", res);
     return res.data.user;
   } catch (err) {
     console.log(err);

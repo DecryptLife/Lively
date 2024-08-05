@@ -17,7 +17,7 @@ function isVerified(req, res, next) {
       return res.status(401).json({ message: "access denied" });
     }
 
-    req.user = user.id;
+    req.user = user;
     next();
   });
 }

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
   username: {
     type: String,
     required: [true, "Username is required"],
@@ -21,6 +22,7 @@ const userSchema = new mongoose.Schema({
 });
 
 const profileSchema = new mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
   username: {
     type: String,
     required: [true, "Username is required"],
@@ -58,6 +60,7 @@ const articleSchema = new mongoose.Schema({
   },
   author: {
     type: String,
+    required: [true, "Authoe can't be empty"],
   },
   author_image: {
     type: String,
