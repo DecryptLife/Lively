@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../config";
-import { addFollower } from "../../API/followersAPI";
+import { addFollower, removeFriend } from "../../API/followersAPI";
 
 const AddFriend = ({ handleFollowers }) => {
   const url = (path) => `${BASE_URL}${path}`;
@@ -9,26 +9,15 @@ const AddFriend = ({ handleFollowers }) => {
   const [invalidUser, setInvalidUser] = useState(null);
   const [addFriend, setAddFriend] = useState("");
 
-  const [avatar, setAvatar] = useState("");
-
-  useEffect(() => {
-    async function getAvatar() {
-      const response = await axios.get(url("/avatar"), {
-        headers: { "Content-Type": "application/json" },
-      });
-
-      setAvatar(response.data.avatar.url);
-    }
-
-    getAvatar();
-  }, [avatar]);
-
   const [newFriend, setNewFriend] = useState("");
   const [followingList, setFollowingList] = useState([]);
 
+  console.log("Following list: ", followingList);
   useEffect(() => {
     async function getFollowing() {
       const response = await axios.get(url("/following"));
+
+      console.log("Get following: ", response);
 
       const userFollowers = response.data.following;
 
@@ -52,63 +41,28 @@ const AddFriend = ({ handleFollowers }) => {
     require("../../images/img10.png"),
   ];
 
-  const handleUnfollow = async (username) => {
-    console.log("To unfollow: ", username);
-    const response = await axios.delete(url(`/following/${username}`), {
-      withCredentials: true,
-      headers: { "Content-Type": "application/json" },
-    });
+  const handleRemoveFriend = async (followerID) => {
+    try {
+      const updatedFollowerList = await removeFriend(followerID);
 
-    const new_followers = response.data.following;
-    setFollowingList(new_followers);
-    handleFollowers(new_followers);
+      setFollowingList(updatedFollowerList);
+    } catch (err) {
+      console.log("Error: ", err.message);
+    }
+
+    // const new_followers = response.data.following;
+    // setFollowingList(new_followers);
+    // handleFollowers(new_followers);
   };
 
-  useEffect(() => {
-    let count = 0;
-    let friendList = [];
-
-    async function getFollowerDetails() {
-      const response = await axios.get(url("/followersDetails"), {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
-      });
-
-      console.log("Followers: ", response.data);
-      const followerDetails = response.data.followers;
-      console.log("Follower Details: ", followerDetails);
-      followerDetails.forEach((friend) => {
-        friendList.push(
-          <div className="friend1" key={friend["username"]}>
-            <img
-              className="searchImage2"
-              src={friend["avatar"] !== "" ? friend["avatar"] : req[1]}
-            ></img>
-            <br></br>
-            <span className="friendName">{friend["username"]}</span>
-            <br></br>
-            <span>{friend["headline"]}</span>
-            <br></br>
-            <button
-              className="ufBtns"
-              data-testid={"unfollow_button_" + count.toString()}
-              onClick={() => handleUnfollow(friend["username"])}
-            >
-              Unfollow
-            </button>
-          </div>
-        );
-        count++;
-      });
-      setFriends(friendList);
-    }
-    getFollowerDetails();
-  }, []);
-
-  const [friends, setFriends] = useState(null);
-
   const addNewFriend = async (e) => {
-    const response = await addFollower(addFriend);
+    try {
+      const updatedFollowerList = await addFollower(addFriend);
+      setFollowingList(updatedFollowerList);
+      setAddFriend("");
+    } catch (err) {
+      console.log("Error: ", err.message);
+    }
   };
 
   return (
@@ -116,13 +70,23 @@ const AddFriend = ({ handleFollowers }) => {
       <h3>Follow users</h3>
       <div className="add-friend-list">
         {/* {followingList.length > 0 ? friends : <h4>Not following any user</h4>} */}
-        <div className="friend-list-item">
-          <img className="follower-image" style={{ flex: 1 }}></img>
-          <span style={{ flex: 3 }}>Author</span>
-          <button className="follower-button__remove" style={{ flex: 1 }}>
-            Remove
-          </button>
-        </div>
+        {followingList.map((follower) => (
+          <div className="friend-list-item" key={follower._id}>
+            <img
+              className="follower-image"
+              src={follower.avatar}
+              style={{ flex: 1 }}
+            ></img>
+            <span style={{ flex: 3 }}>{follower.username}</span>
+            <button
+              className="follower-button__remove"
+              style={{ flex: 1 }}
+              onClick={() => handleRemoveFriend(follower._id)}
+            >
+              Remove
+            </button>
+          </div>
+        ))}
       </div>
       <div className="friend-search-container">
         <div>

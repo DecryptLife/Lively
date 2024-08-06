@@ -17,11 +17,20 @@ async function getArticles(req, res) {
       if (err) {
         console.log("Error: ", err.message);
       } else {
-        const followers = [username, ...profile.following];
+        const followers = profile.following.map(
+          (follower) => follower.username
+        );
+
+        // console.log("Followers: ", followers);
+        const articleAuthors = [username, ...followers];
+
+        // console.log("All authors: ", articleAuthors);
 
         const articles = await Article.find({
-          author: { $in: followers },
+          author: { $in: articleAuthors },
         }).sort({ date: -1 });
+
+        // console.log("Articles: ", articles);
 
         res.status(200).send({ articles: articles });
       }

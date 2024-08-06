@@ -316,20 +316,20 @@
   font-size: medium;
 }
 
-.add-friend-layout{
+.add-friend-layout {
   background-color: white;
   border-top: 1px solid black;
   padding: 0.5rem;
   display: flex;
   flex-direction: column;
-  row-gap: 1rem;;
+  row-gap: 1rem;
 }
 
 .add-friend-layout > h3 {
   text-align: center;
 }
 
-.friend-search-container{
+.friend-search-container {
   display: flex;
   flex-direction: column;
   row-gap: 0.5rem;
@@ -345,9 +345,12 @@
   border-radius: 1rem;
 }
 
-.friend-list-item{
+.friend-list-item {
   display: flex;
   column-gap: 0.25rem;
+  padding: 0.25rem;
+  justify-content: center;
+  align-items: center;
 }
 
 .friend-list-item > span {
@@ -363,7 +366,7 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: #28b498;
+  border: 2px solid black;
 }
 /* Old */
 body {
