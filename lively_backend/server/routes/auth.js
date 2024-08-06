@@ -33,13 +33,10 @@ async function register(req, res) {
   const user = await User.findOne({ username });
 
   if (user) {
-    console.log("user already exists");
     res.status(403).json({ message: "User already exists" });
   } else {
-    console.log("No user exists");
     const userID = new mongoose.Types.ObjectId();
 
-    console.log("ID new: ", userID);
     const newUser = new User({
       _id: userID,
       username,
@@ -59,13 +56,11 @@ async function register(req, res) {
       avatar,
     });
     await newUserProfile.save();
-    console.log("user created");
     res.json({ message: "User created successfully" });
   }
 }
 
 async function login(req, res) {
-  console.log("Inside login");
   const { username, password } = req.body;
 
   if (!username || !password)
@@ -76,12 +71,7 @@ async function login(req, res) {
 
   const user = await User.findOne({ username, hashed_password });
 
-  console.log("User details: ", user);
-
   if (user) {
-    console.log(
-      `ID: ${user.id}, name: ${user.username}, secret: ${process.env.JWT_SECRET}`
-    );
     const token = jwt.sign(
       { id: user.id, username: user.username },
       process.env.JWT_SECRET,

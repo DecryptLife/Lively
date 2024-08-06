@@ -98,16 +98,12 @@ async function getUserDetails(req, res) {
   try {
     const profile = await Profile.findById(userID);
 
-    console.log("Profile: ", profile);
-
     if (profile) {
-      console.log("Before");
       let msg = { user: profile };
-      console.log("Msg: ", msg);
       res.send(msg);
     }
   } catch (err) {
-    console.log("Get user error:", err.message);
+    console.log("Error:", err.message);
   }
 }
 
@@ -121,13 +117,10 @@ async function updateDetails(req, res) {
   }
 
   try {
-    console.log("Updated values: ", updatedDetails);
     const profile = await Profile.findByIdAndUpdate(userID, updatedDetails, {
       new: true, // Return the updated document
       runValidators: true, // Ensure the update adheres to the schema
     });
-
-    console.log("Profile: ", profile);
 
     return res.status(200).send({ ...profile });
   } catch (err) {

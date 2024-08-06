@@ -53,11 +53,6 @@ try {
 
 mongoose.connection.on("connected", () => console.log("connected"));
 
-app.get("/check", (req, res) => {
-  console.log("In ");
-  res.json({ message: "Test" });
-});
-
 // app.use("/auth", authRoutes);
 // app.use("/profile", profileRoutes);
 // app.use("/article", articleRoutes);

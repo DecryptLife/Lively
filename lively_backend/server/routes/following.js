@@ -3,7 +3,6 @@ const app = require("express");
 const { User, Profile, Article } = require("../db");
 
 async function getFollowing(req, res) {
-  console.log("In get following");
   const username = req.user.username;
 
   // no user given find the followers of logged in user
@@ -17,7 +16,6 @@ async function getFollowing(req, res) {
     });
 
     if (followers_details) {
-      console.log("follower details: ", followers_details);
       let msg = { username, following: followers_details };
       res.send(msg);
     } else {
@@ -27,7 +25,6 @@ async function getFollowing(req, res) {
 }
 
 async function addFollower(req, res) {
-  console.log("In add follower function");
   const followerName = req.params.follower;
   const userID = req.user.id;
 
@@ -35,18 +32,10 @@ async function addFollower(req, res) {
     const followerDetails = await Profile.findOne({ username: followerName });
     const { _id, username, avatar } = followerDetails;
 
-    console.log("Follower received: ", { _id, username, avatar });
-
     const userProfile = await Profile.findById(userID);
-    console.log("User profile: ", userProfile);
     const userFollowers = userProfile.following;
 
-    console.log("Users followers: ", userFollowers);
-
     const newFollowers = [...userFollowers, { _id, username, avatar }];
-
-    console.log("New followers: ", newFollowers);
-
     const modifiedProfile = await Profile.findByIdAndUpdate(userID, {
       following: newFollowers,
     });
@@ -62,14 +51,10 @@ async function removeFollower(req, res) {
   const username = req.user.username;
 
   const profile = await Profile.findOne({ username });
-  console.log("Follower to remove: ", follower_name);
   if (profile) {
-    console.log(`${profile["username"]}'s profile`);
     const new_followers = profile["following"].filter(
       (follower) => follower !== follower_name
     );
-
-    console.log("New Followers: ", new_followers);
 
     const new_profile = await Profile.findOneAndUpdate(
       username,
@@ -89,9 +74,7 @@ async function getFollowersDetails(req, res) {
   const profile = await Profile.findOne({ username });
 
   if (profile) {
-    console.log("profile: ", profile);
     let followers = profile["following"];
-    console.log("followers: ", followers);
     let details = [];
 
     const follower_details = await Profile.find({

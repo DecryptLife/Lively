@@ -15,16 +15,13 @@ async function getArticles(req, res) {
   try {
     Profile.findById(userID, async (err, profile) => {
       if (err) {
-        console.log("Caught here: ", err.message);
+        console.log("Error: ", err.message);
       } else {
         const followers = [username, ...profile.following];
-        console.log("User followers: ", followers);
 
         const articles = await Article.find({
           author: { $in: followers },
         }).sort({ date: -1 });
-
-        console.log("Articles backend: ", articles);
 
         res.status(200).send({ articles: articles });
       }
@@ -76,7 +73,6 @@ const updateArticles = asyncHandler(async (req, res) => {
           }
           // comment id not -1 so modify the comment
           else {
-            console.log("Comment id not -1");
             let new_comments = docs["comments"];
             if (new_comments.length < comment_id) {
               return res
@@ -110,8 +106,6 @@ const updateArticles = asyncHandler(async (req, res) => {
           if (docs["author"] === currUser) {
             //update both text and image
             if (text && image) {
-              console.log("Both image and text exists");
-
               Article.updateOne(
                 { pid: pid },
                 { text: text, image: cloudUploadRes },
@@ -128,7 +122,6 @@ const updateArticles = asyncHandler(async (req, res) => {
             //update image only
             else if (image) {
               // only images exists
-              console.log("only image exists");
 
               Article.updateOne(
                 { pid: pid },
@@ -145,7 +138,6 @@ const updateArticles = asyncHandler(async (req, res) => {
 
             // update text only
             else if (text) {
-              console.log("only texts exists");
               Article.updateOne({ pid: pid }, { text: text }, (err, docs) => {
                 if (err) {
                   console.log(err);
@@ -164,27 +156,17 @@ const updateArticles = asyncHandler(async (req, res) => {
 });
 
 async function addComment(req, res) {
-  console.log("In add comment");
   let pid = req.params.id.replace(/^:/, "");
-  console.log("Post id: ", pid);
-
-  console.log("Body: ", req.body);
   const comment = req.body;
 
   const article = await Article.findById(pid);
 
-  // console.log("Article test: ", articles);
-
   if (article) {
-    console.log("Article found: ", article);
-
     // prepare the comment content
 
     let prevComments = article["comments"];
-    console.log("Previous: ", prevComments);
 
     let updatedComments = prevComments.concat(comment);
-    console.log("Updated comments: ", updatedComments);
 
     try {
       const response = await Article.findByIdAndUpdate(
@@ -192,7 +174,6 @@ async function addComment(req, res) {
         { comments: updatedComments },
         { new: true }
       );
-      console.log("Comment added: ", response);
       res.status(200).send({ msg: "success" });
     } catch (err) {
       console.log("error adding the comment");
@@ -221,7 +202,6 @@ const addArticle = async (req, res) => {
     });
 
     const response = await newArticle.save();
-    console.log("Add Response: ", response);
     res.status(200).send({ article: newArticle });
   } catch (error) {
     console.log("Error: ", error.message);
