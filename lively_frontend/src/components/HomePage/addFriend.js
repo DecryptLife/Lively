@@ -3,28 +3,25 @@ import axios from "axios";
 import { BASE_URL } from "../../config";
 import { addFollower, removeFriend } from "../../API/followersAPI";
 
-const AddFriend = ({ handleFollowers }) => {
+const AddFriend = ({ followers, setFollowers }) => {
   const url = (path) => `${BASE_URL}${path}`;
   const [isEmpty, setIsEmpty] = useState(null);
   const [invalidUser, setInvalidUser] = useState(null);
   const [addFriend, setAddFriend] = useState("");
 
-  const [newFriend, setNewFriend] = useState("");
-  const [followingList, setFollowingList] = useState([]);
+  // useEffect(() => {
+  //   async function getFollowing() {
+  //     const response = await axios.get(url("/following"));
 
-  useEffect(() => {
-    async function getFollowing() {
-      const response = await axios.get(url("/following"));
+  //     const userFollowers = response.data.following;
 
-      const userFollowers = response.data.following;
+  //     if (userFollowers.length > 0) {
+  //       setFollowingList(userFollowers);
+  //     }
+  //   }
 
-      if (userFollowers.length > 0) {
-        setFollowingList(userFollowers);
-      }
-    }
-
-    getFollowing();
-  }, []);
+  //   getFollowing();
+  // }, []);
   const req = [
     require("../../images/img1.png"),
     require("../../images/img2.png"),
@@ -38,24 +35,21 @@ const AddFriend = ({ handleFollowers }) => {
     require("../../images/img10.png"),
   ];
 
+  console.log("Followers: ", followers);
   const handleRemoveFriend = async (followerID) => {
     try {
       const updatedFollowerList = await removeFriend(followerID);
 
-      setFollowingList(updatedFollowerList);
+      setFollowers(updatedFollowerList);
     } catch (err) {
       console.log("Error: ", err.message);
     }
-
-    // const new_followers = response.data.following;
-    // setFollowingList(new_followers);
-    // handleFollowers(new_followers);
   };
 
   const addNewFriend = async (e) => {
     try {
       const updatedFollowerList = await addFollower(addFriend);
-      setFollowingList(updatedFollowerList);
+      setFollowers(updatedFollowerList);
       setAddFriend("");
     } catch (err) {
       console.log("Error: ", err.message);
@@ -67,23 +61,24 @@ const AddFriend = ({ handleFollowers }) => {
       <h3>Follow users</h3>
       <div className="add-friend-list">
         {/* {followingList.length > 0 ? friends : <h4>Not following any user</h4>} */}
-        {followingList.map((follower) => (
-          <div className="friend-list-item" key={follower._id}>
-            <img
-              className="follower-image"
-              src={follower.avatar}
-              style={{ flex: 1 }}
-            ></img>
-            <span style={{ flex: 3 }}>{follower.username}</span>
-            <button
-              className="follower-button__remove"
-              style={{ flex: 1 }}
-              onClick={() => handleRemoveFriend(follower._id)}
-            >
-              Remove
-            </button>
-          </div>
-        ))}
+        {followers &&
+          followers.map((follower) => (
+            <div className="friend-list-item" key={follower._id}>
+              <img
+                className="follower-image"
+                src={follower.avatar}
+                style={{ flex: 1 }}
+              ></img>
+              <span style={{ flex: 3 }}>{follower.username}</span>
+              <button
+                className="follower-button__remove"
+                style={{ flex: 1 }}
+                onClick={() => handleRemoveFriend(follower._id)}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
       </div>
       <div className="friend-search-container">
         <div>

@@ -21,7 +21,6 @@ const Home = () => {
 
   const [comment, setComment] = useState("");
 
-  const currUser = JSON.parse(localStorage.getItem("currUser"));
   const [userDetails, setUserDetails] = useState("");
   const [followers, setFollowers] = useState([]);
 
@@ -29,35 +28,6 @@ const Home = () => {
   const [displayArticles, setDisplayArticles] = useState([]);
   const [articles, setArticles] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  useEffect(() => {
-    async function fetchUserDetails() {
-      const details = await getUser();
-      setUserDetails(details);
-    }
-
-    async function fetchArticles() {
-      const articles = await getArticles();
-
-      setArticles(
-        articles.map((article) => ({
-          ...article,
-          commentsDisplayed: false,
-        }))
-      );
-    }
-
-    fetchUserDetails();
-    fetchArticles();
-  }, []);
-
-  const handleFollowers = async (new_followers) => {
-    if (new_followers !== null) {
-      setFollowers(new_followers);
-    } else {
-      setFollowers("");
-    }
-  };
 
   const handleCommentsClick = (articleID) => {
     setArticles(
@@ -119,17 +89,42 @@ const Home = () => {
       )
       .then(navigate("/"));
   };
-
-  const profile = () => {
-    navigate("/profile");
-  };
+  console.log("Followers: ", followers);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
   useEffect(() => {
-    console.log("Mod: ", articles);
+    async function fetchUserDetails() {
+      const details = await getUser();
+      console.log("user details: ", details);
+      setUserDetails(details);
+    }
+
+    fetchUserDetails();
+  }, []);
+
+  useEffect(() => {
+    async function fetchArticles() {
+      const articles = await getArticles();
+
+      setArticles(
+        articles.map((article) => ({
+          ...article,
+          commentsDisplayed: false,
+        }))
+      );
+    }
+
+    fetchArticles();
+  }, [followers]);
+
+  useEffect(() => {
+    setFollowers(userDetails.following);
+  }, [userDetails]);
+
+  useEffect(() => {
     setDisplayArticles(articles);
   }, [articles]);
 
@@ -163,9 +158,9 @@ const Home = () => {
         </div>
       )}
       <div className="home_container-left">
-        <Status handleLogout={logout} goToProfile={profile} />
+        <Status handleLogout={logout} />
 
-        <AddFriend followers={followers} handleFollowers={handleFollowers} />
+        <AddFriend followers={followers} setFollowers={setFollowers} />
       </div>
       <div className="home_container-right">
         <div className="home_container-right-top">
