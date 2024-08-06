@@ -8,7 +8,7 @@ import NewPost from "./newPost";
 import Followers from "./Followers";
 import AddFriend from "./addFriend";
 import Pagination from "./Pagination";
-import { getUser, getArticles } from "../../API/homeAPI";
+import { getUser, getArticles, addComment } from "../../API/homeAPI";
 import { BASE_URL } from "../../config";
 
 const Home = () => {
@@ -19,9 +19,9 @@ const Home = () => {
   const [searchPost, setSearchPost] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const currUser = JSON.parse(localStorage.getItem("currUser"));
+  const [comment, setComment] = useState("");
+
   const [userDetails, setUserDetails] = useState("");
-  const newUser = "new" in currUser;
   const [followers, setFollowers] = useState([]);
 
   const [updatedArticle, setUpdatedArticle] = useState();
@@ -29,33 +29,45 @@ const Home = () => {
   const [articles, setArticles] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  useEffect(() => {
-    async function fetchUserDetails() {
-      const details = await getUser();
-      setUserDetails(details);
-    }
+  const handleCommentsClick = (articleID) => {
+    setArticles(
+      articles.map((article) => {
+        if (article._id === articleID) {
+          return {
+            ...article,
+            commentsDisplayed: !article["commentsDisplayed"],
+          };
+        }
+        return article;
+      })
+    );
+  };
 
-    async function fetchArticles() {
-      const articles = await getArticles();
-      console.log(articles);
+  const handleAddComment = async (articleID, newComment) => {
+    const commentContent = {
+      comment: newComment,
+      author: userDetails.username,
+      author_image: userDetails.avatar,
+    };
 
-      setArticles(articles);
+    try {
+      const response = await addComment(articleID, commentContent);
 
-      // use use-effect for post updates
-      setDisplayArticles(articles);
-    }
+      setArticles((prev) =>
+        prev.map((article) => {
+          if (article._id === articleID) {
+            return {
+              ...article,
+              comments: [...article.comments, commentContent],
+            };
+          }
+          return article;
+        })
+      );
 
-    fetchUserDetails();
-    fetchArticles();
-  }, []);
-
-  console.log(userDetails);
-
-  const handleFollowers = (new_followers) => {
-    if (new_followers !== null) {
-      setFollowers(new_followers);
-    } else {
-      setFollowers("");
+      setComment("");
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -77,38 +89,44 @@ const Home = () => {
       )
       .then(navigate("/"));
   };
-
-  const profile = () => {
-    navigate("/profile");
-  };
-
-  const handlePost = async (
-    postBody,
-    setPostContent,
-    postImage,
-    setPostImage
-  ) => {
-    const text = postBody;
-    let post;
-    if (postImage) {
-      post = { text: text, image: postImage };
-    } else {
-      post = { text: text };
-    }
-
-    console.log(post);
-    if (text !== "") {
-      const response = await axios
-        .post(url("/article"), post)
-        .then((response) => response.data);
-
-      console.log(response);
-    }
-  };
+  console.log("Followers: ", followers);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  useEffect(() => {
+    async function fetchUserDetails() {
+      const details = await getUser();
+      console.log("user details: ", details);
+      setUserDetails(details);
+    }
+
+    fetchUserDetails();
+  }, []);
+
+  useEffect(() => {
+    async function fetchArticles() {
+      const articles = await getArticles();
+
+      setArticles(
+        articles.map((article) => ({
+          ...article,
+          commentsDisplayed: false,
+        }))
+      );
+    }
+
+    fetchArticles();
+  }, [followers]);
+
+  useEffect(() => {
+    setFollowers(userDetails.following);
+  }, [userDetails]);
+
+  useEffect(() => {
+    setDisplayArticles(articles);
+  }, [articles]);
 
   return (
     <div className="home_container">
@@ -140,19 +158,19 @@ const Home = () => {
         </div>
       )}
       <div className="home_container-left">
-        <Status handleLogout={logout} goToProfile={profile} />
+        <Status handleLogout={logout} />
 
-        <AddFriend followers={followers} handleFollowers={handleFollowers} />
+        <AddFriend followers={followers} setFollowers={setFollowers} />
       </div>
       <div className="home_container-right">
         <div className="home_container-right-top">
-          <NewPost handlePost={handlePost} />
+          <NewPost user={userDetails} setArticles={setArticles} />
           <Followers />
         </div>
         <div className="home_container-right-bottom">
           <div className="search-container">
             <input
-              className="searchInputField"
+              className="search-field"
               type="text"
               placeholder="search"
               data-testid="search_posts"
@@ -163,13 +181,17 @@ const Home = () => {
           <ShowPosts
             articles={displayArticles}
             handleOptionsClick={handleOptionsClick}
+            handleCommentsClick={handleCommentsClick}
+            handleAddComment={handleAddComment}
+            comment={comment}
+            setComment={setComment}
           />
         </div>
 
         <Pagination
           className="paginationLayout"
           postsPerPage={10}
-          totalPosts={articles.length}
+          totalPosts={10}
           paginate={paginate}
         ></Pagination>
         <div className="paginationLayout"></div>

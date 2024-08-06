@@ -134,9 +134,9 @@
   height: 2rem;
 }
 
-.searchInputField {
+.search-field {
   width: 100%;
-  height: 32px;
+  height: 3rem;
   background-color: white;
   border: 2px solid black;
   border-radius: 10px;
@@ -144,21 +144,27 @@
 }
 
 .posts-container {
-  padding: 1rem;
   display: flex;
   flex-direction: column;
   background-color: white;
+  row-gap: 1rem;
+  background-color: #f0f5f4;
 }
 
 .post-item {
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
+  border-radius: 1rem;
+  padding: 1rem;
+  background-color: white;
 }
 
 .post-image {
   width: 100%;
   height: auto;
+  border-radius: 1rem;
+  object-fit: cover;
 }
 
 .post-features-container {
@@ -174,7 +180,8 @@
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  background-color: #28b498;
+  border: 2px solid black;
+  padding: 0.5rem;
 }
 
 .post-header-details {
@@ -267,11 +274,15 @@
   background-color: #f0f5f4;
   flex-grow: 1;
   border-radius: 1rem 0 0 1rem;
+  padding-left: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .post-comment__btn {
-  width: 4rem;
+  padding: 0 1rem;
   border-radius: 0 1rem 1rem 0;
+  font-weight: bold;
 }
 
 .comment-item-container {
@@ -290,8 +301,9 @@
 }
 
 .comment-item__img {
+  padding: 0.5rem;
   border-radius: 50%;
-  background-color: #28b498;
+  border: 2px solid black;
 }
 
 .comment-item__author {
@@ -302,6 +314,59 @@
 
 .comment-item__content {
   font-size: medium;
+}
+
+.add-friend-layout {
+  background-color: white;
+  border-top: 1px solid black;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.add-friend-layout > h3 {
+  text-align: center;
+}
+
+.friend-search-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.friend-search__input {
+  border-radius: 1rem;
+  padding: 0.5rem;
+}
+.friend-search__button {
+  width: 100%;
+  border-radius: 1rem;
+}
+
+.friend-list-item {
+  display: flex;
+  column-gap: 0.25rem;
+  padding: 0.25rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.friend-list-item > span {
+  margin-left: 0.5rem;
+}
+
+.follower-button__remove {
+  border-radius: 1rem;
+  font-size: 0.75rem;
+}
+
+.follower-image {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid black;
 }
 /* Old */
 body {

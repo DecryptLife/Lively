@@ -8,6 +8,7 @@ const { User, Profile, Article } = require("../db");
 const app = express();
 
 const md5 = require("md5");
+const { default: mongoose } = require("mongoose");
 dotenv.config();
 console.log("Inside auth route");
 
@@ -32,13 +33,20 @@ async function register(req, res) {
   const user = await User.findOne({ username });
 
   if (user) {
-    console.log("user already exists");
     res.status(403).json({ message: "User already exists" });
   } else {
-    console.log("No user exists");
-    const newUser = new User({ username, email, password, created });
+    const userID = new mongoose.Types.ObjectId();
+
+    const newUser = new User({
+      _id: userID,
+      username,
+      email,
+      password,
+      created,
+    });
     await newUser.save();
     const newUserProfile = new Profile({
+      _id: userID,
       username,
       email,
       headline,
@@ -48,13 +56,11 @@ async function register(req, res) {
       avatar,
     });
     await newUserProfile.save();
-    console.log("user created");
     res.json({ message: "User created successfully" });
   }
 }
 
 async function login(req, res) {
-  console.log("Inside login");
   const { username, password } = req.body;
 
   if (!username || !password)
@@ -65,12 +71,7 @@ async function login(req, res) {
 
   const user = await User.findOne({ username, hashed_password });
 
-  console.log("User details: ", user);
-
   if (user) {
-    console.log(
-      `ID: ${user.id}, name: ${user.username}, secret: ${process.env.JWT_SECRET}`
-    );
     const token = jwt.sign(
       { id: user.id, username: user.username },
       process.env.JWT_SECRET,
@@ -96,34 +97,6 @@ async function login(req, res) {
     return res.status(400).json({ result: "User does not exist" });
   }
 }
-
-// function isLoggedIn(req, res, next) {
-//   if (!req.cookies) {
-//     console.log("no cookies");
-//     return res.sendStatus(401);
-//   }
-
-//   console.log("cookie: ", req.headers.authorization);
-//   let sid = req.cookies[cookieKey];
-//   // no sid for cookie key
-//   // console.log("req: ", req);
-//   console.log("req.cookies: ", req.cookies);
-//   console.log("checking here: cookie key -", cookieKey);
-//   console.log("checking sid: ", sid);
-//   if (!sid) {
-//     return res.sendStatus(401);
-//   } else {
-//     console.log("user exists");
-//     let username = sessionUser[sid];
-//     console.log("username: ", username);
-//     if (username) {
-//       req.username = username;
-//       next();
-//     } else {
-//       return res.sendStatus(401);
-//     }
-//   }
-// }
 
 const changePassword = (req, res) => {
   if (!req.cookies) {

@@ -3,7 +3,6 @@ import { BASE_URL } from "../config";
 const getUser = async () => {
   try {
     const res = await axios.get(`${BASE_URL}/userDetails`);
-    // console.log(res.data.user);
     return res.data.user;
   } catch (err) {
     console.log(err);
@@ -11,10 +10,8 @@ const getUser = async () => {
 };
 
 const getArticles = async () => {
-  console.log("In get articles API");
   try {
     const res = await axios.get(`${BASE_URL}/articles`);
-    console.log("Articles: ", res);
     return res.data.articles;
   } catch (err) {
     console.log(err);
@@ -24,7 +21,6 @@ const getArticles = async () => {
 const getHeadline = async () => {
   try {
     const res = await axios.get(`${BASE_URL}/headline`);
-    console.log(res);
     return res.data.headline;
   } catch (err) {
     console.log(err.message);
@@ -49,4 +45,34 @@ const updateStatus = async (new_headline) => {
   }
 };
 
-export { getArticles, getUser, getHeadline, getAvatar, updateStatus };
+const addPost = async (article) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/article`, article);
+
+    return response.data.article;
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+const addComment = async (articleID, commentDetails) => {
+  console.log("inside add comment");
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/articles/comments:${articleID}`,
+      commentDetails
+    );
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+export {
+  getArticles,
+  getUser,
+  getHeadline,
+  getAvatar,
+  addPost,
+  updateStatus,
+  addComment,
+};

@@ -1,42 +1,27 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../config";
+import { addFollower, removeFriend } from "../../API/followersAPI";
 
-const AddFriend = ({ handleFollowers }) => {
+const AddFriend = ({ followers, setFollowers }) => {
   const url = (path) => `${BASE_URL}${path}`;
   const [isEmpty, setIsEmpty] = useState(null);
   const [invalidUser, setInvalidUser] = useState(null);
+  const [addFriend, setAddFriend] = useState("");
 
-  const [avatar, setAvatar] = useState("");
+  // useEffect(() => {
+  //   async function getFollowing() {
+  //     const response = await axios.get(url("/following"));
 
-  useEffect(() => {
-    async function getAvatar() {
-      const response = await axios.get(url("/avatar"), {
-        headers: { "Content-Type": "application/json" },
-      });
+  //     const userFollowers = response.data.following;
 
-      setAvatar(response.data.avatar.url);
-    }
+  //     if (userFollowers.length > 0) {
+  //       setFollowingList(userFollowers);
+  //     }
+  //   }
 
-    getAvatar();
-  }, [avatar]);
-
-  const [newFriend, setNewFriend] = useState("");
-  const [followingList, setFollowingList] = useState([]);
-
-  useEffect(() => {
-    async function getFollowing() {
-      const response = await axios.get(url("/following"));
-
-      const userFollowers = response.data.following;
-
-      if (userFollowers.length > 0) {
-        setFollowingList(userFollowers);
-      }
-    }
-
-    getFollowing();
-  }, []);
+  //   getFollowing();
+  // }, []);
   const req = [
     require("../../images/img1.png"),
     require("../../images/img2.png"),
@@ -50,99 +35,75 @@ const AddFriend = ({ handleFollowers }) => {
     require("../../images/img10.png"),
   ];
 
-  const handleUnfollow = async (username) => {
-    console.log("To unfollow: ", username);
-    const response = await axios.delete(url(`/following/${username}`), {
-      withCredentials: true,
-      headers: { "Content-Type": "application/json" },
-    });
+  console.log("Followers: ", followers);
+  const handleRemoveFriend = async (followerID) => {
+    try {
+      const updatedFollowerList = await removeFriend(followerID);
 
-    const new_followers = response.data.following;
-    setFollowingList(new_followers);
-    handleFollowers(new_followers);
+      setFollowers(updatedFollowerList);
+    } catch (err) {
+      console.log("Error: ", err.message);
+    }
   };
 
-  useEffect(() => {
-    let count = 0;
-    let friendList = [];
-
-    async function getFollowerDetails() {
-      const response = await axios.get(url("/followersDetails"), {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
-      });
-
-      console.log("Followers: ", response.data);
-      const followerDetails = response.data.followers;
-      console.log("Follower Details: ", followerDetails);
-      followerDetails.forEach((friend) => {
-        friendList.push(
-          <div className="friend1" key={friend["username"]}>
-            <img
-              className="searchImage2"
-              src={friend["avatar"] !== "" ? friend["avatar"] : req[1]}
-            ></img>
-            <br></br>
-            <span className="friendName">{friend["username"]}</span>
-            <br></br>
-            <span>{friend["headline"]}</span>
-            <br></br>
-            <button
-              className="ufBtns"
-              data-testid={"unfollow_button_" + count.toString()}
-              onClick={() => handleUnfollow(friend["username"])}
-            >
-              Unfollow
-            </button>
-          </div>
-        );
-        count++;
-      });
-      setFriends(friendList);
-    }
-    getFollowerDetails();
-  }, []);
-
-  const [friends, setFriends] = useState(null);
-
   const addNewFriend = async (e) => {
-    const response = await axios.put(
-      url(`/following/${newFriend}`),
-      {},
-      { withCredentials: true, headers: { "Content-Type": "application/json" } }
-    );
-
-    setFollowingList(response.data.following);
-    handleFollowers(response.data.following);
-    setNewFriend("");
+    try {
+      const updatedFollowerList = await addFollower(addFriend);
+      setFollowers(updatedFollowerList);
+      setAddFriend("");
+    } catch (err) {
+      console.log("Error: ", err.message);
+    }
   };
 
   return (
-    <div className="AddFriendLayout">
+    <div className="add-friend-layout">
       <h3>Follow users</h3>
-      <div className="topSearchFriends">
-        {followingList.length > 0 ? friends : <h3>Not following any user</h3>}
-        <div className="searchForFriends">
+      <div className="add-friend-list">
+        {/* {followingList.length > 0 ? friends : <h4>Not following any user</h4>} */}
+        {followers &&
+          followers.map((follower) => (
+            <div className="friend-list-item" key={follower._id}>
+              <img
+                className="follower-image"
+                src={follower.avatar}
+                style={{ flex: 1 }}
+              ></img>
+              <span style={{ flex: 3 }}>{follower.username}</span>
+              <button
+                className="follower-button__remove"
+                style={{ flex: 1 }}
+                onClick={() => handleRemoveFriend(follower._id)}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+      </div>
+      <div className="friend-search-container">
+        <div>
           <input
-            className="followFriendsEt"
+            className="friend-search__input"
             type="text"
             data-testid="addFriendField"
             placeholder="Add a friend "
-            value={newFriend}
-            onChange={(e) => setNewFriend(e.target.value)}
+            value={addFriend}
+            onChange={(e) => setAddFriend(e.target.value)}
           ></input>
-
-          <button className="addFriendBtn" onClick={(e) => addNewFriend(e)}>
-            Add
+        </div>
+        <div>
+          <button
+            className="friend-search__button"
+            onClick={(e) => addNewFriend(e)}
+          >
+            Add Friend
           </button>
-          <br></br>
-          {isEmpty && (
-            <span className="redText">Can't add a nameless friend</span>
-          )}
-
-          {invalidUser && <span className="redText">Not an existing user</span>}
         </div>
       </div>
+
+      {isEmpty && <span className="redText">Can't add a nameless friend</span>}
+
+      {invalidUser && <span className="redText">Not an existing user</span>}
     </div>
   );
 };

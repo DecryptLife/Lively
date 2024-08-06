@@ -2,78 +2,41 @@ const dotenv = require("dotenv");
 dotenv.config();
 const asyncHandler = require("express-async-handler");
 
-const { User, Profile, Article } = require("../db");
+const { Profile, Article } = require("../db");
 const { LIVELY_PRESET } = require("../../config");
 
 // const LIVELY_PRESET = process.env.LIVELY_PRESET;
 const cloudinary = require("../../config/cloudinary");
 
-console.log(LIVELY_PRESET);
 async function getArticles(req, res) {
-  console.log("get articles");
-  console.log("Req header: ", req.user.username);
   const username = req.user.username;
-  let pid = req.params.id;
+  const userID = req.user.id;
 
-  if (!req.cookies) {
-    console.log("no cookies");
-    return res.sendStatus(401);
-  }
-
-  const articles = await Article.find({ author: username });
-
-  if (pid) {
-    let articles = [];
-    Article.find({ pid: pid }, (err, docs) => {
+  try {
+    Profile.findById(userID, async (err, profile) => {
       if (err) {
-        console.log(err);
+        console.log("Error: ", err.message);
       } else {
-        if (docs.length > 0) {
-          articles = articles.concat(docs);
-        }
+        const followers = profile.following.map(
+          (follower) => follower.username
+        );
 
-        Article.find({ author: pid }, (err, docs) => {
-          if (err) {
-            console.log(err);
-          } else {
-            if (docs.length > 0) {
-              articles = articles.concat(docs);
-            }
-            if (articles.length > 0) {
-              res.send({ articles: articles });
-            } else {
-              res.status(200).send("No article with this id or author");
-            }
-          }
-        });
+        // console.log("Followers: ", followers);
+        const articleAuthors = [username, ...followers];
+
+        // console.log("All authors: ", articleAuthors);
+
+        const articles = await Article.find({
+          author: { $in: articleAuthors },
+        }).sort({ date: -1 });
+
+        // console.log("Articles: ", articles);
+
+        res.status(200).send({ articles: articles });
       }
     });
-  } else {
-    let feed_articles = [];
-    let users = [username];
-    let followers = Profile.findOne({ username }, (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        if (docs) {
-          users = users.concat(docs["following"]);
-          Article.find(
-            { author: users },
-            null,
-            { sort: { date: -1 } },
-            (err, docs) => {
-              if (err) {
-                console.log(err);
-              } else {
-                if (docs.length > 0) {
-                  res.send({ articles: docs });
-                }
-              }
-            }
-          );
-        }
-      }
-    });
+  } catch (err) {
+    console.log("Articles Error: ", err.message);
   }
 }
 
@@ -119,7 +82,6 @@ const updateArticles = asyncHandler(async (req, res) => {
           }
           // comment id not -1 so modify the comment
           else {
-            console.log("Comment id not -1");
             let new_comments = docs["comments"];
             if (new_comments.length < comment_id) {
               return res
@@ -153,8 +115,6 @@ const updateArticles = asyncHandler(async (req, res) => {
           if (docs["author"] === currUser) {
             //update both text and image
             if (text && image) {
-              console.log("Both image and text exists");
-
               Article.updateOne(
                 { pid: pid },
                 { text: text, image: cloudUploadRes },
@@ -171,7 +131,6 @@ const updateArticles = asyncHandler(async (req, res) => {
             //update image only
             else if (image) {
               // only images exists
-              console.log("only image exists");
 
               Article.updateOne(
                 { pid: pid },
@@ -188,7 +147,6 @@ const updateArticles = asyncHandler(async (req, res) => {
 
             // update text only
             else if (text) {
-              console.log("only texts exists");
               Article.updateOne({ pid: pid }, { text: text }, (err, docs) => {
                 if (err) {
                   console.log(err);
@@ -207,98 +165,63 @@ const updateArticles = asyncHandler(async (req, res) => {
 });
 
 async function addComment(req, res) {
-  let pid = req.params.id;
-  let comment = req.body.comment;
+  let pid = req.params.id.replace(/^:/, "");
+  const comment = req.body;
 
-  const articles = await Article.findById(pid);
+  const article = await Article.findById(pid);
 
-  if (articles) {
-    let comments = articles["comments"];
-    let new_comments = comments.concat(comment);
+  if (article) {
+    // prepare the comment content
 
-    await Article.findByIdAndUpdate(
-      pid,
-      { comments: new_comments },
-      { new: true }
-    );
+    let prevComments = article["comments"];
+
+    let updatedComments = prevComments.concat(comment);
+
+    try {
+      const response = await Article.findByIdAndUpdate(
+        pid,
+        { comments: updatedComments },
+        { new: true }
+      );
+      res.status(200).send({ msg: "success" });
+    } catch (err) {
+      console.log("error adding the comment");
+    }
   }
 }
 
-const addArticle = asyncHandler(async (req, res) => {
-  // const { body, name, image } = req.body;
-  const text = req.body.text;
-  const image = req.body.image;
-  const loggedInUser = req.username;
-  if (!text) {
-    return res.status(200).send({ msg: "Text body not found" });
+const addArticle = async (req, res) => {
+  const { text, post_image: image = "", author, author_image } = req.body;
+
+  let cloudUploadRes;
+  try {
+    cloudUploadRes =
+      image !== ""
+        ? await cloudinary.uploader.upload(image, {
+            upload_preset: LIVELY_PRESET,
+          })
+        : "";
+
+    const newArticle = new Article({
+      text,
+      author,
+      author_image,
+      image: cloudUploadRes,
+      date: new Date().getTime(),
+    });
+
+    const response = await newArticle.save();
+
+    console.log("New Post: ", response);
+    res.status(200).send({ article: response });
+  } catch (error) {
+    console.log("Error: ", error.message);
   }
-
-  if (image) {
-    console.log("Both image and text found");
-    console.log("Preset: ", LIVELY_PRESET);
-    //Cloudinary
-    let cloudUploadRes;
-    try {
-      cloudUploadRes = await cloudinary.uploader.upload(image, {
-        upload_preset: LIVELY_PRESET,
-      });
-    } catch (error) {
-      console.log("error: ", error);
-      res.status(500);
-      throw new Error("Some problem with cloudinary: ", error.message);
-    }
-
-    try {
-      const newArticle = new Article({
-        text: text,
-        author: loggedInUser,
-        image: cloudUploadRes,
-        date: new Date().getTime(),
-      });
-
-      await newArticle.save((err, docs) => {
-        if (err) {
-          console.log(err);
-        } else {
-          res.status(200).json({ article: newArticle });
-        }
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500);
-      throw new Error("Some Mongo Error occured");
-    }
-  } else {
-    console.log("Only text found");
-
-    try {
-      const newArticle = new Article({
-        text: text,
-        author: loggedInUser,
-        image: {
-          url: "",
-        },
-        date: new Date().getTime(),
-      });
-
-      await newArticle.save((err, docs) => {
-        if (err) {
-          console.log(err);
-        } else {
-          res.status(200).json({ article: newArticle });
-        }
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500);
-      throw new Error("Some Mongo Error occured");
-    }
-  }
-});
+};
 
 module.exports = (app) => {
   app.get("/articles/:id?", getArticles);
   app.put("/articles/:id", updateArticles);
-  app.put("/articles/comments:id", addComment);
+  app.post("/articles/comments:id", addComment);
   app.post("/article", addArticle);
 };

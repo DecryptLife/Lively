@@ -1,4 +1,111 @@
-.profile_page {
+.profile_layout {
+  background-color: #f0f5f4;
+  width: 100vw;
+  height: 100vh;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile_container {
+  background-color: white;
+  width: 90%;
+  height: 90%;
+  border: 1px solid black;
+  display: flex;
+}
+
+.profile_container-left {
+  flex: 2;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile_container-right {
+  flex: 3;
+  border: 1px solid black;
+}
+
+.profile-img-container {
+  flex: 1;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 1rem;
+}
+
+.profile-img-container > img {
+  width: 100;
+  height: 50%;
+  border-radius: 50%;
+  border: 2px solid black;
+  object-fit: cover;
+}
+
+.profile-details-container {
+  flex: 2;
+  border: 1px solid black;
+  padding: 2rem;
+}
+
+.profile-details-container label {
+  font-weight: bold;
+}
+
+.profile_container-right {
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.profile_container-right input {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 1rem;
+}
+
+.profile-update-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  justify-content: center;
+}
+
+.profile-update__fields {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  padding: 1rem;
+}
+
+.profile-update__header {
+  display: flex;
+  justify-content: center;
+}
+
+.update-image-container {
+  display: flex;
+  align-items: center;
+}
+
+.profile-update__btns {
+  display: flex;
+  column-gap: 1rem;
+  padding: 1rem;
+}
+
+.profile-update__btns button {
+  padding: 0.5rem 2rem 0.5rem 2rem;
+  border-radius: 1rem;
+  background-color: hsl(165, 26%, 15%);
+  color: wheat;
+  width: 50%;
+}
+/* .profile_page {
   height: 100%;
   width: 100%;
 }
@@ -131,4 +238,4 @@
   height: 30%;
   width: 100%;
   justify-content: center;
-}
+} */

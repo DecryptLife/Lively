@@ -1,15 +1,33 @@
 import "./titlebar.css";
 import "../../styles/styles.css";
+import { useNavigate } from "react-router-dom";
 
 const TitleBar = () => {
+  const navigate = useNavigate("");
+
+  const handleNavigation = (page) => {
+    switch (page) {
+      case "profile":
+        navigate("/profile");
+        break;
+      case "home":
+        navigate("/home");
+        break;
+      default:
+        console.log("no page");
+    }
+  };
   return (
     <div className="title_container">
       <div className="flex-center title_container__left">
         {/* Home */}
-        <div className="titlebar_item">
+        <div className="titlebar_item" onClick={() => handleNavigation("home")}>
           <span>Home</span>
         </div>
-        <div className="titlebar_item">
+        <div
+          className="titlebar_item"
+          onClick={() => handleNavigation("profile")}
+        >
           <span>Profile</span>
         </div>
 

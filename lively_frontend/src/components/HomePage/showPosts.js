@@ -4,27 +4,22 @@ import { FaArrowDown, FaArrowUp } from "react-icons/fa"; // Example using react-
 const ShowPosts = ({
   articles,
   handleOptionsClick,
-  newPost,
-  setNewPost,
+  handleCommentsClick,
+  handleAddComment,
+  comment,
+  setComment,
   newUser,
   followers,
   handleFollowers,
   currentPage,
 }) => {
-  const req = [
-    require("../../images/img_2_1.png"),
-    require("../../images/img_2_2.png"),
-    require("../../images/img_2_3.png"),
-  ];
-
   const [postFeaturesDisplayed, setPostFeatureDisplayed] = useState({
     comments: false,
     options: false,
   });
 
-  // const [divRef, width] = useMeasureWidth();
+  const [postCommentID, setPostCommentID] = useState("");
 
-  console.log(postFeaturesDisplayed);
   const NoPosts = () => {
     return (
       <div>
@@ -33,37 +28,36 @@ const ShowPosts = ({
     );
   };
 
-  const handleFeatureClick = (feature) => {
-    setPostFeatureDisplayed((prev) => ({
-      ...prev,
-      [feature]: !prev[feature],
-    }));
-  };
-
   const convertISOString = (iso_string) => {
     const date = new Date(iso_string);
-
     const readableTime = date.toLocaleString();
-    console.log("Date: ", readableTime);
-
     return readableTime;
   };
 
   useEffect(() => {
-    console.log("Post options clicked");
+    if (postCommentID !== "") {
+      postFeaturesDisplayed((prev) => ({
+        ...prev,
+        comments: !prev.comments,
+      }));
+    }
+  }, [postCommentID]);
 
+  useEffect(() => {
     if (postFeaturesDisplayed.options) {
-      console.log("Open dialog box");
     }
   }, [postFeaturesDisplayed.options]);
   return (
     <div className="posts-container">
-      {articles &&
+      {articles.length > 0 &&
         articles.map((article) => {
           return (
-            <div className="post-item">
+            <div className="post-item" key={article._id}>
               <div className="post-header">
-                <img className="post-header-img"></img>
+                <img
+                  className="post-header-img"
+                  src={article.author_image && article.author_image}
+                ></img>
                 <div className="post-header-details">
                   <span style={{ fontWeight: "bold" }}>{article.author}</span>
                   <span style={{ fontWeight: "lighter" }}>
@@ -71,21 +65,18 @@ const ShowPosts = ({
                   </span>
                 </div>
               </div>
+              <div className="post-text-container">{article.text}</div>
               <div className="post-image-container">
                 <img className="post-image" src={article.image.url}></img>
               </div>
               <div className="post-features-container">
                 <div
                   className="comments-container"
-                  onClick={() => handleFeatureClick("comments")}
+                  onClick={() => handleCommentsClick(article._id)}
                 >
                   <span>Comment</span>
 
-                  {postFeaturesDisplayed.comments ? (
-                    <FaArrowDown />
-                  ) : (
-                    <FaArrowUp />
-                  )}
+                  {article.commentsDisplayed ? <FaArrowDown /> : <FaArrowUp />}
                 </div>
                 <div
                   className="options-container"
@@ -95,59 +86,41 @@ const ShowPosts = ({
                   <span>Options</span>
                 </div>
               </div>
-              {postFeaturesDisplayed.comments && (
+              {article.commentsDisplayed && (
                 <div className="comments-list">
-                  <div className="comment-item-container">
-                    <div className="comment-item__img-container">
-                      <img
-                        className="comment-item__img"
-                        width={40}
-                        height={40}
-                      ></img>
+                  {article.comments?.map((comment) => (
+                    <div className="comment-item-container">
+                      <div className="comment-item__img-container">
+                        <img
+                          className="comment-item__img"
+                          width={40}
+                          height={40}
+                          src={comment.author_image}
+                        ></img>
+                      </div>
+                      <div className="comment-item-details">
+                        <span className="comment-item__author">
+                          {comment.author}
+                        </span>
+                        <span className="comment-item__content">
+                          {comment.comment}
+                        </span>
+                      </div>
                     </div>
-                    <div className="comment-item-details">
-                      <span className="comment-item__author">author</span>
-                      <span className="comment-item__content">
-                        This is a comment
-                      </span>
-                    </div>
-                  </div>
-                  <div className="comment-item-container">
-                    <div className="comment-item__img-container">
-                      <img
-                        className="comment-item__img"
-                        width={40}
-                        height={40}
-                      ></img>
-                    </div>
-                    <div className="comment-item-details">
-                      <span className="comment-item__author">author</span>
-                      <span className="comment-item__content">
-                        This is a comment
-                      </span>
-                    </div>
-                  </div>
-                  <div className="comment-item-container">
-                    <div className="comment-item__img-container">
-                      <img
-                        className="comment-item__img"
-                        width={40}
-                        height={40}
-                      ></img>
-                    </div>
-                    <div className="comment-item-details">
-                      <span className="comment-item__author">author</span>
-                      <span className="comment-item__content">
-                        This is a comment
-                      </span>
-                    </div>
-                  </div>
+                  ))}
                   <div className="add-comment-layout">
                     <input
                       className="add-comment__input"
                       placeholder="Add a comment"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
                     ></input>
-                    <button className="post-comment__btn">Post</button>
+                    <button
+                      className="post-comment__btn"
+                      onClick={() => handleAddComment(article._id, comment)}
+                    >
+                      Comment
+                    </button>
                   </div>
                 </div>
               )}
@@ -159,6 +132,53 @@ const ShowPosts = ({
 };
 
 export default ShowPosts;
+
+// <div className="comments-list">
+//                   <div className="comment-item-container">
+//                     <div className="comment-item__img-container">
+//                       <img
+//                         className="comment-item__img"
+//                         width={40}
+//                         height={40}
+//                       ></img>
+//                     </div>
+//                     <div className="comment-item-details">
+//                       <span className="comment-item__author">author</span>
+//                       <span className="comment-item__content">
+//                         This is a comment
+//                       </span>
+//                     </div>
+//                   </div>
+//                   <div className="comment-item-container">
+//                     <div className="comment-item__img-container">
+//                       <img
+//                         className="comment-item__img"
+//                         width={40}
+//                         height={40}
+//                       ></img>
+//                     </div>
+//                     <div className="comment-item-details">
+//                       <span className="comment-item__author">author</span>
+//                       <span className="comment-item__content">
+//                         This is a comment
+//                       </span>
+//                     </div>
+//                   </div>
+//                   <div className="comment-item-container">
+//                     <div className="comment-item__img-container">
+//                       <img
+//                         className="comment-item__img"
+//                         width={40}
+//                         height={40}
+//                       ></img>
+//                     </div>
+//                     <div className="comment-item-details">
+//                       <span className="comment-item__author">author</span>
+//                       <span className="comment-item__content">
+//                         This is a comment
+//                       </span>
+//                     </div>
+//                   </div>
 
 // const url = (path) => `${BASE_URL}${path}`;
 // const totalPosts = articles;
