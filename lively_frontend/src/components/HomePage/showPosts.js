@@ -60,7 +60,7 @@ const ShowPosts = ({
       {articles.length > 0 &&
         articles.map((article) => {
           return (
-            <div className="post-item">
+            <div className="post-item" key={article._id}>
               <div className="post-header">
                 <img
                   className="post-header-img"

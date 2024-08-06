@@ -12,12 +12,9 @@ const AddFriend = ({ handleFollowers }) => {
   const [newFriend, setNewFriend] = useState("");
   const [followingList, setFollowingList] = useState([]);
 
-  console.log("Following list: ", followingList);
   useEffect(() => {
     async function getFollowing() {
       const response = await axios.get(url("/following"));
-
-      console.log("Get following: ", response);
 
       const userFollowers = response.data.following;
 

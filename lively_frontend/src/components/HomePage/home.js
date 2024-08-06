@@ -38,7 +38,6 @@ const Home = () => {
 
     async function fetchArticles() {
       const articles = await getArticles();
-      console.log("Articles home:  ", articles);
 
       setArticles(
         articles.map((article) => ({
@@ -61,7 +60,6 @@ const Home = () => {
   };
 
   const handleCommentsClick = (articleID) => {
-    console.log("Article ID: ", articleID);
     setArticles(
       articles.map((article) => {
         if (article._id === articleID) {
@@ -76,8 +74,6 @@ const Home = () => {
   };
 
   const handleAddComment = async (articleID, newComment) => {
-    console.log("Adding a comment: ", articleID, newComment);
-
     const commentContent = {
       comment: newComment,
       author: userDetails.username,
@@ -85,14 +81,11 @@ const Home = () => {
     };
 
     try {
-      console.log("In add comment try block");
       const response = await addComment(articleID, commentContent);
 
       setArticles((prev) =>
         prev.map((article) => {
-          console.log("Article: ", article);
           if (article._id === articleID) {
-            console.log("Id match");
             return {
               ...article,
               comments: [...article.comments, commentContent],
@@ -136,8 +129,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    console.log("Articles modified: ", articles);
-
     setDisplayArticles(articles);
   }, [articles]);
 
