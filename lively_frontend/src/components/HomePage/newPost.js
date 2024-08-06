@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { addPost } from "../../API/homeAPI";
 
-const NewPost = ({ user }) => {
+const NewPost = ({ user, setArticles }) => {
   const [imageText, setImageText] = useState("Add image");
   const [postContent, setPostContent] = useState({
     image: "",
@@ -50,8 +50,15 @@ const NewPost = ({ user }) => {
       text: postContent.text,
       post_image: postContent.image,
     };
+    try {
+      const newPost = await addPost(newArticle);
 
-    const response = await addPost(newArticle);
+      console.log("New post: ", newPost);
+
+      setArticles((prev) => [newPost, ...prev]);
+    } catch (err) {
+      console.log("Add Post Error: ", err.message);
+    }
   };
 
   const handleReset = () => {

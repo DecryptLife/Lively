@@ -129,6 +129,7 @@ const Home = () => {
   };
 
   useEffect(() => {
+    console.log("Mod: ", articles);
     setDisplayArticles(articles);
   }, [articles]);
 
@@ -168,7 +169,7 @@ const Home = () => {
       </div>
       <div className="home_container-right">
         <div className="home_container-right-top">
-          <NewPost user={userDetails} />
+          <NewPost user={userDetails} setArticles={setArticles} />
           <Followers />
         </div>
         <div className="home_container-right-bottom">

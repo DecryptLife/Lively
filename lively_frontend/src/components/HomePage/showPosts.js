@@ -13,12 +13,6 @@ const ShowPosts = ({
   handleFollowers,
   currentPage,
 }) => {
-  const req = [
-    require("../../images/img_2_1.png"),
-    require("../../images/img_2_2.png"),
-    require("../../images/img_2_3.png"),
-  ];
-
   const [postFeaturesDisplayed, setPostFeatureDisplayed] = useState({
     comments: false,
     options: false,
@@ -36,9 +30,7 @@ const ShowPosts = ({
 
   const convertISOString = (iso_string) => {
     const date = new Date(iso_string);
-
     const readableTime = date.toLocaleString();
-
     return readableTime;
   };
 

@@ -211,7 +211,9 @@ const addArticle = async (req, res) => {
     });
 
     const response = await newArticle.save();
-    res.status(200).send({ article: newArticle });
+
+    console.log("New Post: ", response);
+    res.status(200).send({ article: response });
   } catch (error) {
     console.log("Error: ", error.message);
   }
