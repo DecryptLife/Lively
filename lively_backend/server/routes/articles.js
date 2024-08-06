@@ -13,7 +13,7 @@ async function getArticles(req, res) {
   const userID = req.user.id;
 
   try {
-    await Profile.findById(userID, async (err, profile) => {
+    Profile.findById(userID, async (err, profile) => {
       if (err) {
         console.log("Caught here: ", err.message);
       } else {

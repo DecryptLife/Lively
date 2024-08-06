@@ -108,34 +108,6 @@ async function login(req, res) {
   }
 }
 
-// function isLoggedIn(req, res, next) {
-//   if (!req.cookies) {
-//     console.log("no cookies");
-//     return res.sendStatus(401);
-//   }
-
-//   console.log("cookie: ", req.headers.authorization);
-//   let sid = req.cookies[cookieKey];
-//   // no sid for cookie key
-//   // console.log("req: ", req);
-//   console.log("req.cookies: ", req.cookies);
-//   console.log("checking here: cookie key -", cookieKey);
-//   console.log("checking sid: ", sid);
-//   if (!sid) {
-//     return res.sendStatus(401);
-//   } else {
-//     console.log("user exists");
-//     let username = sessionUser[sid];
-//     console.log("username: ", username);
-//     if (username) {
-//       req.username = username;
-//       next();
-//     } else {
-//       return res.sendStatus(401);
-//     }
-//   }
-// }
-
 const changePassword = (req, res) => {
   if (!req.cookies) {
     return res.sendStatus(401);

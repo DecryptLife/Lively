@@ -7,6 +7,7 @@ const AddFriend = ({ handleFollowers }) => {
   const url = (path) => `${BASE_URL}${path}`;
   const [isEmpty, setIsEmpty] = useState(null);
   const [invalidUser, setInvalidUser] = useState(null);
+  const [addFriend, setAddFriend] = useState("");
 
   const [avatar, setAvatar] = useState("");
 
@@ -107,17 +108,7 @@ const AddFriend = ({ handleFollowers }) => {
   const [friends, setFriends] = useState(null);
 
   const addNewFriend = async (e) => {
-    const response = await addFollower(follower);
-
-    // axios.put(
-    //   url(`/following/${newFriend}`),
-    //   {},
-    //   { withCredentials: true, headers: { "Content-Type": "application/json" } }
-    // );
-
-    // setFollowingList(response.data.following);
-    // handleFollowers(response.data.following);
-    // setNewFriend("");
+    const response = await addFollower(addFriend);
   };
 
   return (
@@ -140,8 +131,8 @@ const AddFriend = ({ handleFollowers }) => {
             type="text"
             data-testid="addFriendField"
             placeholder="Add a friend "
-            value={newFriend}
-            onChange={(e) => setNewFriend(e.target.value)}
+            value={addFriend}
+            onChange={(e) => setAddFriend(e.target.value)}
           ></input>
         </div>
         <div>
@@ -149,7 +140,7 @@ const AddFriend = ({ handleFollowers }) => {
             className="friend-search__button"
             onClick={(e) => addNewFriend(e)}
           >
-            Add
+            Add Friend
           </button>
         </div>
       </div>

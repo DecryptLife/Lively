@@ -3,16 +3,17 @@ const app = require("express");
 const { User, Profile, Article } = require("../db");
 
 async function getFollowing(req, res) {
+  console.log("In get following");
   const username = req.user.username;
 
   // no user given find the followers of logged in user
   const profile = await Profile.findOne({ username });
 
   if (profile) {
-    const followers = profile["following"];
+    const followersID = profile["following"].map((follower) => follower._id);
 
     const followers_details = await Profile.find({
-      username: { $in: followers },
+      _id: { $in: followersID },
     });
 
     if (followers_details) {
@@ -26,42 +27,33 @@ async function getFollowing(req, res) {
 }
 
 async function addFollower(req, res) {
-  const follower_name = req.params.user;
-  const username = req.user.username;
+  console.log("In add follower function");
+  const followerName = req.params.follower;
+  const userID = req.user.id;
 
-  if (username === follower_name) {
-    return res.status(400).send("Can't follow the same user");
-  }
+  try {
+    const followerDetails = await Profile.findOne({ username: followerName });
+    const { _id, username, avatar } = followerDetails;
 
-  const profile = await Profile.findOne({ username });
-  console.log("trying to add follower");
-  if (profile) {
-    let followers = profile["following"];
-    console.log(`${profile["username"]} followers: ${followers}`);
-    const follower = await Profile.findOne({ username: follower_name });
-    if (follower) {
-      console.log(`${follower["username"]} exists`);
-      let following = followers.concat(follower_name);
+    console.log("Follower received: ", { _id, username, avatar });
 
-      console.log(`${profile["username"]} followers: ${following}`);
-      const new_profile = await Profile.findOneAndUpdate(
-        { username: username },
-        { following: following },
-        {
-          new: true,
-        }
-      );
-      if (new_profile) {
-        console.log("Follower successfully added");
-        let msg = {
-          username,
-          following: new_profile["following"],
-        };
-        res.send(msg);
-      }
-    } else {
-      return res.status(400).send("You can't follow an unregistered user");
-    }
+    const userProfile = await Profile.findById(userID);
+    console.log("User profile: ", userProfile);
+    const userFollowers = userProfile.following;
+
+    console.log("Users followers: ", userFollowers);
+
+    const newFollowers = [...userFollowers, { _id, username, avatar }];
+
+    console.log("New followers: ", newFollowers);
+
+    const modifiedProfile = await Profile.findByIdAndUpdate(userID, {
+      following: newFollowers,
+    });
+
+    res.status(200).send({ following: modifiedProfile.following });
+  } catch (err) {
+    console.log("Error: ", err.message);
   }
 }
 
@@ -115,7 +107,7 @@ async function getFollowersDetails(req, res) {
 }
 
 module.exports = (app) => {
-  app.put("/following/:user", addFollower);
+  app.patch("/following/:follower", addFollower);
   app.get("/following/:user?", getFollowing);
   app.get("/followersDetails", getFollowersDetails);
   app.delete("/following/:user", removeFollower);

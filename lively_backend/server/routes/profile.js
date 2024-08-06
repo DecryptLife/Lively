@@ -107,7 +107,7 @@ async function getUserDetails(req, res) {
       res.send(msg);
     }
   } catch (err) {
-    console.log(err.message);
+    console.log("Get user error:", err.message);
   }
 }
 
