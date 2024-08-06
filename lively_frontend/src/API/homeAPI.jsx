@@ -67,6 +67,17 @@ const addComment = async (articleID, commentDetails) => {
   }
 };
 
+const deleteArticle = async (articleID) => {
+  try {
+    const response = await axios.delete(`${BASE_URL}/articles/${articleID}`);
+
+    console.log("Delete response: ", response);
+    return response.data._id;
+  } catch (err) {
+    console.log("Delete API Error: ", err.message);
+  }
+};
+
 export {
   getArticles,
   getUser,
@@ -75,4 +86,5 @@ export {
   addPost,
   updateStatus,
   addComment,
+  deleteArticle,
 };

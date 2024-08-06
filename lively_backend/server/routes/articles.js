@@ -219,9 +219,25 @@ const addArticle = async (req, res) => {
   }
 };
 
+const deleteArticle = async (req, res) => {
+  const postID = req.params.id;
+
+  console.log("Article to be deleted: ", postID);
+
+  Article.findByIdAndDelete(postID, (err, docs) => {
+    if (err) {
+      console.log("Post Delete Error: ", err.message);
+    } else {
+      console.log("Deleted: ", docs);
+      res.status(200).send(docs);
+    }
+  });
+};
+
 module.exports = (app) => {
   app.get("/articles/:id?", getArticles);
   app.put("/articles/:id", updateArticles);
   app.post("/articles/comments:id", addComment);
   app.post("/article", addArticle);
+  app.delete("/articles/:id?", deleteArticle);
 };

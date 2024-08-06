@@ -187,6 +187,18 @@
 .post-header-details {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+}
+
+.post-header button{
+  padding: 0.25rem;
+  background: none;
+  color: black;
+  border: none;
+  padding: 0rem 1rem;
+  border-radius: 1rem;
+  font-weight: bolder;
+
 }
 
 .post-dialog-layout {

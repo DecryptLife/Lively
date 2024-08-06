@@ -8,6 +8,7 @@ const ShowPosts = ({
   handleAddComment,
   comment,
   setComment,
+  handlePostDelete,
   newUser,
   followers,
   handleFollowers,
@@ -64,6 +65,9 @@ const ShowPosts = ({
                     {convertISOString(article.date)}
                   </span>
                 </div>
+                <button onClick={() => handlePostDelete(article._id)}>
+                  Delete
+                </button>
               </div>
               <div className="post-text-container">{article.text}</div>
               <div className="post-image-container">

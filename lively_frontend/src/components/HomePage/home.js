@@ -8,7 +8,12 @@ import NewPost from "./newPost";
 import Followers from "./Followers";
 import AddFriend from "./addFriend";
 import Pagination from "./Pagination";
-import { getUser, getArticles, addComment } from "../../API/homeAPI";
+import {
+  getUser,
+  getArticles,
+  addComment,
+  deleteArticle,
+} from "../../API/homeAPI";
 import { BASE_URL } from "../../config";
 
 const Home = () => {
@@ -89,7 +94,21 @@ const Home = () => {
       )
       .then(navigate("/"));
   };
-  console.log("Followers: ", followers);
+
+  const handlePostDelete = async (postID) => {
+    console.log("Delete post: ", postID);
+
+    try {
+      const deletedPostID = await deleteArticle(postID);
+      console.log("Post deleted: ", deletedPostID);
+
+      setArticles((prev) =>
+        prev.filter((article) => article._id !== deletedPostID)
+      );
+    } catch (err) {
+      console.log("Post Delete Error: ", err.message);
+    }
+  };
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -98,7 +117,6 @@ const Home = () => {
   useEffect(() => {
     async function fetchUserDetails() {
       const details = await getUser();
-      console.log("user details: ", details);
       setUserDetails(details);
     }
 
@@ -185,6 +203,7 @@ const Home = () => {
             handleAddComment={handleAddComment}
             comment={comment}
             setComment={setComment}
+            handlePostDelete={handlePostDelete}
           />
         </div>
 
