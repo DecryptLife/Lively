@@ -56,6 +56,8 @@ const NewPost = ({ user, setArticles }) => {
       console.log("New post: ", newPost);
 
       setArticles((prev) => [newPost, ...prev]);
+
+      handleReset();
     } catch (err) {
       console.log("Add Post Error: ", err.message);
     }
