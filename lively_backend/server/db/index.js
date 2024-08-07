@@ -60,10 +60,14 @@ const articleSchema = new mongoose.Schema({
   },
   author: {
     type: String,
-    required: [true, "Authoe can't be empty"],
+    required: [true, "Author can't be empty"],
   },
   author_image: {
     type: String,
+  },
+  author_id: {
+    type: String,
+    required: [true, "Author id required"],
   },
   image: {
     type: Object,

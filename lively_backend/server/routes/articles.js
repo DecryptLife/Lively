@@ -191,6 +191,7 @@ async function addComment(req, res) {
 }
 
 const addArticle = async (req, res) => {
+  const userID = req.user.id;
   const { text, post_image: image = "", author, author_image } = req.body;
 
   let cloudUploadRes;
@@ -206,6 +207,7 @@ const addArticle = async (req, res) => {
       text,
       author,
       author_image,
+      author_id: userID,
       image: cloudUploadRes,
       date: new Date().getTime(),
     });
