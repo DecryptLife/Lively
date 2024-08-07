@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { BASE_URL } from "../../config";
 import { addFollower, removeFriend } from "../../API/followersAPI";
 
@@ -9,19 +8,6 @@ const AddFriend = ({ followers, setFollowers }) => {
   const [invalidUser, setInvalidUser] = useState(null);
   const [addFriend, setAddFriend] = useState("");
 
-  // useEffect(() => {
-  //   async function getFollowing() {
-  //     const response = await axios.get(url("/following"));
-
-  //     const userFollowers = response.data.following;
-
-  //     if (userFollowers.length > 0) {
-  //       setFollowingList(userFollowers);
-  //     }
-  //   }
-
-  //   getFollowing();
-  // }, []);
   const req = [
     require("../../images/img1.png"),
     require("../../images/img2.png"),

@@ -45,10 +45,6 @@ const ShowPosts = ({
     }
   }, [postCommentID]);
 
-  useEffect(() => {
-    if (postFeaturesDisplayed.options) {
-    }
-  }, [postFeaturesDisplayed.options]);
   return (
     <div className="posts-container">
       {articles.length > 0 &&
@@ -58,7 +54,7 @@ const ShowPosts = ({
               <div className="post-header">
                 <img
                   className="post-header-img"
-                  src={article.author_image && article.author_image}
+                  src={article.author_image || ""}
                 ></img>
                 <div className="post-header-details">
                   <span style={{ fontWeight: "bold" }}>{article.author}</span>
@@ -96,7 +92,7 @@ const ShowPosts = ({
               {article.commentsDisplayed && (
                 <div className="comments-list">
                   {article.comments?.map((comment) => (
-                    <div className="comment-item-container">
+                    <div className="comment-item-container" key={comment.id}>
                       <div className="comment-item__img-container">
                         <img
                           className="comment-item__img"

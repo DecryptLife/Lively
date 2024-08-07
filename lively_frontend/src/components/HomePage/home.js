@@ -204,6 +204,7 @@ const Home = () => {
             comment={comment}
             setComment={setComment}
             handlePostDelete={handlePostDelete}
+            userDetails={userDetails}
           />
         </div>
 
