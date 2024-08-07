@@ -1,19 +1,11 @@
-import { BASE_URL } from "../../config";
 import "./profile.css";
-import UpdateInfo from "./updateInfo";
-import UserInfo from "./userInfo";
-import axios from "axios";
-import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { getUser } from "../../API/homeAPI";
 import { updateProfile } from "../../API/profileAPI";
+import transformImage from "../../utils/transformImage";
 
 const Profile = () => {
-  const url = (path) => `${BASE_URL}${path}`;
-
   const [user, setUser] = useState({});
-
-  const [avatar, setAvatar] = useState("");
 
   const [updateDetails, setUpdateDetails] = useState({
     name: "",
@@ -25,56 +17,14 @@ const Profile = () => {
     avatar: "",
   });
 
-  const transformFile = (file) => {
-    const reader = new FileReader();
-
-    if (file) {
-      reader.readAsDataURL(file);
-      reader.onloadend = async () => {
-        const response = await axios.put(
-          url("/avatar"),
-          { avatar: reader.result },
-          {
-            withCredentials: true,
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-
-        setAvatar(response.data.avatar.url);
-      };
-    }
-  };
-
-  const handleChange = (e) => {
-    const fileObj = e.target.files && e.target.files[0];
-
-    if (!fileObj) {
-      return;
-    } else {
-      setAvatar(fileObj);
-      transformFile(fileObj);
-    }
-  };
-
-  const handleImageUpdate = async () => {
-    if (avatar !== "") {
-      let image = { avatar: avatar };
-
-      const response = await axios.put(url("/avatar"), image, {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
-      });
-
-      setAvatar("");
-    }
-  };
-
   const handleProfileChange = (e, field) => {
     console.log("Target element: ", e.target);
-    setUpdateDetails((prev) => ({
-      ...prev,
-      [field]: e.target.value,
-    }));
+
+    if (field === "ima")
+      setUpdateDetails((prev) => ({
+        ...prev,
+        [field]: e.target.value,
+      }));
   };
 
   const handleReset = () => {
@@ -98,6 +48,20 @@ const Profile = () => {
       console.log("Profile page: ", response.data);
     } catch (err) {
       console.log(err.message);
+    }
+  };
+
+  const handleImageSelect = async (e) => {
+    console.log("In image select");
+    try {
+      const [filename, image] = await transformImage(e);
+
+      setUpdateDetails((prev) => ({
+        ...prev,
+        avatar: image,
+      }));
+    } catch (err) {
+      console.log("Profile image error: ", err.message);
     }
   };
 
@@ -231,7 +195,7 @@ const Profile = () => {
                   type="file"
                   id="profile-update-image"
                   style={{ flex: "2" }}
-                  onChange={(e) => handleProfileChange(e, "image")}
+                  onChange={(e) => handleImageSelect(e)}
                 />
               </div>
             </div>
@@ -247,50 +211,3 @@ const Profile = () => {
 };
 
 export default Profile;
-{
-  /* <div className="profile_container1">
-        <div className="profileImgLayout">
-          <img className="profileImg" src={avatar} alt="profile"></img>
-          <br />
-          <span
-            className="profileUname"
-            data-testid="profile_username"
-            value={currUser}
-          >
-            {currUser}
-          </span>
-          <br />
-          <div>
-            <input
-              style={{ display: "none" }}
-              type="file"
-              ref={inputref}
-              onChange={handleChange}
-            ></input>
-            <button className="uploadImgBtn" onClick={() => handleClick()}>
-              Change image
-            </button>
-            <button
-              className="updateImgBtn"
-              onClick={() => handleImageUpdate()}
-            >
-              Update image
-            </button>
-          </div>
-          <button className="home_text">Home</button>
-        </div>
-      </div>
-
-      <div className="uInfoLayout">
-        <UserInfo
-          userDetails={{
-            currUser: currUser,
-            mobile: mobile,
-            dob: dob,
-            zipCode: zipCode,
-            email: email,
-          }}
-        />
-        <UpdateInfo handleUpdate={handleUpdate} />
-      </div> */
-}
