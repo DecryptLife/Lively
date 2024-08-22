@@ -81,7 +81,7 @@ const Profile = () => {
         <div className="profile_container-left">
           <div className="profile-img-container">
             <img src={user.avatar} alt="" />
-            <span style={{ fontWeight: "bolder" }}>Benson</span>
+            <span style={{ fontWeight: "bolder" }}>{user.username}</span>
           </div>
           <div className="profile-details-container">
             <div>
