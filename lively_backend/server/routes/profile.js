@@ -5,7 +5,7 @@ const { default: mongoose } = require("mongoose");
 const asyncHandler = require("express-async-handler");
 
 const { Profile } = require("../db");
-
+const cloudinaryUpload = require("../utils/cloudinaryUpload");
 const { LIVELY_PRESET } = require("../../config");
 const cloudinary = require("../../config/cloudinary");
 
@@ -108,21 +108,27 @@ async function getUserDetails(req, res) {
 }
 
 async function updateDetails(req, res) {
-  let { userID, name: username, ...values } = req.body;
+  let { userID, name: username, avatar, ...values } = req.body;
   values["username"] = username;
   let updatedDetails = {};
 
   for (const [key, value] of Object.entries(values)) {
+    console.log(key, value);
     if (value !== "") updatedDetails[key] = value;
   }
-
   try {
+    if (avatar && avatar !== "") {
+      const cloudinaryRes = await cloudinaryUpload(avatar);
+      updatedDetails["avatar"] = cloudinaryRes.secure_url; // Assuming you want to store the URL returned by Cloudinary
+    }
     const profile = await Profile.findByIdAndUpdate(userID, updatedDetails, {
       new: true, // Return the updated document
       runValidators: true, // Ensure the update adheres to the schema
     });
 
-    return res.status(200).send({ ...profile });
+    console.log("Updated profile: ", profile);
+
+    return res.status(200).send({ ...profile._doc });
   } catch (err) {
     console.log(err.message);
   }

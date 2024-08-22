@@ -6,11 +6,6 @@ const updateProfile = async (userID, newDetails) => {
   console.log("New details: ", newDetails);
   const updatedDetails = { userID, ...newDetails };
 
-  //   updatedDetails["userID"] = userID;
-  //   for (let [key, value] of Object.entries(newDetails)) {
-  //     if (value !== "") updatedDetails[key] = value;
-  //   }
-
   console.log("Updated details: ", updatedDetails);
 
   try {
@@ -18,6 +13,8 @@ const updateProfile = async (userID, newDetails) => {
       `${BASE_URL}/userDetails`,
       updatedDetails
     );
+
+    console.log("Updated details API: ", response);
     return response;
   } catch (err) {
     console.log(err.message);
