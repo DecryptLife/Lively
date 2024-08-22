@@ -54,19 +54,14 @@ const profileSchema = new mongoose.Schema({
 });
 
 const articleSchema = new mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
   text: {
     type: String,
     required: [true, "Post body can't be empty"],
   },
   author: {
-    type: String,
-    required: [true, "Author can't be empty"],
-  },
-  author_image: {
-    type: String,
-  },
-  author_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Profile",
     required: [true, "Author id required"],
   },
   image: {
@@ -75,8 +70,9 @@ const articleSchema = new mongoose.Schema({
   date: {
     type: Date,
     required: [true, "Posted date is required"],
+    default: Date.now,
   },
-  comments: [],
+  commentsID: [],
 });
 
 const commentsSchema = new mongoose.Schema({

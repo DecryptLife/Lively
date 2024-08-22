@@ -12,6 +12,8 @@ const getUser = async () => {
 const getArticles = async () => {
   try {
     const res = await axios.get(`${BASE_URL}/articles`);
+
+    console.log("Articles response: ", res);
     return res.data.articles;
   } catch (err) {
     console.log(err);

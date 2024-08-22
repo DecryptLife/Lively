@@ -45,8 +45,6 @@ const NewPost = ({ user, setArticles }) => {
 
   const handleAddPost = async () => {
     const newArticle = {
-      author: user.username,
-      author_image: user.avatar,
       text: postContent.text,
       post_image: postContent.image,
     };
@@ -101,47 +99,6 @@ const NewPost = ({ user, setArticles }) => {
         <button onClick={() => handleAddPost()}>Post</button>
       </div>
     </div>
-    // <div className="addPostLayout">
-    //   <div className="newPostLayout">
-    //     <div className="imagePostContainer">
-    //       <div className="addImage" id="addImageLayout">
-    //         <input
-    //           style={{ display: "none" }}
-    //           type="file"
-    //           ref={inputref}
-    //           onChange={handleChange}
-    //         ></input>
-    //         <button className="addImageBtn" onClick={() => handleClick()}>
-    //           {addImage}
-    //         </button>
-    //       </div>
-    //       <div className="addPost">
-    //         <textarea
-    //           className="addPostField"
-    //           placeholder="Post new content"
-    //           value={postContent}
-    //           onChange={(e) => setPostContent(e.target.value)}
-    //         ></textarea>
-    //       </div>
-    //     </div>
-    //   </div>
-
-    //   <div className="postBtnLayout">
-    //     <div className="postBtnsContainer">
-    //       <button className="cancelPostBtn" onClick={() => handleCancel()}>
-    //         Cancel
-    //       </button>
-    //       <button
-    //         className="postBtn"
-    //         onClick={() => {
-    //           handlePost(postContent, setPostContent, postImage, setPostImage);
-    //         }}
-    //       >
-    //         Post
-    //       </button>
-    //     </div>
-    //   </div>
-    // </div>
   );
 };
 

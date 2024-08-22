@@ -7,6 +7,7 @@ const { LIVELY_PRESET } = require("../../config");
 
 // const LIVELY_PRESET = process.env.LIVELY_PRESET;
 const cloudinary = require("../../config/cloudinary");
+const { Mongoose, default: mongoose } = require("mongoose");
 
 async function getArticles(req, res) {
   const username = req.user.username;
@@ -28,11 +29,20 @@ async function getArticles(req, res) {
 
         const articles = await Article.find({
           author: { $in: articleAuthors },
-        }).sort({ date: -1 });
+        })
+          .populate("authorID", "username avatar")
+          .sort({ date: -1 });
 
-        // console.log("Articles: ", articles);
+        const fromattedArticles = articles.map((article) => {
+          return {
+            ...article.toObject(),
+            author: article.authorID.username,
+            avatar: article.authorID.avatar,
+            authorID: article.authorID._id,
+          };
+        });
 
-        res.status(200).send({ articles: articles });
+        res.status(200).send({ articles: fromattedArticles });
       }
     });
   } catch (err) {
@@ -192,7 +202,7 @@ async function addComment(req, res) {
 
 const addArticle = async (req, res) => {
   const userID = req.user.id;
-  const { text, post_image: image = "", author, author_image } = req.body;
+  const { text, post_image: image = "" } = req.body;
 
   let cloudUploadRes;
   try {
@@ -203,11 +213,11 @@ const addArticle = async (req, res) => {
           })
         : "";
 
+    const postID = new mongoose.Types.ObjectId();
     const newArticle = new Article({
+      _id: postID,
       text,
-      author,
-      author_image,
-      author_id: userID,
+      authorID: userID,
       image: cloudUploadRes,
       date: new Date().getTime(),
     });

@@ -2,23 +2,20 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Status from "./status";
 import "./home.css";
-import axios from "axios";
 import ShowPosts from "./showPosts";
 import NewPost from "./newPost";
 import Followers from "./Followers";
 import AddFriend from "./addFriend";
 import Pagination from "./Pagination";
+import { logoutUser } from "../../API/loginAPI";
 import {
   getUser,
   getArticles,
   addComment,
   deleteArticle,
 } from "../../API/homeAPI";
-import { BASE_URL } from "../../config";
 
 const Home = () => {
-  const url = (path) => `${BASE_URL}${path}`;
-
   const navigate = useNavigate();
 
   const [searchPost, setSearchPost] = useState("");
@@ -56,7 +53,7 @@ const Home = () => {
     };
 
     try {
-      const response = await addComment(articleID, commentContent);
+      await addComment(articleID, commentContent);
 
       setArticles((prev) =>
         prev.map((article) => {
@@ -81,18 +78,14 @@ const Home = () => {
     setIsDialogOpen((prev) => !prev);
   };
 
-  const logout = () => {
-    axios
-      .put(
-        url("logout"),
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then(navigate("/"));
+  const logout = async () => {
+    try {
+      await logoutUser();
+
+      navigate("/");
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   const handlePostDelete = async (postID) => {
@@ -162,6 +155,7 @@ const Home = () => {
                   updatedArticle.image &&
                   updatedArticle.image.url
                 }
+                alt="change post"
                 width={80}
                 height={80}
               ></img>
