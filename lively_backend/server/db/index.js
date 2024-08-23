@@ -59,7 +59,7 @@ const articleSchema = new mongoose.Schema({
     type: String,
     required: [true, "Post body can't be empty"],
   },
-  author: {
+  authorID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Profile",
     required: [true, "Author id required"],

@@ -13,6 +13,7 @@ dotenv.config();
 console.log("Inside auth route");
 
 async function register(req, res) {
+  console.log("Inside register endpoint");
   let username = req.body.username;
   let email = req.body.email;
   let headline = "Please update your headline";
@@ -33,6 +34,7 @@ async function register(req, res) {
   const user = await User.findOne({ username });
 
   if (user) {
+    console.log("User already exists");
     res.status(403).json({ message: "User already exists" });
   } else {
     const userID = new mongoose.Types.ObjectId();

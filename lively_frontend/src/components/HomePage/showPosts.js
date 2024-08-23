@@ -29,7 +29,7 @@ const ShowPosts = ({
 
   return (
     <div className="posts-container">
-      {articles.length > 0 &&
+      {articles.length > 0 ? (
         articles.map((article) => {
           return (
             <div className="post-item" key={article._id}>
@@ -37,7 +37,7 @@ const ShowPosts = ({
                 <img
                   className="post-header-img"
                   alt={`${article.author}'s display`}
-                  src={article.author_image || ""}
+                  src={article.avatar || ""}
                 ></img>
                 <div className="post-header-details">
                   <span style={{ fontWeight: "bold" }}>{article.author}</span>
@@ -119,7 +119,12 @@ const ShowPosts = ({
               )}
             </div>
           );
-        })}
+        })
+      ) : (
+        <div>
+          <h2>No posts yet!</h2>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const asyncHandler = require("express-async-handler");
-
+const mongoosw = require("mongoose");
 const { Profile, Article } = require("../db");
 const { LIVELY_PRESET } = require("../../config");
 
@@ -22,16 +22,21 @@ async function getArticles(req, res) {
           (follower) => follower.username
         );
 
-        // console.log("Followers: ", followers);
-        const articleAuthors = [username, ...followers];
+        console.log("Profile id: ", profile._id);
 
+        // console.log("Followers: ", followers);
+        const articleAuthors = [profile._id, ...followers];
+
+        console.log("Article authors: ", articleAuthors);
         // console.log("All authors: ", articleAuthors);
 
         const articles = await Article.find({
-          author: { $in: articleAuthors },
+          authorID: { $in: articleAuthors },
         })
           .populate("authorID", "username avatar")
           .sort({ date: -1 });
+
+        console.log("Articles: ", articles);
 
         const fromattedArticles = articles.map((article) => {
           return {
@@ -201,6 +206,7 @@ async function addComment(req, res) {
 }
 
 const addArticle = async (req, res) => {
+  console.log("In add article endpoint: ", req.user);
   const userID = req.user.id;
   const { text, post_image: image = "" } = req.body;
 
@@ -214,18 +220,34 @@ const addArticle = async (req, res) => {
         : "";
 
     const postID = new mongoose.Types.ObjectId();
+    const authorID = new mongoose.Types.ObjectId(req.user.id);
+
+    console.log("Author ID: ", authorID);
     const newArticle = new Article({
       _id: postID,
       text,
-      authorID: userID,
+      authorID,
       image: cloudUploadRes,
       date: new Date().getTime(),
     });
 
-    const response = await newArticle.save();
+    const savedArticle = await newArticle.save();
 
-    console.log("New Post: ", response);
-    res.status(200).send({ article: response });
+    const populatedArticle = await savedArticle.populate(
+      "authorID",
+      "username avatar"
+    );
+
+    const formattedArticle = {
+      ...populatedArticle.toObject(),
+      author: populatedArticle.authorID.username,
+      avatar: populatedArticle.authorID.avatar,
+      authorID: populatedArticle.authorID._id,
+    };
+
+    console.log("formatted: ", formattedArticle);
+
+    res.status(200).send({ article: formattedArticle });
   } catch (error) {
     console.log("Error: ", error.message);
   }
