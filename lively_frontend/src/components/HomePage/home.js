@@ -19,7 +19,6 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [searchPost, setSearchPost] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
 
   const [comment, setComment] = useState("");
 
@@ -101,10 +100,6 @@ const Home = () => {
     } catch (err) {
       console.log("Post Delete Error: ", err.message);
     }
-  };
-
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
   };
 
   useEffect(() => {
@@ -201,14 +196,6 @@ const Home = () => {
             userDetails={userDetails}
           />
         </div>
-
-        <Pagination
-          className="paginationLayout"
-          postsPerPage={10}
-          totalPosts={10}
-          paginate={paginate}
-        ></Pagination>
-        <div className="paginationLayout"></div>
       </div>
     </div>
   );
