@@ -1,28 +1,57 @@
 const app = require("express");
-
+const mongoose = require("mongoose");
 const { User, Profile, Article } = require("../db");
 
-async function getFollowing(req, res) {
-  const username = req.user.username;
+// async function getFollowing(req, res) {
+//   const username = req.user.username;
 
-  // no user given find the followers of logged in user
-  const profile = await Profile.findOne({ username });
+//   // no user given find the followers of logged in user
+//   const profile = await Profile.findOne({ username });
 
-  if (profile) {
-    const followersID = profile["following"].map((follower) => follower._id);
-    // console.log("Followers IDs: ", followersID);
-    const followers_details = await Profile.find({
-      _id: { $in: followersID },
-    });
+//   if (profile) {
+//     const followersID = profile["following"].map((follower) => follower._id);
+//     const followers_details = await Profile.find({
+//       _id: { $in: followersID },
+//     });
 
-    if (followers_details) {
-      let msg = { following: followers_details };
+//     if (followers_details) {
+//       let msg = { following: followers_details };
+//       res.status(200).send(msg);
+//     } else {
+//       return res.status(400).send("No followers for this user yet");
+//     }
+//   }
+// }
 
-      // console.log("Follower details: ", msg);
-      res.status(200).send(msg);
-    } else {
-      return res.status(400).send("No followers for this user yet");
-    }
+async function getFollowersByID(req, res) {
+  // if (profile) {
+  //   const followersID = profile["following"].map((follower) => follower._id);
+  //   const followers_details = await Profile.find({
+  //     _id: { $in: followersID },
+  //   });
+  //   if (followers_details) {
+  //     let msg = { following: followers_details };
+  //     res.status(200).send(msg);
+  //   } else {
+  //     return res.status(400).send("No followers for this user yet");
+  //   }
+  // }
+
+  console.log("ID list: ", req.user);
+  const userID = req.user.id;
+
+  try {
+    const profile = await Profile.findById(userID);
+    const followerDetails = await Profile.find(
+      {
+        _id: { $in: profile.following },
+      },
+      "username avatar _id"
+    );
+
+    res.status(200).send({ followers: followerDetails });
+  } catch (err) {
+    console.log("Get followers by id error: ", err.message);
   }
 }
 
@@ -32,12 +61,14 @@ async function addFollower(req, res) {
 
   try {
     const followerDetails = await Profile.findOne({ username: followerName });
-    const { _id, username, avatar } = followerDetails;
+    const { _id } = followerDetails;
 
     const userProfile = await Profile.findById(userID);
     const userFollowers = userProfile.following;
 
-    const newFollowers = [...userFollowers, { _id, username, avatar }];
+    const followerID = mongoose.Types.ObjectId(_id);
+    const newFollowers = [...userFollowers, followerID];
+
     const modifiedProfile = await Profile.findByIdAndUpdate(
       userID,
       {
@@ -45,8 +76,6 @@ async function addFollower(req, res) {
       },
       { new: true }
     );
-
-    console.log("Modified profile: ", modifiedProfile);
 
     res.status(200).send({ following: modifiedProfile.following });
   } catch (err) {
@@ -65,8 +94,6 @@ async function removeFollower(req, res) {
       (follower) => follower._id.toString() !== followerID
     );
 
-    console.log("New followers: ", new_followers);
-
     const new_profile = await Profile.findByIdAndUpdate(
       userID,
       {
@@ -74,8 +101,6 @@ async function removeFollower(req, res) {
       },
       { new: true }
     );
-
-    console.log("After removal: ", new_profile);
 
     if (new_profile) {
       let msg = { following: new_profile.following };
@@ -108,7 +133,8 @@ async function getFollowersDetails(req, res) {
 
 module.exports = (app) => {
   app.patch("/following/:follower?", addFollower);
-  app.get("/following/:user?", getFollowing);
+  // app.get("/following/:user?", getFollowing);
+  app.get("/following", getFollowersByID);
   app.get("/followersDetails", getFollowersDetails);
   app.delete("/following/:followerID?", removeFollower);
 };

@@ -1,11 +1,13 @@
 import axios from "axios";
 import { BASE_URL } from "../config";
 
-const getFollowers = async () => {
+const getFollowers = async (followerIDs) => {
   try {
-    const response = await axios.get(`${BASE_URL}/following`);
+    const response = await axios.get(`${BASE_URL}/following`, followerIDs);
 
     console.log("Followers API: followers - ", response);
+
+    return response.data.followers;
   } catch (err) {
     console.log("Error: ", err.message);
   }

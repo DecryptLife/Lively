@@ -6,8 +6,8 @@ import ShowPosts from "./showPosts";
 import NewPost from "./newPost";
 import Followers from "./Followers";
 import AddFriend from "./addFriend";
-import Pagination from "./Pagination";
 import { logoutUser } from "../../API/loginAPI";
+import { getFollowers } from "../../API/followersAPI";
 import {
   getUser,
   getArticles,
@@ -23,7 +23,8 @@ const Home = () => {
   const [comment, setComment] = useState("");
 
   const [userDetails, setUserDetails] = useState("");
-  const [followers, setFollowers] = useState([]);
+  const [followersList, setFollowersList] = useState([]);
+  const [followerDetails, setFollowerDetails] = useState([]);
 
   const [updatedArticle, setUpdatedArticle] = useState();
   const [displayArticles, setDisplayArticles] = useState([]);
@@ -123,12 +124,23 @@ const Home = () => {
       );
     }
 
+    async function fetchFollowerDetails() {
+      const followersInfo = await getFollowers(followersList);
+
+      console.log("Fetching Follower details: ", followersInfo);
+
+      setFollowerDetails(followersInfo);
+    }
+
     fetchArticles();
-  }, [followers]);
+    fetchFollowerDetails();
+  }, [followersList]);
 
   useEffect(() => {
-    setFollowers(userDetails.following);
+    setFollowersList(userDetails.following);
   }, [userDetails]);
+
+  console.log("Followers: ", followersList);
 
   useEffect(() => {
     setDisplayArticles(articles);
@@ -167,7 +179,10 @@ const Home = () => {
       <div className="home_container-left">
         <Status handleLogout={logout} />
 
-        <AddFriend followers={followers} setFollowers={setFollowers} />
+        <AddFriend
+          followersDetails={followerDetails}
+          setFollowersList={setFollowersList}
+        />
       </div>
       <div className="home_container-right">
         <div className="home_container-right-top">

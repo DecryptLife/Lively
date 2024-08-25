@@ -66,7 +66,6 @@ async function login(req, res) {
   console.log("In login request");
   const { username, password } = req.body;
 
-  console.log("Req body: ", req.body);
   if (!username || !password)
     return res.status(400).send("Missing username or password");
 

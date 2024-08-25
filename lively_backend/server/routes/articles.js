@@ -22,12 +22,9 @@ async function getArticles(req, res) {
           (follower) => follower.username
         );
 
-        console.log("Profile id: ", profile._id);
-
         // console.log("Followers: ", followers);
         const articleAuthors = [profile._id, ...followers];
 
-        console.log("Article authors: ", articleAuthors);
         // console.log("All authors: ", articleAuthors);
 
         const articles = await Article.find({
@@ -35,8 +32,6 @@ async function getArticles(req, res) {
         })
           .populate("authorID", "username avatar")
           .sort({ date: -1 });
-
-        console.log("Articles: ", articles);
 
         const fromattedArticles = articles.map((article) => {
           return {
@@ -206,7 +201,6 @@ async function addComment(req, res) {
 }
 
 const addArticle = async (req, res) => {
-  console.log("In add article endpoint: ", req.user);
   const userID = req.user.id;
   const { text, post_image: image = "" } = req.body;
 
@@ -222,7 +216,6 @@ const addArticle = async (req, res) => {
     const postID = new mongoose.Types.ObjectId();
     const authorID = new mongoose.Types.ObjectId(req.user.id);
 
-    console.log("Author ID: ", authorID);
     const newArticle = new Article({
       _id: postID,
       text,
@@ -245,8 +238,6 @@ const addArticle = async (req, res) => {
       authorID: populatedArticle.authorID._id,
     };
 
-    console.log("formatted: ", formattedArticle);
-
     res.status(200).send({ article: formattedArticle });
   } catch (error) {
     console.log("Error: ", error.message);
@@ -256,13 +247,10 @@ const addArticle = async (req, res) => {
 const deleteArticle = async (req, res) => {
   const postID = req.params.id;
 
-  console.log("Article to be deleted: ", postID);
-
   Article.findByIdAndDelete(postID, (err, docs) => {
     if (err) {
       console.log("Post Delete Error: ", err.message);
     } else {
-      console.log("Deleted: ", docs);
       res.status(200).send(docs);
     }
   });

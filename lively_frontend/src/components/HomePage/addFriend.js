@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { BASE_URL } from "../../config";
 import { addFollower, removeFriend } from "../../API/followersAPI";
 
-const AddFriend = ({ followers, setFollowers }) => {
+const AddFriend = ({ followersDetails, setFollowersList }) => {
   const url = (path) => `${BASE_URL}${path}`;
   const [isEmpty, setIsEmpty] = useState(null);
   const [invalidUser, setInvalidUser] = useState(null);
@@ -21,11 +21,12 @@ const AddFriend = ({ followers, setFollowers }) => {
     require("../../images/img10.png"),
   ];
 
+  console.log("Add friend: ", followersDetails);
   const handleRemoveFriend = async (followerID) => {
     try {
       const updatedFollowerList = await removeFriend(followerID);
 
-      setFollowers(updatedFollowerList);
+      setFollowersList(updatedFollowerList);
     } catch (err) {
       console.log("Error: ", err.message);
     }
@@ -34,7 +35,7 @@ const AddFriend = ({ followers, setFollowers }) => {
   const addNewFriend = async (e) => {
     try {
       const updatedFollowerList = await addFollower(addFriend);
-      setFollowers(updatedFollowerList);
+      setFollowersList(updatedFollowerList);
       setAddFriend("");
     } catch (err) {
       console.log("Error: ", err.message);
@@ -46,8 +47,8 @@ const AddFriend = ({ followers, setFollowers }) => {
       <h3>Follow users</h3>
       <div className="add-friend-list">
         {/* {followingList.length > 0 ? friends : <h4>Not following any user</h4>} */}
-        {followers &&
-          followers.map((follower) => (
+        {followersDetails && followersDetails.length > 0 ? (
+          followersDetails.map((follower) => (
             <div className="friend-list-item" key={follower._id}>
               <img
                 className="follower-image"
@@ -63,7 +64,10 @@ const AddFriend = ({ followers, setFollowers }) => {
                 Remove
               </button>
             </div>
-          ))}
+          ))
+        ) : (
+          <h6>Not following any user</h6>
+        )}
       </div>
       <div className="friend-search-container">
         <div>

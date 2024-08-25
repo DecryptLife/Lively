@@ -113,7 +113,6 @@ async function updateDetails(req, res) {
   let updatedDetails = {};
 
   for (const [key, value] of Object.entries(values)) {
-    console.log(key, value);
     if (value !== "") updatedDetails[key] = value;
   }
   try {
@@ -126,8 +125,6 @@ async function updateDetails(req, res) {
       runValidators: true, // Ensure the update adheres to the schema
     });
 
-    console.log("Updated profile: ", profile);
-
     return res.status(200).send({ ...profile._doc });
   } catch (err) {
     console.log(err.message);
@@ -137,11 +134,6 @@ async function updateDetails(req, res) {
 module.exports = (app) => {
   app.get("/headline/:user?", getHeadline);
   app.put("/headline", updateHeadline);
-  // app.get("/email/:user?", getEmail);
-  // app.put("/email", updateEmail);
-  // app.get("/dob/:user?", getDOB);
-  // app.get("/zipcode/:user?", getZipCode);
-  // app.put("/zipcode", updateZipCode);
   app.get("/avatar/:user?", getAvatar);
   app.get("/userDetails", getUserDetails);
   app.patch("/userDetails", updateDetails);
