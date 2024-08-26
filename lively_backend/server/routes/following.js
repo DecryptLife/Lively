@@ -37,7 +37,6 @@ async function getFollowersByID(req, res) {
   //   }
   // }
 
-  console.log("ID list: ", req.user);
   const userID = req.user.id;
 
   try {

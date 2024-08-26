@@ -113,9 +113,11 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    console.log("New friend added");
     async function fetchArticles() {
+      console.log("Fetching articles");
       const articles = await getArticles();
-
+      console.log("Articles after fetching: ", articles);
       setArticles(
         articles.map((article) => ({
           ...article,
