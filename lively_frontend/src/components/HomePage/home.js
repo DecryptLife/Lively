@@ -6,7 +6,6 @@ import ShowPosts from "./showPosts";
 import NewPost from "./newPost";
 import Followers from "./Followers";
 import AddFriend from "./addFriend";
-import { logoutUser } from "../../API/loginAPI";
 import { getFollowers } from "../../API/followersAPI";
 import {
   getUser,
@@ -60,7 +59,7 @@ const Home = () => {
           if (article._id === articleID) {
             return {
               ...article,
-              comments: [...article.comments, commentContent],
+              comments: [...article.commentsID, commentContent],
             };
           }
           return article;
@@ -76,16 +75,6 @@ const Home = () => {
   const handleOptionsClick = (article) => {
     setUpdatedArticle(article);
     setIsDialogOpen((prev) => !prev);
-  };
-
-  const logout = async () => {
-    try {
-      await logoutUser();
-
-      navigate("/");
-    } catch (err) {
-      console.log(err.message);
-    }
   };
 
   const handlePostDelete = async (postID) => {
@@ -179,7 +168,7 @@ const Home = () => {
         </div>
       )}
       <div className="home_container-left">
-        <Status handleLogout={logout} />
+        <Status />
 
         <AddFriend
           followersDetails={followerDetails}

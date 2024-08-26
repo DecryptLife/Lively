@@ -179,17 +179,21 @@ async function addComment(req, res) {
 
   if (article) {
     // prepare the comment content
+    console.log("Article found");
 
-    let prevComments = article["comments"];
+    let prevComments = article["commentsID"];
+    console.log("Prev comments: ", prevComments);
 
     let updatedComments = prevComments.concat(comment);
-
+    console.log("Updated comments: ", updatedComments);
     try {
       const response = await Article.findByIdAndUpdate(
         pid,
-        { comments: updatedComments },
+        { commentsID: updatedComments },
         { new: true }
       );
+
+      console.log("Comment response: ", response);
       res.status(200).send({ msg: "success" });
     } catch (err) {
       console.log("error adding the comment");

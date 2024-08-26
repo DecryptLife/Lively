@@ -19,7 +19,7 @@ export const loginUser = async (userDetails) => {
 };
 
 export const logoutUser = async () => {
-  return await axios.post(`${BASE_URL}/logout`).then((res) => {
+  return await axios.put(`${BASE_URL}/logout`).then((res) => {
     console.log("User logged out: ", res.message);
   });
 };

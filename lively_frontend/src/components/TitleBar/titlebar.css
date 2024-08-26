@@ -1,26 +1,49 @@
-.title_container{
-    display: flex;
-    background-color: hsl(165, 26%, 15%);
-    height: 3rem;
-    color: wheat;
-    font-size: large;
+.title_container {
+  display: flex;
+  background-color: hsl(165, 26%, 15%);
+  height: 3rem;
+  color: wheat;
+  font-size: large;
+  position: relative;
 }
 
-
-.title_container__left{
-    flex-grow: 1;
-    column-gap: 10px;
+.title_container__left {
+  flex-grow: 1;
+  column-gap: 10px;
 }
 
-.title_container__center{
-    flex-grow: 2;
+.title_container__center {
+  flex-grow: 2;
 }
 
-.title_container__right{
-    flex-grow: 1;
-    column-gap: 10px;
+.title_container__right {
+  flex-grow: 1;
+  column-gap: 10px;
 }
 
 .titlebar_item {
-    cursor: pointer;
+  cursor: pointer;
+}
+
+.settings-content {
+  position: absolute;
+  top: 3rem;
+  right: 0;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+}
+
+.settings-content a {
+  color: black;
+  text-decoration: none;
+  background-color: white;
+  padding: 0.5rem 5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-content a:hover {
+  background-color: hsl(165, 26%, 90%);
+  color: black;
 }

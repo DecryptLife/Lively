@@ -124,18 +124,24 @@ const changePassword = (req, res) => {
 };
 
 const logout = (req, res) => {
-  if (!req.cookies) return res.sendStatus(401);
-  // let sid = req.cookies[cookieKey];
-  if (req.isAuthenticated()) {
-    req.logOut();
-  }
-  // if (!req.cookies) return res.sendStatus(401);
+  console.log("In logout function");
 
-  res.clearCookie(cookieKey, { sameSite: "none", secure: true });
-  // delete sessionUser(sid);
-  let msg = "OK";
-  res.send(msg);
-  res.end();
+  // Check if the token cookie exists
+  if (!req.cookies || !req.cookies.token) {
+    return res
+      .status(401)
+      .json({ error: "No token provided. User not logged in." });
+  }
+
+  // Clear the JWT cookie by setting it to expire
+  res.clearCookie("token", {
+    httpOnly: true, // Ensures the cookie is not accessible via JavaScript
+    sameSite: "none", // Allows cross-site cookie usage (if applicable)
+    secure: true, // Ensures the cookie is only sent over HTTPS
+  });
+
+  // Send a response confirming the logout
+  res.status(200).json({ message: "Logged out successfully" });
 };
 
 module.exports = (app) => {

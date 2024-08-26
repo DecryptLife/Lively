@@ -1,9 +1,37 @@
 import "./titlebar.css";
 import "../../styles/styles.css";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { logoutUser } from "../../API/loginAPI";
+
+// export const Settings = () => {
+//   return (
+//     <div className="settings-container">
+//       <ul>
+//         <li>Logout</li>
+//       </ul>
+//     </div>
+//   );
+// };
 
 const TitleBar = () => {
   const navigate = useNavigate("");
+
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const toggleSettings = () => {
+    setIsSettingsOpen((prev) => !prev);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+
+      navigate("/");
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   const handleNavigation = (page) => {
     switch (page) {
@@ -47,10 +75,18 @@ const TitleBar = () => {
           <span>Friends</span>
         </div>
 
-        <div className="titlebar_item">
+        <div className="titlebar_item" onClick={toggleSettings}>
           <span>Settings</span>
         </div>
       </div>
+      {isSettingsOpen && (
+        <div className="settings-content">
+          <a href="">Account Settings</a>
+          <a href="#" onClick={handleLogout}>
+            Logout
+          </a>
+        </div>
+      )}
     </div>
   );
 };

@@ -72,6 +72,7 @@ const ShowPosts = ({
                   <div
                     className="options-container"
                     data-id="2345"
+                    key={article.authorID.date}
                     onClick={() => handleOptionsClick(article)}
                   >
                     <span>Options</span>
@@ -80,7 +81,7 @@ const ShowPosts = ({
               </div>
               {article.commentsDisplayed && (
                 <div className="comments-list">
-                  {article.comments?.map((comment) => (
+                  {article.commentsID?.map((comment) => (
                     <div className="comment-item-container" key={comment.id}>
                       <div className="comment-item__img-container">
                         <img
