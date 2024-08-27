@@ -51,8 +51,6 @@ const NewPost = ({ user, setArticles }) => {
     try {
       const newPost = await addPost(newArticle);
 
-      console.log("New post: ", newPost);
-
       setArticles((prev) => [newPost, ...prev]);
 
       handleReset();
@@ -76,7 +74,10 @@ const NewPost = ({ user, setArticles }) => {
             ref={inputref}
             onChange={(e) => handleFileSelect(e)}
           ></input>
-          <button className="addImageBtn" onClick={() => handleImageSelect()}>
+          <button
+            className="add-post__image-btn"
+            onClick={() => handleImageSelect()}
+          >
             {imageText}
           </button>
         </div>

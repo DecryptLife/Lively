@@ -18,8 +18,6 @@ const Profile = () => {
   });
 
   const handleProfileChange = (e, field) => {
-    console.log("Target element: ", e.target);
-
     if (field === "ima")
       setUpdateDetails((prev) => ({
         ...prev,
@@ -44,15 +42,12 @@ const Profile = () => {
   const handleProfileUpdate = async () => {
     try {
       const response = await updateProfile(user._id, updateDetails);
-
-      console.log("Profile page: ", response.data);
     } catch (err) {
       console.log(err.message);
     }
   };
 
   const handleImageSelect = async (e) => {
-    console.log("In image select");
     try {
       const [filename, image] = await transformImage(e);
 
@@ -69,7 +64,6 @@ const Profile = () => {
     async function fetchUserDetails() {
       const userDetails = await getUser();
 
-      console.log("Profile user details: ", userDetails);
       setUser(userDetails);
     }
 

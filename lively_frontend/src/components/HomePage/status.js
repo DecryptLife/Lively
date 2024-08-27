@@ -4,7 +4,7 @@ import { BASE_URL } from "../../config";
 import { getHeadline, getAvatar } from "../../API/homeAPI";
 import { updateStatus } from "../../API/homeAPI";
 
-const Status = ({ goToProfile }) => {
+const Status = () => {
   const req = [
     require("../../images/img1.png"),
     require("../../images/img2.png"),
@@ -17,7 +17,6 @@ const Status = ({ goToProfile }) => {
     require("../../images/img9.png"),
     require("../../images/img10.png"),
   ];
-  const url = (path) => `${BASE_URL}${path}`;
 
   const [avatar, setAvatar] = useState("");
   const [status, setUStatus] = useState("");
@@ -57,7 +56,7 @@ const Status = ({ goToProfile }) => {
   return (
     <div className="home_profile">
       <img
-        className="homeImg"
+        className="home__profile-img"
         id="user_image"
         alt="profile pic"
         src={avatar !== "" ? avatar : req[1]}

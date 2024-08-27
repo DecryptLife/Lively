@@ -21,7 +21,6 @@ const AddFriend = ({ followersDetails, setFollowersList }) => {
     require("../../images/img10.png"),
   ];
 
-  console.log("Add friend: ", followersDetails);
   const handleRemoveFriend = async (followerID) => {
     try {
       const updatedFollowerList = await removeFriend(followerID);

@@ -11,7 +11,7 @@ export const loginUser = async (userDetails) => {
         },
       })
       .then((res) => {
-        console.log("Login result: ", res);
+        // console.log("Login result: ", res);
       });
   } catch (err) {
     console.log("Login error: " + err.message);

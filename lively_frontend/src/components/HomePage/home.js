@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Status from "./status";
 import "./home.css";
 import ShowPosts from "./showPosts";
@@ -15,8 +14,6 @@ import {
 } from "../../API/homeAPI";
 
 const Home = () => {
-  const navigate = useNavigate();
-
   const [searchPost, setSearchPost] = useState("");
 
   const [comment, setComment] = useState("");
@@ -78,11 +75,8 @@ const Home = () => {
   };
 
   const handlePostDelete = async (postID) => {
-    console.log("Delete post: ", postID);
-
     try {
       const deletedPostID = await deleteArticle(postID);
-      console.log("Post deleted: ", deletedPostID);
 
       setArticles((prev) =>
         prev.filter((article) => article._id !== deletedPostID)
@@ -102,11 +96,8 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log("New friend added");
     async function fetchArticles() {
-      console.log("Fetching articles");
       const articles = await getArticles();
-      console.log("Articles after fetching: ", articles);
       setArticles(
         articles.map((article) => ({
           ...article,
@@ -118,8 +109,6 @@ const Home = () => {
     async function fetchFollowerDetails() {
       const followersInfo = await getFollowers(followersList);
 
-      console.log("Fetching Follower details: ", followersInfo);
-
       setFollowerDetails(followersInfo);
     }
 
@@ -130,8 +119,6 @@ const Home = () => {
   useEffect(() => {
     setFollowersList(userDetails.following);
   }, [userDetails]);
-
-  console.log("Followers: ", followersList);
 
   useEffect(() => {
     setDisplayArticles(articles);
