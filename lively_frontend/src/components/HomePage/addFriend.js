@@ -43,7 +43,7 @@ const AddFriend = ({ followersDetails, setFollowersList }) => {
 
   return (
     <div className="flex-col add-friend-layout">
-      <h3>Follow users</h3>
+      <h3 style={{ textAlign: "center" }}>Follow users</h3>
       <div className="add-friend-list">
         {/* {followingList.length > 0 ? friends : <h4>Not following any user</h4>} */}
         {followersDetails && followersDetails.length > 0 ? (
@@ -54,7 +54,9 @@ const AddFriend = ({ followersDetails, setFollowersList }) => {
                 src={follower.avatar}
                 style={{ flex: 1 }}
               ></img>
-              <span style={{ flex: 3 }}>{follower.username}</span>
+              <span style={{ flex: 3, marginLeft: "0.5rem" }}>
+                {follower.username}
+              </span>
               <button
                 className="follower-button__remove"
                 style={{ flex: 1 }}

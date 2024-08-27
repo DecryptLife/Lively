@@ -67,7 +67,7 @@ const NewPost = ({ user, setArticles }) => {
   return (
     <div className="flex-col add-post-container">
       <div className="add-post__content">
-        <div className="add-post__image">
+        <div style={{ width: "30%" }}>
           <input
             style={{ display: "none" }}
             type="file"
@@ -81,7 +81,7 @@ const NewPost = ({ user, setArticles }) => {
             {imageText}
           </button>
         </div>
-        <div className="add-post__text">
+        <div style={{ width: "70%" }}>
           <textarea
             placeholder="Add text"
             className="add-post__text-input"

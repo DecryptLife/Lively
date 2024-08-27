@@ -96,7 +96,7 @@ const ShowPosts = ({
                         <span className="comment-item__author">
                           {comment.author}
                         </span>
-                        <span className="comment-item__content">
+                        <span style={{ fontSize: "medium" }}>
                           {comment.comment}
                         </span>
                       </div>
