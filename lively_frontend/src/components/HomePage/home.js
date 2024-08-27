@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Status from "./status";
 import "./home.css";
 import ShowPosts from "./showPosts";
@@ -14,18 +14,23 @@ import {
 } from "../../API/homeAPI";
 
 const Home = () => {
+  console.log("Home rendered");
+  const isInitialMount = useRef(true);
   const [searchPost, setSearchPost] = useState("");
 
   const [comment, setComment] = useState("");
 
-  const [userDetails, setUserDetails] = useState("");
   const [followersList, setFollowersList] = useState([]);
-  const [followerDetails, setFollowerDetails] = useState([]);
 
   const [updatedArticle, setUpdatedArticle] = useState();
-  const [displayArticles, setDisplayArticles] = useState([]);
   const [articles, setArticles] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const [userState, setUserState] = useState({
+    userDetails: null,
+    followersDetails: [],
+    articles: [],
+  });
 
   const handleCommentsClick = (articleID) => {
     setArticles(
@@ -44,8 +49,8 @@ const Home = () => {
   const handleAddComment = async (articleID, newComment) => {
     const commentContent = {
       comment: newComment,
-      author: userDetails.username,
-      author_image: userDetails.avatar,
+      author: userState.userDetails.username,
+      author_image: userState.userDetails.avatar,
     };
 
     try {
@@ -87,43 +92,54 @@ const Home = () => {
   };
 
   useEffect(() => {
-    async function fetchUserDetails() {
-      const details = await getUser();
-      setUserDetails(details);
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
     }
 
-    fetchUserDetails();
-  }, []);
+    async function fetchFollowerData() {
+      const [followers, allArticles] = await Promise.all([
+        getFollowers(followersList),
+        getArticles(),
+      ]);
 
-  useEffect(() => {
-    async function fetchArticles() {
-      const articles = await getArticles();
-      setArticles(
-        articles.map((article) => ({
+      setUserState((prev) => ({
+        ...prev,
+        followersDetails: followers,
+        articles: allArticles.map((article) => ({
           ...article,
           commentsDisplayed: false,
-        }))
-      );
+        })),
+      }));
     }
 
-    async function fetchFollowerDetails() {
-      const followersInfo = await getFollowers(followersList);
-
-      setFollowerDetails(followersInfo);
-    }
-
-    fetchArticles();
-    fetchFollowerDetails();
+    fetchFollowerData();
   }, [followersList]);
-
   useEffect(() => {
-    setFollowersList(userDetails.following);
-  }, [userDetails]);
+    async function fetchUserData() {
+      try {
+        const userInfo = await getUser();
 
-  useEffect(() => {
-    setDisplayArticles(articles);
-  }, [articles]);
+        const [followers, allArticles] = await Promise.all([
+          getFollowers(userInfo.following),
+          getArticles(),
+        ]);
 
+        setUserState({
+          userDetails: userInfo,
+          followersDetails: followers,
+          articles: allArticles.map((article) => ({
+            ...article,
+            commentsDisplayed: false,
+          })),
+        });
+      } catch (err) {
+        console.log("User details error: ", err.message);
+      }
+    }
+
+    fetchUserData();
+  }, []);
   return (
     <div className="home_container">
       {isDialogOpen && (
@@ -158,13 +174,13 @@ const Home = () => {
         <Status />
 
         <AddFriend
-          followersDetails={followerDetails}
+          followersDetails={userState.followersDetails}
           setFollowersList={setFollowersList}
         />
       </div>
       <div className=" flex-col home_container-right">
         <div className="home_container-right-top">
-          <NewPost user={userDetails} setArticles={setArticles} />
+          <NewPost user={userState.userDetails} setArticles={setArticles} />
           <Followers />
         </div>
         <div className="flex-col home_container-right-bottom">
@@ -179,14 +195,14 @@ const Home = () => {
             ></input>
           </div>
           <ShowPosts
-            articles={displayArticles}
+            articles={userState.articles}
             handleOptionsClick={handleOptionsClick}
             handleCommentsClick={handleCommentsClick}
             handleAddComment={handleAddComment}
             comment={comment}
             setComment={setComment}
             handlePostDelete={handlePostDelete}
-            userDetails={userDetails}
+            userDetails={userState.userDetails}
           />
         </div>
       </div>

@@ -17,12 +17,14 @@ const AddFriend = ({ followersDetails, setFollowersList }) => {
   };
 
   const addNewFriend = async (e) => {
-    try {
-      const updatedFollowerList = await addFollower(addFriend);
-      setFollowersList(updatedFollowerList);
-      setAddFriend("");
-    } catch (err) {
-      console.log("Error: ", err.message);
+    if (addFriend !== "") {
+      try {
+        const updatedFollowerList = await addFollower(addFriend);
+        setFollowersList(updatedFollowerList);
+        setAddFriend("");
+      } catch (err) {
+        console.log("Error: ", err.message);
+      }
     }
   };
 
@@ -30,13 +32,12 @@ const AddFriend = ({ followersDetails, setFollowersList }) => {
     <div className="flex-col add-friend-layout">
       <h3 style={{ textAlign: "center" }}>Follow users</h3>
       <div className="add-friend-list">
-        {/* {followingList.length > 0 ? friends : <h4>Not following any user</h4>} */}
         {followersDetails && followersDetails.length > 0 ? (
           followersDetails.map((follower) => (
             <div className="friend-list-item" key={follower._id}>
               <img
                 className="follower-image"
-                src={follower.avatar}
+                src={sessionStorage.getItem(follower._id) || follower.avatar}
                 style={{ flex: 1 }}
               ></img>
               <span style={{ flex: 3, marginLeft: "0.5rem" }}>
