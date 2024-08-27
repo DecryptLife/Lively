@@ -128,7 +128,7 @@ const Home = () => {
     <div className="home_container">
       {isDialogOpen && (
         <div className="post-dialog-layout">
-          <div className="post-options-dialog">
+          <div className="flex-col post-options-dialog">
             <h2>Edit Post</h2>
             <div className="dialog-input__field">
               <input value={updatedArticle?.text}></input>
@@ -154,7 +154,7 @@ const Home = () => {
           </div>
         </div>
       )}
-      <div className="home_container-left">
+      <div className="flex-col home_container-left">
         <Status />
 
         <AddFriend
@@ -162,12 +162,12 @@ const Home = () => {
           setFollowersList={setFollowersList}
         />
       </div>
-      <div className="home_container-right">
+      <div className=" flex-col home_container-right">
         <div className="home_container-right-top">
           <NewPost user={userDetails} setArticles={setArticles} />
           <Followers />
         </div>
-        <div className="home_container-right-bottom">
+        <div className="flex-col home_container-right-bottom">
           <div className="search-container">
             <input
               className="search-field"

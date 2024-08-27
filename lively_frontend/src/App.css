@@ -1,8 +1,8 @@
-@import './styles/styles.css';
+@import "./styles/styles.css";
 
-:root{
+:root {
   --primary-color: #28b498;
-  --home-buttons-color:  hsl(165, 26%, 15%)
+  --home-buttons-color: hsl(165, 26%, 15%);
 }
 
 #root {
@@ -24,4 +24,9 @@
 
 button {
   font-weight: bold;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
 }

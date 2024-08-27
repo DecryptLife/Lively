@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { BASE_URL } from "../../config";
 import { getHeadline, getAvatar } from "../../API/homeAPI";
 import { updateStatus } from "../../API/homeAPI";
 
@@ -69,7 +67,7 @@ const Status = () => {
       </div>
 
       <br></br>
-      <div className="update-status__container">
+      <div className="flex-col update-status__container">
         <input
           type="text"
           className="update-status__input "

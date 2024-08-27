@@ -10,11 +10,6 @@
   font-weight: normal;
 }
 
-.home_container-left {
-  display: flex;
-  flex-direction: column;
-}
-
 .home_profile {
   background-color: white;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -23,8 +18,6 @@
 }
 
 .home_container-right {
-  display: flex;
-  flex-direction: column;
   row-gap: 2rem;
 }
 
@@ -34,8 +27,6 @@
 }
 
 .update-status__container {
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   row-gap: 1rem;
   margin-top: 1rem;
@@ -51,7 +42,6 @@
 .update-status__btn {
   height: 2rem;
   background-color: var(--home-buttons-color);
-  color: wheat;
   border: none;
   border-radius: 10px;
 }
@@ -62,9 +52,7 @@
 }
 
 .add-post-container {
-  display: flex;
   background-color: white;
-  flex-direction: column;
   width: 70%;
   row-gap: 1rem;
   padding: 0.5rem;
@@ -114,8 +102,6 @@
 }
 
 .home_container-right-bottom {
-  display: flex;
-  flex-direction: column;
   row-gap: 2rem;
 }
 
@@ -136,16 +122,12 @@
 }
 
 .posts-container {
-  display: flex;
-  flex-direction: column;
   background-color: white;
   row-gap: 1rem;
   background-color: #f0f5f4;
 }
 
 .post-item {
-  display: flex;
-  flex-direction: column;
   row-gap: 1rem;
   border-radius: 1rem;
   padding: 1rem;
@@ -177,8 +159,6 @@
 }
 
 .post-header-details {
-  display: flex;
-  flex-direction: column;
   flex-grow: 1;
 }
 
@@ -206,9 +186,7 @@
   position: relative;
   background-color: white;
   width: 40vw;
-  display: flex;
   justify-content: center;
-  flex-direction: column;
   align-items: center;
   row-gap: 1rem;
   border-radius: 1rem;
@@ -262,8 +240,6 @@
 .comments-list {
   border: 1px solid black;
   padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
   row-gap: 2px;
 }
 
@@ -296,11 +272,6 @@
   column-gap: 0.5rem;
 }
 
-.comment-item-details {
-  display: flex;
-  flex-direction: column;
-}
-
 .comment-item__img-container {
   display: flex;
   align-items: center;
@@ -326,8 +297,6 @@
   background-color: white;
   border-top: 1px solid black;
   padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
   row-gap: 1rem;
 }
 
@@ -336,8 +305,6 @@
 }
 
 .friend-search-container {
-  display: flex;
-  flex-direction: column;
   row-gap: 0.5rem;
   margin-top: 1rem;
 }

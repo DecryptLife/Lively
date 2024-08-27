@@ -28,18 +28,18 @@ const ShowPosts = ({
   const isArticleOwner = (authorID) => userDetails._id === authorID;
 
   return (
-    <div className="posts-container">
+    <div className="flex-col posts-container">
       {articles.length > 0 ? (
         articles.map((article) => {
           return (
-            <div className="post-item" key={article._id}>
+            <div className="flex-col post-item" key={article._id}>
               <div className="post-header">
                 <img
                   className="post-header-img"
                   alt={`${article.author}'s display`}
                   src={article.avatar || ""}
                 ></img>
-                <div className="post-header-details">
+                <div className="flex-col post-header-details">
                   <span style={{ fontWeight: "bold" }}>{article.author}</span>
                   <span style={{ fontWeight: "lighter" }}>
                     {convertISOString(article.date)}
@@ -80,7 +80,7 @@ const ShowPosts = ({
                 )}
               </div>
               {article.commentsDisplayed && (
-                <div className="comments-list">
+                <div className="flex-col comments-list">
                   {article.commentsID?.map((comment) => (
                     <div className="comment-item-container" key={comment.id}>
                       <div className="comment-item__img-container">
@@ -92,7 +92,7 @@ const ShowPosts = ({
                           alt="comment user profile"
                         ></img>
                       </div>
-                      <div className="comment-item-details">
+                      <div className="flex-col comment-item-details">
                         <span className="comment-item__author">
                           {comment.author}
                         </span>

@@ -42,7 +42,7 @@ const AddFriend = ({ followersDetails, setFollowersList }) => {
   };
 
   return (
-    <div className="add-friend-layout">
+    <div className="flex-col add-friend-layout">
       <h3>Follow users</h3>
       <div className="add-friend-list">
         {/* {followingList.length > 0 ? friends : <h4>Not following any user</h4>} */}
@@ -68,7 +68,7 @@ const AddFriend = ({ followersDetails, setFollowersList }) => {
           <h6>Not following any user</h6>
         )}
       </div>
-      <div className="friend-search-container">
+      <div className="flex-col friend-search-container">
         <div>
           <input
             className="friend-search__input"

@@ -65,7 +65,7 @@ const NewPost = ({ user, setArticles }) => {
   };
 
   return (
-    <div className="add-post-container">
+    <div className="flex-col add-post-container">
       <div className="add-post__content">
         <div className="add-post__image">
           <input
