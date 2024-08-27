@@ -9,45 +9,39 @@ const Status = () => {
     require("../../images/img3.png"),
     require("../../images/img4.png"),
     require("../../images/img5.png"),
-    require("../../images/img6.png"),
-    require("../../images/img7.png"),
-    require("../../images/img8.png"),
-    require("../../images/img9.png"),
-    require("../../images/img10.png"),
   ];
 
   const [avatar, setAvatar] = useState("");
-  const [status, setUStatus] = useState("");
-  const [modStatus, setModStatus] = useState("");
+
+  const [headline, setHeadline] = useState("Please add headline!");
+  const [updatedHeadline, setUpdatedHeadline] = useState("");
 
   useEffect(() => {
     async function fetchAvatar() {
+      console.log("avatar fetching: status.js");
       const response = await getAvatar();
-
       setAvatar(response);
     }
 
-    fetchAvatar();
-  }, []);
-
-  useEffect(() => {
     async function fetchHeadline() {
-      const headline = await getHeadline();
-
-      setModStatus(headline);
+      console.log("headline fetching: status.js");
+      const response = await getHeadline();
+      setHeadline(response);
     }
 
+    fetchAvatar();
     fetchHeadline();
-  }, [status]);
+  }, []);
 
   const modifyStatus = async (e) => {
-    if (status !== "") {
-      let new_status = { headline: status };
+    console.log("modifying status: status.js");
+    if (updatedHeadline !== "") {
+      let new_status = { headline: updatedHeadline };
 
       const new_headline = await updateStatus(new_status);
 
-      setModStatus(new_headline);
-      setUStatus("");
+      setHeadline(new_headline);
+      setUpdatedHeadline("");
     }
   };
 
@@ -63,7 +57,7 @@ const Status = () => {
       <span className="statusUsername">{}</span>
       <br></br>
       <div className="userCatchPhrase">
-        <span className="statusStatus">{modStatus}</span>
+        <span className="statusStatus">{headline}</span>
       </div>
 
       <br></br>
@@ -72,8 +66,8 @@ const Status = () => {
           type="text"
           className="update-status__input "
           placeholder="New status"
-          onChange={(e) => setUStatus(e.target.value)}
-          value={status}
+          onChange={(e) => setUpdatedHeadline(e.target.value)}
+          value={updatedHeadline}
         />
         <button className="update-status__btn" onClick={(e) => modifyStatus(e)}>
           Update

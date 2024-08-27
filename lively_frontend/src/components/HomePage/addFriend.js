@@ -1,25 +1,10 @@
-import { useEffect, useState } from "react";
-import { BASE_URL } from "../../config";
+import { useState } from "react";
 import { addFollower, removeFriend } from "../../API/followersAPI";
 
 const AddFriend = ({ followersDetails, setFollowersList }) => {
-  const url = (path) => `${BASE_URL}${path}`;
   const [isEmpty, setIsEmpty] = useState(null);
   const [invalidUser, setInvalidUser] = useState(null);
   const [addFriend, setAddFriend] = useState("");
-
-  const req = [
-    require("../../images/img1.png"),
-    require("../../images/img2.png"),
-    require("../../images/img3.png"),
-    require("../../images/img4.png"),
-    require("../../images/img5.png"),
-    require("../../images/img6.png"),
-    require("../../images/img7.png"),
-    require("../../images/img8.png"),
-    require("../../images/img9.png"),
-    require("../../images/img10.png"),
-  ];
 
   const handleRemoveFriend = async (followerID) => {
     try {
