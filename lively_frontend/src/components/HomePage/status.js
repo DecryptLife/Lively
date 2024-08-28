@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
-import { getHeadline, getAvatar } from "../../API/homeAPI";
+import { useState } from "react";
 import { updateStatus } from "../../API/homeAPI";
 import { memo } from "react";
 
-const Status = memo(() => {
+const Status = memo(({ userDetails }) => {
   console.log("status rendered");
   const req = [
     require("../../images/img1.png"),
@@ -13,27 +12,8 @@ const Status = memo(() => {
     require("../../images/img5.png"),
   ];
 
-  const [avatar, setAvatar] = useState("");
-
   const [headline, setHeadline] = useState("Please add headline!");
   const [updatedHeadline, setUpdatedHeadline] = useState("");
-
-  useEffect(() => {
-    async function fetchAvatar() {
-      console.log("avatar fetching: status.js");
-      const response = await getAvatar();
-      setAvatar(response);
-    }
-
-    async function fetchHeadline() {
-      console.log("headline fetching: status.js");
-      const response = await getHeadline();
-      setHeadline(response);
-    }
-
-    fetchAvatar();
-    fetchHeadline();
-  }, []);
 
   const modifyStatus = async (e) => {
     console.log("modifying status: status.js");
@@ -48,21 +28,22 @@ const Status = memo(() => {
   };
 
   return (
-    <div className="home_profile">
-      <img
-        className="home__profile-img"
-        id="user_image"
-        alt="profile pic"
-        src={avatar !== "" ? avatar : req[1]}
-      ></img>
-      <br></br>
-      <span className="statusUsername">{}</span>
-      <br></br>
-      <div className="userCatchPhrase">
-        <span className="statusStatus">{headline}</span>
+    <div className="flex-col home_profile">
+      <div className="home-profile__img-container">
+        <img
+          className="home__profile-img"
+          id="user_image"
+          alt="profile pic"
+          width={150}
+          height={150}
+          loading="lazy"
+          src={userDetails.avatar !== "" ? userDetails.avatar : req[1]}
+        ></img>
       </div>
-
-      <br></br>
+      <span className="statusUsername">{userDetails.username}</span>
+      <div className="userCatchPhrase">
+        <span className="statusStatus">{userDetails.headline}</span>
+      </div>
       <div className="flex-col update-status__container">
         <input
           type="text"

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Status from "./status";
 import "./home.css";
 import ShowPosts from "./showPosts";
@@ -17,14 +17,13 @@ const Home = () => {
   console.log("Home rendered");
   const isInitialMount = useRef(true);
   const [searchPost, setSearchPost] = useState("");
-
   const [comment, setComment] = useState("");
-
   const [followersList, setFollowersList] = useState([]);
-
   const [updatedArticle, setUpdatedArticle] = useState();
   const [articles, setArticles] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const [userState, setUserState] = useState({
     userDetails: null,
@@ -96,6 +95,14 @@ const Home = () => {
     }
   };
 
+  const modifyArticlesFn = (allArticles) => {
+    if (!allArticles) return [];
+
+    return allArticles.map((article) => ({
+      ...article,
+      commentsDisplayed: false,
+    }));
+  };
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -108,19 +115,18 @@ const Home = () => {
         getArticles(),
       ]);
 
+      const modifiedArticles = modifyArticlesFn(allArticles);
       setUserState((prev) => ({
         ...prev,
         followersDetails: followers,
-        articles: allArticles.map((article) => ({
-          ...article,
-          commentsDisplayed: false,
-        })),
+        articles: modifiedArticles,
       }));
     }
 
     fetchFollowerData();
   }, [followersList]);
   useEffect(() => {
+    setIsLoading(true);
     async function fetchUserData() {
       try {
         const userInfo = await getUser();
@@ -130,16 +136,18 @@ const Home = () => {
           getArticles(),
         ]);
 
+        const modifiedArticles = modifyArticlesFn(allArticles);
+
+        console.log(modifiedArticles);
         setUserState({
           userDetails: userInfo,
           followersDetails: followers,
-          articles: allArticles.map((article) => ({
-            ...article,
-            commentsDisplayed: false,
-          })),
+          articles: modifiedArticles,
         });
       } catch (err) {
         console.log("User details error: ", err.message);
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -176,7 +184,7 @@ const Home = () => {
         </div>
       )}
       <div className="flex-col home_container-left">
-        <Status />
+        <Status userDetails={userState.userDetails || []} />
 
         <AddFriend
           followersDetails={userState.followersDetails}
@@ -208,6 +216,7 @@ const Home = () => {
             setComment={setComment}
             handlePostDelete={handlePostDelete}
             userDetails={userState.userDetails}
+            isLoading={isLoading}
           />
         </div>
       </div>

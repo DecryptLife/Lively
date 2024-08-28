@@ -10,6 +10,7 @@ const ShowPosts = ({
   setComment,
   handlePostDelete,
   userDetails,
+  isLoading,
 }) => {
   console.log("show posts rendered");
 
@@ -22,8 +23,31 @@ const ShowPosts = ({
   const isArticleOwner = (authorID) => userDetails._id === authorID;
 
   return (
-    <div className="flex-col posts-container">
-      {articles.length > 0 ? (
+    <div
+      className="flex-col posts-container"
+      style={{
+        aspectRatio: "1/1",
+      }}
+    >
+      {isLoading && (
+        <div
+          className="flex-col post-item"
+          style={{
+            height: "100vh",
+          }}
+        >
+          <div className="post-header">
+            <div className="flex-col post-header-details">
+              <span style={{ fontWeight: "bold" }}></span>
+              <span style={{ fontWeight: "lighter" }}></span>
+            </div>
+          </div>
+          <div className="post-text-container"></div>
+          <div className="post-image-container"></div>
+          <div className="post-features-container"></div>
+        </div>
+      )}
+      {!isLoading && articles.length > 0 ? (
         articles.map((article) => {
           return (
             <div className="flex-col post-item" key={article._id}>
@@ -51,6 +75,7 @@ const ShowPosts = ({
                   className="post-image"
                   alt={`${article.author}'s post`}
                   src={article.image.url}
+                  loading="lazy"
                 ></img>
               </div>
               <div className="post-features-container">
