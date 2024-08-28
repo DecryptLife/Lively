@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { addFollower, removeFriend } from "../../API/followersAPI";
 
-const AddFriend = ({ followersDetails, setFollowersList }) => {
+const AddFriend = ({ isLoading, followersDetails, setFollowersList }) => {
   const [isEmpty, setIsEmpty] = useState(null);
   const [invalidUser, setInvalidUser] = useState(null);
   const [addFriend, setAddFriend] = useState("");
@@ -28,18 +28,26 @@ const AddFriend = ({ followersDetails, setFollowersList }) => {
     }
   };
 
+  console.log("In add friend: ", isLoading);
+
   return (
     <div className="flex-col add-friend-layout">
       <h3 style={{ textAlign: "center" }}>Follow users</h3>
       <div className="add-friend-list">
-        {followersDetails && followersDetails.length > 0 ? (
+        {isLoading ? (
+          <div className="friend-list-item">
+            <div className="friend-image__container"></div>
+          </div>
+        ) : followersDetails?.length > 0 ? (
           followersDetails.map((follower) => (
             <div className="friend-list-item" key={follower._id}>
-              <img
-                className="follower-image"
-                src={sessionStorage.getItem(follower._id) || follower.avatar}
-                style={{ flex: 1 }}
-              ></img>
+              <div className="friend-image__container">
+                <img
+                  className="follower-image"
+                  src={sessionStorage.getItem(follower._id) || follower.avatar}
+                  style={{ flex: 1 }}
+                ></img>
+              </div>
               <span style={{ flex: 3, marginLeft: "0.5rem" }}>
                 {follower.username}
               </span>

@@ -184,9 +184,13 @@ const Home = () => {
         </div>
       )}
       <div className="flex-col home_container-left">
-        <Status userDetails={userState.userDetails || []} />
+        <Status
+          isLoading={isLoading}
+          userDetails={userState.userDetails || []}
+        />
 
         <AddFriend
+          isLoading={isLoading}
           followersDetails={userState.followersDetails}
           setFollowersList={setFollowersList}
         />

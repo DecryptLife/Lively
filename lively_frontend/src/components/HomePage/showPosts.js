@@ -47,7 +47,7 @@ const ShowPosts = ({
           <div className="post-features-container"></div>
         </div>
       )}
-      {!isLoading && articles.length > 0 ? (
+      {!isLoading && articles?.length > 0 ? (
         articles.map((article) => {
           return (
             <div className="flex-col post-item" key={article._id}>

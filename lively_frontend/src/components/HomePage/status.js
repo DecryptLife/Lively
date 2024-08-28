@@ -2,7 +2,7 @@ import { useState } from "react";
 import { updateStatus } from "../../API/homeAPI";
 import { memo } from "react";
 
-const Status = memo(({ userDetails }) => {
+const Status = memo(({ isLoading, userDetails }) => {
   console.log("status rendered");
   const req = [
     require("../../images/img1.png"),
@@ -30,19 +30,27 @@ const Status = memo(({ userDetails }) => {
   return (
     <div className="flex-col home_profile">
       <div className="home-profile__img-container">
-        <img
-          className="home__profile-img"
-          id="user_image"
-          alt="profile pic"
-          width={150}
-          height={150}
-          loading="lazy"
-          src={userDetails.avatar !== "" ? userDetails.avatar : req[1]}
-        ></img>
+        {!isLoading && (
+          <img
+            className="home__profile-img"
+            id="user_image"
+            alt="profile pic"
+            width={150}
+            height={150}
+            loading="lazy"
+            src={userDetails.avatar !== "" ? userDetails.avatar : req[1]}
+          ></img>
+        )}
       </div>
-      <span className="statusUsername">{userDetails.username}</span>
-      <div className="userCatchPhrase">
-        <span className="statusStatus">{userDetails.headline}</span>
+      <div style={{ height: "2rem" }}>
+        <span className="statusUsername">
+          {isLoading ? " " : userDetails.username}
+        </span>
+      </div>
+      <div className="userCatchPhrase" style={{ height: "2rem" }}>
+        <span className="statusStatus">
+          {isLoading ? "  " : userDetails.headline}
+        </span>
       </div>
       <div className="flex-col update-status__container">
         <input

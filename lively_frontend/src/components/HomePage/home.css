@@ -19,13 +19,13 @@
   align-items: center;
   column-gap: 0.5rem;
 }
-
-.home_container-right {
-  row-gap: 2rem;
-}
-
 .home_container-left {
   height: 100vh;
+  flex: 1;
+}
+.home_container-right {
+  row-gap: 2rem;
+  flex: 4;
 }
 
 .home_container-right-top {
@@ -38,6 +38,7 @@
   row-gap: 1rem;
   margin-top: 1rem;
   padding: 0.5rem;
+  width: 100%;
 }
 .update-status__input {
   background-color: #eef5f3;
@@ -303,6 +304,7 @@
 .friend-search__input {
   border-radius: 1rem;
   padding: 0.5rem;
+  width: 100%;
 }
 .friend-search__button {
   width: 100%;
@@ -315,6 +317,13 @@
   padding: 0.25rem;
   justify-content: center;
   align-items: center;
+  height: 2rem;
+}
+
+.freind-image__container {
+  width: 30px;
+  height: 30px;
+  background-color: #f0f5f4;
 }
 
 .follower-button__remove {
@@ -332,7 +341,7 @@
 .home-profile__img-container {
   margin-top: 1rem;
   width: 150px;
-  background-color: #eef5f3;
+  background-color: #f0f5f4;
   border-radius: 50%;
   aspect-ratio: 1/1;
 }
@@ -345,4 +354,7 @@
   width: 100%;
   border: none;
   border-radius: 10px;
+}
+
+@media screen and (max-width: 600px) {
 }
