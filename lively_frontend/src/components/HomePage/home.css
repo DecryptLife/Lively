@@ -130,7 +130,7 @@
 .post-item {
   row-gap: 1rem;
   border-radius: 1rem;
-  padding: 1rem;
+  padding: 2rem;
   background-color: white;
 }
 
@@ -138,6 +138,7 @@
   width: 100%;
   height: auto;
   border-radius: 1rem;
+  aspect-ratio: 1/1;
   object-fit: cover;
 }
 

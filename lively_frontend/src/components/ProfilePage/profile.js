@@ -49,7 +49,7 @@ const Profile = () => {
 
   const handleImageSelect = async (e) => {
     try {
-      const [filename, image] = await transformImage(e);
+      const [_, image] = await transformImage(e);
 
       setUpdateDetails((prev) => ({
         ...prev,
