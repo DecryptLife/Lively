@@ -11,13 +11,7 @@ const ShowPosts = ({
   handlePostDelete,
   userDetails,
 }) => {
-  const NoPosts = () => {
-    return (
-      <div>
-        <h2>No posts yet!</h2>
-      </div>
-    );
-  };
+  console.log("show posts rendered");
 
   const convertISOString = (iso_string) => {
     const date = new Date(iso_string);

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { getHeadline, getAvatar } from "../../API/homeAPI";
 import { updateStatus } from "../../API/homeAPI";
+import { memo } from "react";
 
-const Status = () => {
+const Status = memo(() => {
+  console.log("status rendered");
   const req = [
     require("../../images/img1.png"),
     require("../../images/img2.png"),
@@ -75,6 +77,6 @@ const Status = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Status;

@@ -1,7 +1,9 @@
 import { useState, useRef } from "react";
 import { addPost } from "../../API/homeAPI";
+import { memo } from "react";
 
-const NewPost = ({ user, setArticles }) => {
+const NewPost = memo(({ user, setArticles }) => {
+  console.log("new post rendered");
   const [imageText, setImageText] = useState("Add image");
   const [postContent, setPostContent] = useState({
     image: "",
@@ -101,6 +103,6 @@ const NewPost = ({ user, setArticles }) => {
       </div>
     </div>
   );
-};
+});
 
 export default NewPost;

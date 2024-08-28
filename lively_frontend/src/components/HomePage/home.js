@@ -33,8 +33,9 @@ const Home = () => {
   });
 
   const handleCommentsClick = (articleID) => {
-    setArticles(
-      articles.map((article) => {
+    setUserState((prev) => ({
+      ...prev,
+      articles: prev.articles.map((article) => {
         if (article._id === articleID) {
           return {
             ...article,
@@ -42,8 +43,8 @@ const Home = () => {
           };
         }
         return article;
-      })
-    );
+      }),
+    }));
   };
 
   const handleAddComment = async (articleID, newComment) => {
@@ -56,8 +57,9 @@ const Home = () => {
     try {
       await addComment(articleID, commentContent);
 
-      setArticles((prev) =>
-        prev.map((article) => {
+      setUserState((prev) => ({
+        ...prev,
+        articles: prev.articles.map((article) => {
           if (article._id === articleID) {
             return {
               ...article,
@@ -65,8 +67,8 @@ const Home = () => {
             };
           }
           return article;
-        })
-      );
+        }),
+      }));
 
       setComment("");
     } catch (err) {
@@ -83,9 +85,12 @@ const Home = () => {
     try {
       const deletedPostID = await deleteArticle(postID);
 
-      setArticles((prev) =>
-        prev.filter((article) => article._id !== deletedPostID)
-      );
+      setUserState((prev) => ({
+        ...prev,
+        articles: prev.articles.filter(
+          (article) => article._id !== deletedPostID
+        ),
+      }));
     } catch (err) {
       console.log("Post Delete Error: ", err.message);
     }
