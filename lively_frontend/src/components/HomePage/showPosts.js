@@ -29,7 +29,7 @@ const ShowPosts = ({
         aspectRatio: "1/1",
       }}
     >
-      {isLoading && (
+      {isLoading ? (
         <div
           className="flex-col post-item"
           style={{
@@ -46,8 +46,7 @@ const ShowPosts = ({
           <div className="post-image-container"></div>
           <div className="post-features-container"></div>
         </div>
-      )}
-      {!isLoading && articles?.length > 0 ? (
+      ) : articles?.length > 0 ? (
         articles.map((article) => {
           return (
             <div className="flex-col post-item" key={article._id}>

@@ -2,7 +2,7 @@
   background-color: #f0f5f4;
   width: 100vw;
   height: 100vh;
-  padding: 2rem;
+  padding: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -104,4 +104,28 @@
   background-color: hsl(165, 26%, 15%);
   color: wheat;
   width: 50%;
+}
+
+@media screen and (max-width: 600px) {
+  .profile_layout {
+    padding: 0rem 0.25rem;
+  }
+
+  .profile_container {
+    width: 100%;
+    height: fit-content;
+    padding: 0rem;
+  }
+
+  .profile_container-right {
+    padding: 2rem 0rem;
+  }
+
+  .profile-details-container {
+    padding: 0.5rem;
+  }
+
+  .profile-update__fields {
+    padding: 0.5rem;
+  }
 }

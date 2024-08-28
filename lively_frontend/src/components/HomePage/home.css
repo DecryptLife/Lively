@@ -45,7 +45,6 @@
 }
 .update-status__btn {
   height: 2rem;
-  background-color: var(--home-buttons-color);
   border: none;
   border-radius: 10px;
 }
@@ -66,7 +65,7 @@
 
 .add-post__content {
   display: flex;
-  height: 70%;
+  flex: 4;
   column-gap: 0.5rem;
 }
 
@@ -80,7 +79,7 @@
 
 .add-post__buttons {
   display: flex;
-  height: 30%;
+  flex: 1;
   column-gap: 0.5rem;
 }
 
@@ -134,7 +133,7 @@
   width: 100%;
   height: auto;
   border-radius: 1rem;
-  aspect-ratio: 1/1;
+  aspect-ratio: 1/0.75;
   object-fit: cover;
 }
 
@@ -349,9 +348,27 @@
 .add-post__image-btn {
   height: 100%;
   width: 100%;
-  border: none;
   border-radius: 10px;
 }
 
 @media screen and (max-width: 600px) {
+  .update-status__container,
+  .add-friend-layout,
+  .home_profile {
+    display: none;
+  }
+
+  .home_profile,
+  .add-post-container,
+  .quote-layout {
+    height: 20vh;
+  }
+
+  .home_profile {
+    box-shadow: none;
+  }
+
+  .home_container {
+    display: block;
+  }
 }
