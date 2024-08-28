@@ -44,6 +44,7 @@ const AddFriend = ({ isLoading, followersDetails, setFollowersList }) => {
               <div className="friend-image__container">
                 <img
                   className="follower-image"
+                  loading="lazy"
                   src={sessionStorage.getItem(follower._id) || follower.avatar}
                   style={{ flex: 1 }}
                 ></img>

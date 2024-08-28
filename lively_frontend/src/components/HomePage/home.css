@@ -2,7 +2,6 @@
   display: flex;
   padding: 0.5rem;
   column-gap: 0.5rem;
-  height: 100%;
 }
 
 .home_container button {
@@ -19,10 +18,7 @@
   align-items: center;
   column-gap: 0.5rem;
 }
-.home_container-left {
-  height: 100vh;
-  flex: 1;
-}
+
 .home_container-right {
   row-gap: 2rem;
   flex: 4;
@@ -84,7 +80,7 @@
 
 .add-post__buttons {
   display: flex;
-  height: 20%;
+  height: 30%;
   column-gap: 0.5rem;
 }
 

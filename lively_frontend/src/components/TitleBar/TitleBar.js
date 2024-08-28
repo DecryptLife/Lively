@@ -71,9 +71,6 @@ const TitleBar = () => {
         <div className="titlebar_item">
           <span>Chats</span>
         </div>
-        <div className="titlebar_item">
-          <span>Friends</span>
-        </div>
 
         <div className="titlebar_item" onClick={toggleSettings}>
           <span>Settings</span>

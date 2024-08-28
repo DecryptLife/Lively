@@ -56,6 +56,7 @@ const ShowPosts = ({
                   className="post-header-img"
                   alt={`${article.author}'s display`}
                   src={article.avatar || ""}
+                  loading="lazy"
                 ></img>
                 <div className="flex-col post-header-details">
                   <span style={{ fontWeight: "bold" }}>{article.author}</span>

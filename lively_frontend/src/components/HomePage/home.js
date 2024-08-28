@@ -183,7 +183,7 @@ const Home = () => {
           </div>
         </div>
       )}
-      <div className="flex-col home_container-left">
+      <div className="flex-col home_container-left" style={{ flex: 1 }}>
         <Status
           isLoading={isLoading}
           userDetails={userState.userDetails || []}
