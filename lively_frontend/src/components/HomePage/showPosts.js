@@ -47,15 +47,18 @@ const ShowPosts = ({
           <div className="post-features-container"></div>
         </div>
       ) : articles?.length > 0 ? (
-        articles.map((article) => {
+        articles.map((article, index) => {
           return (
-            <div className="flex-col post-item" key={article._id}>
+            <div
+              className="flex-col post-item"
+              key={article._id + "no: " + { index }}
+            >
               <div className="post-header">
                 <img
                   className="post-header-img"
-                  alt={`${article.author}'s display`}
+                  alt={`${article.author}'s display : ${index}`}
                   src={article.avatar || ""}
-                  loading="lazy"
+                  loading={index === 0 ? "eager" : "lazy"}
                 ></img>
                 <div className="flex-col post-header-details">
                   <span style={{ fontWeight: "bold" }}>{article.author}</span>
@@ -73,9 +76,9 @@ const ShowPosts = ({
               <div className="post-image-container">
                 <img
                   className="post-image"
-                  alt={`${article.author}'s post`}
+                  alt={`${article.author}'s post: ${index}`}
                   src={article.image.url}
-                  loading="lazy"
+                  loading={index === 0 ? "eager" : "lazy"}
                 ></img>
               </div>
               <div className="post-features-container">
