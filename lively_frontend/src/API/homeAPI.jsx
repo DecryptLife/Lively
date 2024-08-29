@@ -68,6 +68,18 @@ const addComment = async (articleID, commentDetails) => {
   }
 };
 
+const updateArticle = async (articleID, article) => {
+  try {
+    const response = await axios.patch(
+      `${BASE_URL}/articles/${articleID}`,
+      article
+    );
+
+    return response.data.article;
+  } catch (err) {
+    console.log(`Update article error - ${err.message} :homeAPI.js`);
+  }
+};
 const deleteArticle = async (articleID) => {
   try {
     const response = await axios.delete(`${BASE_URL}/articles/${articleID}`);
@@ -86,6 +98,7 @@ export {
   getAvatar,
   addPost,
   updateStatus,
+  updateArticle,
   addComment,
   deleteArticle,
 };

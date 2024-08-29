@@ -28,8 +28,6 @@ const AddFriend = ({ isLoading, followersDetails, setFollowersList }) => {
     }
   };
 
-  console.log("In add friend: ", isLoading);
-
   return (
     <div className="flex-col add-friend-layout">
       <h3 style={{ textAlign: "center" }}>Follow users</h3>

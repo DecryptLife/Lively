@@ -12,7 +12,7 @@ export default function transformImage(e) {
       reader.readAsDataURL(fileObj);
       reader.onloadend = () => {
         console.log("Reader result: ", reader.result);
-        resolve([fileObj.name, reader.result]);
+        resolve([fileObj, reader.result]);
       };
 
       reader.onerror = (error) => {

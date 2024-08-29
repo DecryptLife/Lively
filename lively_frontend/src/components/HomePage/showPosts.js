@@ -77,7 +77,7 @@ const ShowPosts = ({
                 <img
                   className="post-image"
                   alt={`${article.author}'s post: ${index}`}
-                  src={article.image.url}
+                  src={article.image.secure_url}
                   loading={index === 0 ? "eager" : "lazy"}
                 ></img>
               </div>

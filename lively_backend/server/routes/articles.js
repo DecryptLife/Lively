@@ -1,17 +1,11 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const asyncHandler = require("express-async-handler");
-const mongoosw = require("mongoose");
 const { Profile, Article } = require("../db");
-const { LIVELY_PRESET } = require("../../config");
-
-// const LIVELY_PRESET = process.env.LIVELY_PRESET;
-const cloudinary = require("../../config/cloudinary");
 const { Mongoose, default: mongoose } = require("mongoose");
 const cloudinaryUpload = require("../utils/cloudinaryUpload");
 
 async function getArticles(req, res) {
-  const username = req.user.username;
   const userID = req.user.id;
 
   try {
@@ -21,9 +15,7 @@ async function getArticles(req, res) {
       } else {
         const followers = profile.following;
 
-        // console.log("Followers: ", followers);
         const articleAuthors = [profile._id, ...followers];
-        // console.log("All authors: ", articleAuthors);
 
         const articles = await Article.find({
           authorID: { $in: articleAuthors },
@@ -49,124 +41,44 @@ async function getArticles(req, res) {
 }
 
 const updateArticles = asyncHandler(async (req, res) => {
-  const pid = req.params.id;
-  const text = req.body.text;
-  const image = req.body.image;
-  const author = req.username;
-  const comment_id = req.body.comment_id;
-  const currUser = req.username;
+  const articleID = req.params.id;
+  const updatedDetails = req.body;
 
   let cloudUploadRes;
-  if (image) {
+  if (updatedDetails.image) {
+    if (typeof updatedDetails.image !== "string")
+      throw new Error("Image is not fo the type String");
+
     try {
-      cloudUploadRes = await cloudinaryUpload(image);
+      cloudUploadRes = await cloudinaryUpload(updatedDetails.image);
     } catch (error) {
       res.status(500);
-      throw new Error("Some problem with cloudinary");
+      throw new Error("Some problem with cloudinary: ", error.message);
     }
   }
 
-  if (comment_id) {
-    Article.findOne({ pid: pid }, (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        if (docs) {
-          if (parseInt(comment_id) === -1) {
-            let new_comments = docs["comments"].concat(text);
-            Article.updateOne(
-              { pid: pid },
-              { comments: new_comments },
-              (err, docs) => {
-                if (err) {
-                  console.log(err);
-                } else {
-                  res.send({ msg: "success" });
-                }
-              }
-            );
-          }
-          // comment id not -1 so modify the comment
-          else {
-            let new_comments = docs["comments"];
-            if (new_comments.length < comment_id) {
-              return res
-                .status(200)
-                .send("Can't modify a comment that does not exist");
-            } else {
-              new_comments[parseInt(comment_id) - 1] = text;
-              Article.updateOne(
-                { pid: pid },
-                { comments: new_comments },
-                (err, docs) => {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    res.send({ msg: "success" });
-                  }
-                }
-              );
-            }
-          }
-        }
-      }
-    });
-  } else {
-    // first check if they own the post
-    Article.findOne({ pid: pid }, (err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        if (docs) {
-          if (docs["author"] === currUser) {
-            //update both text and image
-            if (text && image) {
-              Article.updateOne(
-                { pid: pid },
-                { text: text, image: cloudUploadRes },
-                (err, docs) => {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    res.send({ result: "success" });
-                  }
-                }
-              );
-            }
+  const modifiedArticle = {
+    ...(updatedDetails.text && { text: updatedDetails.text }),
+    ...(updatedDetails.image && { image: cloudUploadRes }),
+  };
 
-            //update image only
-            else if (image) {
-              // only images exists
+  try {
+    const newArticle = await Article.findByIdAndUpdate(
+      articleID,
+      {
+        $set: modifiedArticle,
+      },
+      { new: true }
+    );
 
-              Article.updateOne(
-                { pid: pid },
-                { image: cloudUploadRes },
-                (err, docs) => {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    res.send({ msg: "success" });
-                  }
-                }
-              );
-            }
-
-            // update text only
-            else if (text) {
-              Article.updateOne({ pid: pid }, { text: text }, (err, docs) => {
-                if (err) {
-                  console.log(err);
-                } else {
-                  res.send({ msg: "success" });
-                }
-              });
-            }
-          } else {
-            res.status(200).send({ msg: "Can't modify a post you don't own" });
-          }
-        }
-      }
-    });
+    if (newArticle) {
+      return res.status(200).send({ article: newArticle });
+    } else {
+      res.status(500);
+      throw new Error("Article update failed");
+    }
+  } catch (err) {
+    console.log(`Article update error: ${err.message} :articles.js`);
   }
 });
 
@@ -177,14 +89,9 @@ async function addComment(req, res) {
   const article = await Article.findById(pid);
 
   if (article) {
-    // prepare the comment content
-    console.log("Article found");
-
     let prevComments = article["commentsID"];
-    console.log("Prev comments: ", prevComments);
 
     let updatedComments = prevComments.concat(comment);
-    console.log("Updated comments: ", updatedComments);
     try {
       const response = await Article.findByIdAndUpdate(
         pid,
@@ -192,7 +99,6 @@ async function addComment(req, res) {
         { new: true }
       );
 
-      console.log("Comment response: ", response);
       res.status(200).send({ msg: "success" });
     } catch (err) {
       console.log("error adding the comment");
@@ -253,7 +159,7 @@ const deleteArticle = async (req, res) => {
 
 module.exports = (app) => {
   app.get("/articles/:id?", getArticles);
-  app.put("/articles/:id", updateArticles);
+  app.patch("/articles/:id", updateArticles);
   app.post("/articles/comments:id", addComment);
   app.post("/article", addArticle);
   app.delete("/articles/:id?", deleteArticle);

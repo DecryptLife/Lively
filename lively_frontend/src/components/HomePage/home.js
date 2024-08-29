@@ -6,6 +6,7 @@ import NewPost from "./newPost";
 import Followers from "./Followers";
 import AddFriend from "./addFriend";
 import { getFollowers } from "../../API/followersAPI";
+import EditPost from "./EditPost";
 import {
   getUser,
   getArticles,
@@ -19,8 +20,7 @@ const Home = () => {
   const [searchPost, setSearchPost] = useState("");
   const [comment, setComment] = useState("");
   const [followersList, setFollowersList] = useState([]);
-  const [updatedArticle, setUpdatedArticle] = useState();
-  const [articles, setArticles] = useState([]);
+  const [editArticle, setEditArticle] = useState();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -76,7 +76,7 @@ const Home = () => {
   };
 
   const handleOptionsClick = (article) => {
-    setUpdatedArticle(article);
+    setEditArticle(article);
     setIsDialogOpen((prev) => !prev);
   };
 
@@ -138,7 +138,6 @@ const Home = () => {
 
         const modifiedArticles = modifyArticlesFn(allArticles);
 
-        console.log(modifiedArticles);
         setUserState({
           userDetails: userInfo,
           followersDetails: followers,
@@ -159,32 +158,11 @@ const Home = () => {
       style={isDialogOpen ? { padding: "0rem" } : { padding: "0.5rem" }}
     >
       {isDialogOpen && (
-        <div className="post-dialog-layout">
-          <div className="flex-col post-options-dialog">
-            <h2>Edit Post</h2>
-            <div className="dialog-input__field">
-              <input value={updatedArticle?.text}></input>
-            </div>
-            <div className="dialog-image__layout">
-              <img
-                src={
-                  updatedArticle &&
-                  updatedArticle.image &&
-                  updatedArticle.image.url
-                }
-                alt="change post"
-                width={80}
-                height={80}
-              ></img>
-            </div>
-            <div className="dialog-btn__layout">
-              <button>Update</button>
-              <button onClick={() => setIsDialogOpen((prev) => !prev)}>
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+        <EditPost
+          article={editArticle}
+          setIsDialogOpen={setIsDialogOpen}
+          setUserState={setUserState}
+        />
       )}
       <div className="flex-col home_container-left" style={{ flex: 1 }}>
         <Status
