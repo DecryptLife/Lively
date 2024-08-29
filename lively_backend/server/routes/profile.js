@@ -1,7 +1,5 @@
 require("dotenv").config();
 
-const { default: mongoose } = require("mongoose");
-
 const asyncHandler = require("express-async-handler");
 
 const { Profile } = require("../db");
@@ -78,9 +76,7 @@ const updateAvatar = asyncHandler(async (req, res) => {
 
     let cloudUploadRes;
     try {
-      cloudUploadRes = await cloudinary.uploader.upload(image, {
-        upload_preset: LIVELY_PRESET,
-      });
+      cloudUploadRes = await cloudinaryUpload(image);
 
       const updatedUser = await Profile.findByIdAndUpdate(userID, {
         avatar: cloudUploadRes["url"],

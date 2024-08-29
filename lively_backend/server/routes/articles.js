@@ -8,6 +8,7 @@ const { LIVELY_PRESET } = require("../../config");
 // const LIVELY_PRESET = process.env.LIVELY_PRESET;
 const cloudinary = require("../../config/cloudinary");
 const { Mongoose, default: mongoose } = require("mongoose");
+const cloudinaryUpload = require("../utils/cloudinaryUpload");
 
 async function getArticles(req, res) {
   const username = req.user.username;
@@ -58,9 +59,7 @@ const updateArticles = asyncHandler(async (req, res) => {
   let cloudUploadRes;
   if (image) {
     try {
-      cloudUploadRes = await cloudinary.uploader.upload(image, {
-        upload_preset: LIVELY_PRESET,
-      });
+      cloudUploadRes = await cloudinaryUpload(image);
     } catch (error) {
       res.status(500);
       throw new Error("Some problem with cloudinary");
@@ -207,12 +206,7 @@ const addArticle = async (req, res) => {
 
   let cloudUploadRes;
   try {
-    cloudUploadRes =
-      image !== ""
-        ? await cloudinary.uploader.upload(image, {
-            upload_preset: LIVELY_PRESET,
-          })
-        : "";
+    cloudUploadRes = image !== "" ? await cloudinaryUpload(image) : "";
 
     const postID = new mongoose.Types.ObjectId();
     const authorID = new mongoose.Types.ObjectId(req.user.id);
