@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { addPost } from "../../API/homeAPI";
 import { memo } from "react";
 
-const NewPost = memo(({ user, setArticles }) => {
+const NewPost = memo(({ setUserState }) => {
   console.log("new post rendered");
   const [imageText, setImageText] = useState("Add image");
   const [postContent, setPostContent] = useState({
@@ -53,7 +53,12 @@ const NewPost = memo(({ user, setArticles }) => {
     try {
       const newPost = await addPost(newArticle);
 
-      setArticles((prev) => [newPost, ...prev]);
+      // setArticles((prev) => [newPost, ...prev]);
+
+      setUserState((prev) => ({
+        ...prev,
+        articles: [newPost, ...prev.articles],
+      }));
 
       handleReset();
     } catch (err) {

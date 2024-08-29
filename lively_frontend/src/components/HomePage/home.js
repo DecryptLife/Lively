@@ -154,7 +154,10 @@ const Home = () => {
     fetchUserData();
   }, []);
   return (
-    <div className="home_container">
+    <div
+      className="home_container"
+      style={isDialogOpen ? { padding: "0rem" } : { padding: "0.5rem" }}
+    >
       {isDialogOpen && (
         <div className="post-dialog-layout">
           <div className="flex-col post-options-dialog">
@@ -197,7 +200,7 @@ const Home = () => {
       </div>
       <div className=" flex-col home_container-right">
         <div className="home_container-right-top">
-          <NewPost user={userState.userDetails} setArticles={setArticles} />
+          <NewPost setUserState={setUserState} />
           <Followers />
         </div>
         <div className="flex-col home_container-right-bottom">
