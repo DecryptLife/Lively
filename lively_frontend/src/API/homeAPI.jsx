@@ -9,9 +9,11 @@ const getUser = async () => {
   }
 };
 
-const getArticles = async () => {
+const getArticles = async (searchQuery = "") => {
+  console.log("Get articles API: ", searchQuery);
+  const params = searchQuery ? { search: searchQuery } : {};
   try {
-    const res = await axios.get(`${BASE_URL}/articles`);
+    const res = await axios.get(`${BASE_URL}/articles`, { params });
 
     return res.data.articles;
   } catch (err) {

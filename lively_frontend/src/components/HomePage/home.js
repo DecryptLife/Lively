@@ -7,6 +7,7 @@ import Followers from "./Followers";
 import AddFriend from "./addFriend";
 import { getFollowers } from "../../API/followersAPI";
 import EditPost from "./EditPost";
+import _, { initial } from "lodash";
 import {
   getUser,
   getArticles,
@@ -17,7 +18,8 @@ import {
 const Home = () => {
   console.log("Home rendered");
   const isInitialMount = useRef(true);
-  const [searchPost, setSearchPost] = useState("");
+  const prevSearchKeyWord = useRef("");
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [comment, setComment] = useState("");
   const [followersList, setFollowersList] = useState([]);
   const [editArticle, setEditArticle] = useState();
@@ -103,6 +105,31 @@ const Home = () => {
       commentsDisplayed: false,
     }));
   };
+
+  useEffect(() => {
+    const debouncedSearch = _.debounce(async () => {
+      if (searchKeyword !== "" || prevSearchKeyWord.current !== "") {
+        try {
+          const posts = await getArticles(searchKeyword);
+
+          setUserState((prev) => ({
+            ...prev,
+            articles: modifyArticlesFn(posts),
+          }));
+        } catch (err) {
+          console.log(`Search Post Error: ${err.message}`);
+        }
+      }
+
+      prevSearchKeyWord.current = searchKeyword;
+    }, 500); // Wait 300ms after user stops typing
+
+    debouncedSearch();
+
+    return () => {
+      debouncedSearch.cancel(); // Cancel debounce on component unmount or before the next effect is run
+    };
+  }, [searchKeyword]);
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -125,6 +152,7 @@ const Home = () => {
 
     fetchFollowerData();
   }, [followersList]);
+
   useEffect(() => {
     setIsLoading(true);
     async function fetchUserData() {
@@ -188,8 +216,8 @@ const Home = () => {
               type="text"
               placeholder="search"
               data-testid="search_posts"
-              value={searchPost}
-              onChange={(e) => setSearchPost(e.target.value)}
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
             ></input>
           </div>
           <ShowPosts
