@@ -7,6 +7,9 @@ const cloudinaryUpload = require("../utils/cloudinaryUpload");
 
 async function getArticles(req, res) {
   const userID = req.user.id;
+  const searchQuery = req.query.search;
+
+  console.log("Search query: ", req.query);
 
   try {
     Profile.findById(userID, async (err, profile) => {
@@ -23,7 +26,7 @@ async function getArticles(req, res) {
           .populate("authorID", "username avatar")
           .sort({ date: -1 });
 
-        const fromattedArticles = articles.map((article) => {
+        const formattedArticles = articles.map((article) => {
           return {
             ...article.toObject(),
             author: article.authorID.username,
@@ -32,7 +35,20 @@ async function getArticles(req, res) {
           };
         });
 
-        res.status(200).send({ articles: fromattedArticles });
+        let filteredArticles;
+        if (searchQuery) {
+          filteredArticles = formattedArticles.filter(
+            (article) =>
+              article.author
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+              article.text.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        }
+
+        res.status(200).send({
+          articles: searchQuery ? filteredArticles : formattedArticles,
+        });
       }
     });
   } catch (err) {
