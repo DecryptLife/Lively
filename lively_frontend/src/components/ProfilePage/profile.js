@@ -18,7 +18,7 @@ const Profile = () => {
   });
 
   const handleProfileChange = (e, field) => {
-    if (field === "ima")
+    if (field !== "image")
       setUpdateDetails((prev) => ({
         ...prev,
         [field]: e.target.value,
@@ -40,12 +40,28 @@ const Profile = () => {
   };
 
   const handleProfileUpdate = async () => {
+    console.log("IN update");
     try {
-      const response = await updateProfile(user._id, updateDetails);
+      const updatedDetails = await updateProfile(user._id, updateDetails);
+      console.log("response: ", updateDetails);
+
+      setUser((prev) => ({
+        ...prev, // Keep the previous state
+        ...Object.fromEntries(
+          Object.entries(updatedDetails).map(([key, value]) => [
+            key,
+            value === "" ? prev[key] : value,
+          ])
+        ),
+      }));
     } catch (err) {
       console.log(err.message);
+    } finally {
+      handleReset();
     }
   };
+
+  console.log("User details: ", user);
 
   const handleImageSelect = async (e) => {
     try {

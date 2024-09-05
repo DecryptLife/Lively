@@ -10,7 +10,7 @@ const updateProfile = async (userID, newDetails) => {
       updatedDetails
     );
 
-    return response;
+    return response.data;
   } catch (err) {
     console.log(err.message);
   }
