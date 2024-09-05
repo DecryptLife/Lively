@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../API/loginAPI";
+
+interface LoginDetails {
+  username: string;
+  password: string;
+}
 
 const LoginField = () => {
   const navigate = useNavigate();
@@ -9,15 +14,17 @@ const LoginField = () => {
     password: "",
   });
 
-  const handleSubmit = async (e, loginDetails) => {
+  const handleSubmit = async (
+    e: FormEvent<HTMLFormElement>,
+    loginDetails: LoginDetails
+  ) => {
     e.preventDefault();
     try {
-      console.log("Login details: ", loginDetails);
       await loginUser(loginDetails);
 
       navigate("/home");
-    } catch (e) {
-      console.log("Login error: ", e.message);
+    } catch (e: unknown) {
+      if (e instanceof Error) console.log("Login error: ", e.message);
     }
   };
 

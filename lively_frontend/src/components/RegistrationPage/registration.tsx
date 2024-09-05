@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./registration.css";
 import { BASE_URL } from "../../config";
 
 const Register = () => {
-  const url = (path) => `${BASE_URL}${path}`;
   const navigate = useNavigate();
   const [uname, setUname] = useState("");
   const [email, setEmail] = useState("");
@@ -14,7 +13,6 @@ const Register = () => {
   const [coPwd, setCoPwd] = useState("");
   const [isRegistered, setIsRegistered] = useState(false);
   const [pwdMatch, setPwdMatch] = useState(null);
-  // const [formValidated, setFormValidated] = useState(false);
   const [date, setDate] = useState("");
   const [emailError, setEmailError] = useState(null);
   const [mobError, setMobError] = useState(null);
@@ -22,14 +20,14 @@ const Register = () => {
   const [usernameError, setUsernameError] = useState(null);
   const [pwdFormatError, setPwdFormatError] = useState(null);
 
-  const handleValidation = (e) => {
+  const handleValidation = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    var emError = false;
-    var mbError = false;
-    var zpError = false;
-    var pwdError = false;
-    var unmError = false;
-    var formValidated = false;
+    let emError = false;
+    let mbError = false;
+    let zpError = false;
+    let pwdError = false;
+    let unmError = false;
+    let formValidated = false;
 
     const email_re = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
     const mob_re = /[1-9]{1}[0-9]{2}-[0-9]{3}-[0-9]{4}$/;
@@ -64,7 +62,6 @@ const Register = () => {
         password: pwd,
       };
 
-      localStorage.setItem("loggedIn", true);
       fetch(url("/register"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
