@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import transformImage from "../../utils/transformImage";
 import { updateArticle } from "../../API/homeAPI";
 
@@ -19,44 +19,56 @@ const EditPost: React.FC<PostEditProps> = ({
   setIsDialogOpen,
   setUserState,
 }) => {
-  const [editedArticle, setEditedArticle] = useState({
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [editedArticle, setEditedArticle] = useState<IEditArticle>({
     text: article?.text || "",
     preview_image: article?.image || {},
     image: "",
   });
 
   const handleEditPost = async () => {
-    if (article.text === editedArticle.text && editedArticle.image === "")
-      return;
+    if (article) {
+      if (article.text === editedArticle.text && editedArticle.image === "")
+        return;
 
-    const modifiedArticle = {
-      ...(editedArticle.text !== article.text && { text: editedArticle.text }),
-      ...(editedArticle.image !== "" && { image: editedArticle.image }),
-    };
-
-    try {
-      const newArticle = await updateArticle(article._id, modifiedArticle);
-
-      setUserState((prev) => ({
-        ...prev,
-        articles: prev.articles.map((prevArticle) => {
-          if (prevArticle._id === article._id)
-            return {
-              ...{ author: article.author, avatar: article.avatar },
-              ...newArticle,
-            };
-          else return prevArticle;
+      const modifiedArticle = {
+        ...(editedArticle.text !== article.text && {
+          text: editedArticle.text,
         }),
-      }));
-    } catch (err: unknown) {
-      if (err instanceof Error)
-        console.log(`Edit post error - ${err.message} :EditPost.js`);
-    } finally {
-      setIsDialogOpen(false);
+        ...(editedArticle.image !== "" && { image: editedArticle.image }),
+      };
+
+      try {
+        const newArticle = await updateArticle(
+          article._id || "",
+          modifiedArticle
+        );
+
+        setUserState((prev) => ({
+          ...prev,
+          articles: prev.articles.map((prevArticle) => {
+            if (prevArticle._id === article._id)
+              return {
+                ...{ author: article.author, avatar: article.avatar },
+                ...newArticle,
+              };
+            else return prevArticle;
+          }),
+        }));
+      } catch (err: unknown) {
+        if (err instanceof Error)
+          console.log(`Edit post error - ${err.message} :EditPost.js`);
+      } finally {
+        setIsDialogOpen(false);
+      }
     }
   };
 
-  const handleImageSelect = async (e) => {
+  const triggerImageSelect = () => {
+    inputRef.current?.click();
+  };
+
+  const handleImageSelect = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
       const [file, image] = await transformImage(e);
 
@@ -65,7 +77,7 @@ const EditPost: React.FC<PostEditProps> = ({
         return {
           ...prev,
           preview_image: { url: URL.createObjectURL(file) },
-          image,
+          image: image ? (image as string) : "",
         };
       });
     } catch (err: unknown) {
@@ -94,8 +106,16 @@ const EditPost: React.FC<PostEditProps> = ({
               editedArticle.preview_image.url
             }
             alt="change post"
-            onClick={handleImageSelect}
+            onClick={triggerImageSelect}
           ></img>
+
+          {/* Hidden file input */}
+          <input
+            ref={inputRef}
+            type="file"
+            style={{ display: "none" }} // Hide the input
+            onChange={handleImageSelect} // Handle image selection
+          />
         </div>
         <div className="flex-col">
           <label htmlFor="">Change Image: </label>

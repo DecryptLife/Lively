@@ -34,6 +34,7 @@ const Home = () => {
   });
 
   const handleCommentsClick = (articleID: string) => {
+    if (articleID === "") return;
     setUserState((prev) => {
       if (!prev) return prev;
       return {
@@ -52,7 +53,8 @@ const Home = () => {
   };
 
   const handleAddComment = async (articleID: string, newComment: string) => {
-    if (newComment === "" || !userState?.userDetails) return;
+    if (articleID === "" || newComment === "" || !userState?.userDetails)
+      return;
 
     const commentContent = {
       comment: newComment,
@@ -85,12 +87,15 @@ const Home = () => {
     }
   };
 
-  const handleOptionsClick = (article: IArticle) => {
-    setEditArticle(article);
-    setIsDialogOpen((prev) => !prev);
+  const handleOptionsClick = (article: IDisplayArticle) => {
+    if (article) {
+      setEditArticle(article);
+      setIsDialogOpen((prev) => !prev);
+    }
   };
 
   const handlePostDelete = async (postID: string) => {
+    if (postID === "") return;
     try {
       const deletedPostID = await deleteArticle(postID);
 

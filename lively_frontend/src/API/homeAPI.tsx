@@ -1,5 +1,11 @@
 import axios from "axios";
 import { BASE_URL } from "../config";
+
+interface IUpdateArticle {
+  text?: string;
+  image?: string;
+}
+
 const getUser = async () => {
   try {
     const res = await axios.get(`${BASE_URL}/userDetails`);
@@ -70,17 +76,19 @@ const addComment = async (articleID: string, commentDetails: IComment) => {
   }
 };
 
-const updateArticle = async (articleID: string, article: IArticle) => {
-  try {
-    const response = await axios.patch(
-      `${BASE_URL}/articles/${articleID}`,
-      article
-    );
+const updateArticle = async (articleID: string, article: IUpdateArticle) => {
+  if (articleID !== "") {
+    try {
+      const response = await axios.patch(
+        `${BASE_URL}/articles/${articleID}`,
+        article
+      );
 
-    return response.data.article;
-  } catch (err: unknown) {
-    if (err instanceof Error)
-      console.log(`Update article error - ${err.message} :homeAPI.js`);
+      return response.data.article;
+    } catch (err: unknown) {
+      if (err instanceof Error)
+        console.log(`Update article error - ${err.message} :homeAPI.js`);
+    }
   }
 };
 const deleteArticle = async (articleID: string) => {

@@ -10,7 +10,9 @@ interface IArticle {
   _id: string;
   text: string;
   authorID: string;
-  image: object;
+  image: {
+    secure_url?: "";
+  };
   date: string;
   commentsID: Array<IComment>;
   commentsDisplayed?: boolean;
@@ -25,4 +27,4 @@ interface IDisplayArticle extends Partial<IArticle> {
   author: string;
   avatar: string;
 }
-interface IUpdateArticle extends Partial<IArticle> {}
+// interface IUpdateArticle extends Partial<IArticle> {}

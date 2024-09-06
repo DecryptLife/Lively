@@ -1,8 +1,16 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa"; // Example using react-icons
 
 interface DisplayPostsProps {
   articles: IDisplayArticle[];
+  handleOptionsClick: (article: IDisplayArticle) => void;
+  handleCommentsClick: (articleID: string) => void;
+  handleAddComment: (articleID: string, newComment: string) => void;
+  comment: string;
+  setComment: Dispatch<SetStateAction<string>>;
+  handlePostDelete: (postID: string) => void;
+  userDetails: IUser;
+  isLoading: boolean;
 }
 
 const ShowPosts: React.FC<DisplayPostsProps> = ({
@@ -51,7 +59,7 @@ const ShowPosts: React.FC<DisplayPostsProps> = ({
           <div className="post-features-container"></div>
         </div>
       ) : articles?.length > 0 ? (
-        articles.map((article: IArticle, index: number) => {
+        articles.map((article: IDisplayArticle, index: number) => {
           return (
             <div
               className="flex-col post-item"
@@ -67,11 +75,11 @@ const ShowPosts: React.FC<DisplayPostsProps> = ({
                 <div className="flex-col post-header-details">
                   <span style={{ fontWeight: "bold" }}>{article.author}</span>
                   <span style={{ fontWeight: "lighter" }}>
-                    {convertISOString(article.date)}
+                    {convertISOString(article.date || "")}
                   </span>
                 </div>
-                {isArticleOwner(article.authorID) && (
-                  <button onClick={() => handlePostDelete(article._id)}>
+                {isArticleOwner(article.authorID || "") && (
+                  <button onClick={() => handlePostDelete(article?._id || "")}>
                     Delete
                   </button>
                 )}
@@ -81,24 +89,24 @@ const ShowPosts: React.FC<DisplayPostsProps> = ({
                 <img
                   className="post-image"
                   alt={`${article.author}'s post: ${index}`}
-                  src={article.image.secure_url}
+                  src={article.image?.secure_url}
                   loading={index === 0 ? "eager" : "lazy"}
                 ></img>
               </div>
               <div className="post-features-container">
                 <div
                   className="comments-container"
-                  onClick={() => handleCommentsClick(article._id)}
+                  onClick={() => handleCommentsClick(article?._id || "")}
                 >
                   <span>Comment</span>
 
                   {article.commentsDisplayed ? <FaArrowDown /> : <FaArrowUp />}
                 </div>
-                {isArticleOwner(article.authorID) && (
+                {isArticleOwner(article.authorID || "") && (
                   <div
                     className="options-container"
                     data-id="2345"
-                    key={article.authorID.date}
+                    key={article.authorID + "" + article.date}
                     onClick={() => handleOptionsClick(article)}
                   >
                     <span>Options</span>
@@ -108,7 +116,7 @@ const ShowPosts: React.FC<DisplayPostsProps> = ({
               {article.commentsDisplayed && (
                 <div className="flex-col comments-list">
                   {article.commentsID?.map((comment) => (
-                    <div className="comment-item-container" key={comment.id}>
+                    <div className="comment-item-container">
                       <div className="comment-item__img-container">
                         <img
                           className="comment-item__img"
@@ -137,7 +145,9 @@ const ShowPosts: React.FC<DisplayPostsProps> = ({
                     ></input>
                     <button
                       className="post-comment__btn"
-                      onClick={() => handleAddComment(article._id, comment)}
+                      onClick={() =>
+                        handleAddComment(article?._id || "", comment)
+                      }
                     >
                       Comment
                     </button>
