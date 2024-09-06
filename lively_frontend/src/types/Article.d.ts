@@ -17,4 +17,12 @@ interface IArticle {
   __v?: string | number;
 }
 
+interface INewArticle {
+  text: string;
+  post_image: string;
+}
+interface IDisplayArticle extends Partial<IArticle> {
+  author: string;
+  avatar: string;
+}
 interface IUpdateArticle extends Partial<IArticle> {}

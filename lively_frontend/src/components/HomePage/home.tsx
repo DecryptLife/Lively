@@ -212,10 +212,7 @@ const Home = () => {
         />
       )}
       <div className="flex-col home_container-left" style={{ flex: 1 }}>
-        <Status
-          isLoading={isLoading}
-          userDetails={userState?.userDetails || []}
-        />
+        <Status isLoading={isLoading} userDetails={userState?.userDetails} />
 
         <AddFriend
           isLoading={isLoading}

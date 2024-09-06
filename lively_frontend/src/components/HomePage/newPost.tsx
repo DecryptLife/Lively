@@ -1,21 +1,30 @@
-import { useState, useRef } from "react";
+import { useState, useRef, Dispatch, SetStateAction, ChangeEvent } from "react";
 import { addPost } from "../../API/homeAPI";
 import { memo } from "react";
 
-const NewPost: React.FC<IUser> = memo(({ setUserState }) => {
+interface NewPostProps {
+  setUserState: Dispatch<SetStateAction<IUserState>>;
+}
+
+interface IPostContent {
+  text: string;
+  image: string;
+}
+
+const NewPost: React.FC<NewPostProps> = memo(({ setUserState }) => {
   console.log("new post rendered");
   const [imageText, setImageText] = useState("Add image");
-  const [postContent, setPostContent] = useState({
+  const [postContent, setPostContent] = useState<IPostContent>({
     image: "",
     text: "",
   });
 
-  const inputref = useRef(null);
+  const inputref = useRef<HTMLInputElement | null>(null);
   const handleImageSelect = () => {
-    inputref.current.click();
+    if (inputref.current) inputref.current.click();
   };
 
-  const handleFileSelect = (e) => {
+  const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     const fileObj = e.target.files && e.target.files[0];
 
     if (!fileObj) {
@@ -26,16 +35,16 @@ const NewPost: React.FC<IUser> = memo(({ setUserState }) => {
     }
   };
 
-  const transformFile = (file) => {
+  const transformFile = (file: File) => {
     const reader = new FileReader();
 
     if (file) {
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        setPostContent((prev) => ({
-          ...prev,
-          image: reader.result,
-        }));
+        setPostContent((prev) => {
+          if (!prev) return prev;
+          return { ...prev, image: reader.result as string };
+        });
       };
     } else {
       setPostContent((prev) => ({
@@ -61,8 +70,8 @@ const NewPost: React.FC<IUser> = memo(({ setUserState }) => {
       }));
 
       handleReset();
-    } catch (err) {
-      console.log("Add Post Error: ", err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) console.log("Add Post Error: ", err.message);
     }
   };
 

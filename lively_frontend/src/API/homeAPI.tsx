@@ -48,7 +48,7 @@ const updateStatus = async (new_headline: string) => {
   }
 };
 
-const addPost = async (article: IArticle) => {
+const addPost = async (article: INewArticle) => {
   try {
     const response = await axios.post(`${BASE_URL}/article`, article);
 
