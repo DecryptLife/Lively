@@ -1,8 +1,12 @@
+import { useLocation } from "react-router-dom";
+import TitleBar from "../TitleBar/TitleBar";
 import "./layout.css";
-const { useLocation, useNavigate } = require("react-router-dom");
-const { default: TitleBar } = require("../TitleBar/TitleBar");
 
-const Layout = ({ children }) => {
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const hideTitleBar = location.pathname === "/";
 

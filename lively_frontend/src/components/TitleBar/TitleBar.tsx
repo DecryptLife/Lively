@@ -4,18 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { logoutUser } from "../../API/loginAPI";
 
-// export const Settings = () => {
-//   return (
-//     <div className="settings-container">
-//       <ul>
-//         <li>Logout</li>
-//       </ul>
-//     </div>
-//   );
-// };
-
 const TitleBar = () => {
-  const navigate = useNavigate("");
+  const navigate = useNavigate();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -28,12 +18,12 @@ const TitleBar = () => {
       await logoutUser();
 
       navigate("/");
-    } catch (err) {
-      console.log(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) console.log(err.message);
     }
   };
 
-  const handleNavigation = (page) => {
+  const handleNavigation = (page: string) => {
     switch (page) {
       case "profile":
         navigate("/profile");

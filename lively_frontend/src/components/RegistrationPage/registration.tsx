@@ -85,7 +85,10 @@ const Register = () => {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     let { name, value } = e.target;
 
-    setRegistration((prev) => ({ ...prev, [name]: value }));
+    setRegistration((prev: IRegistration<string>) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   useEffect(() => {
