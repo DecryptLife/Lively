@@ -64,10 +64,10 @@ const NewPost: React.FC<NewPostProps> = memo(({ setUserState }) => {
 
       // setArticles((prev) => [newPost, ...prev]);
 
-      setUserState((prev) => ({
-        ...prev,
-        articles: [newPost, ...prev.articles],
-      }));
+      setUserState((prev) => {
+        if (!prev) return prev;
+        return { ...prev, articles: [newPost, ...prev.articles] };
+      });
 
       handleReset();
     } catch (err: unknown) {

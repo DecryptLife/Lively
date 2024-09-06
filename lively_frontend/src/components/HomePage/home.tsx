@@ -15,12 +15,6 @@ import {
   deleteArticle,
 } from "../../API/homeAPI";
 
-interface IEditArticle {
-  text: string;
-  preview_image: string | object;
-  image: string;
-}
-
 const Home = () => {
   console.log("Home rendered");
   const isInitialMount = useRef(true);
@@ -28,7 +22,7 @@ const Home = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [comment, setComment] = useState("");
   const [followersList, setFollowersList] = useState<Array<string>>([]);
-  const [editArticle, setEditArticle] = useState<IEditArticle>();
+  const [editArticle, setEditArticle] = useState<IDisplayArticle>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -93,7 +87,7 @@ const Home = () => {
     }
   };
 
-  const handleOptionsClick = (article: IEditArticle) => {
+  const handleOptionsClick = (article: IDisplayArticle) => {
     if (article) {
       setEditArticle(article);
       setIsDialogOpen((prev) => !prev);

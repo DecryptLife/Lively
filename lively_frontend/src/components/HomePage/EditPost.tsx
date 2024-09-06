@@ -10,7 +10,7 @@ interface PostEditProps {
 
 interface IEditArticle {
   text: string;
-  preview_image: string | object;
+  preview_image: string;
   image: string;
 }
 
@@ -22,7 +22,7 @@ const EditPost: React.FC<PostEditProps> = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [editedArticle, setEditedArticle] = useState<IEditArticle>({
     text: article?.text || "",
-    preview_image: article?.image || {},
+    preview_image: article?.image?.secure_url || "",
     image: "",
   });
 
