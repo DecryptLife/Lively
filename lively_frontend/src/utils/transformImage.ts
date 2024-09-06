@@ -1,23 +1,27 @@
-// export default function transformImage(e) {
-//   return new Promise((resolve, reject) => {
-//     const fileObj = e.target.files && e.target.files[0];
+import { ChangeEvent } from "react";
 
-//     console.log("In file obj: ", fileObj);
+export default function transformImage(
+  e: ChangeEvent<HTMLInputElement>
+): Promise<[File, string | ArrayBuffer | null]> {
+  return new Promise((resolve, reject) => {
+    const fileObj = e.target.files && e.target.files[0];
 
-//     if (!fileObj) {
-//       reject(new Error("No file selected"));
-//     } else {
-//       const reader = new FileReader();
+    console.log("In file obj: ", fileObj);
 
-//       reader.readAsDataURL(fileObj);
-//       reader.onloadend = () => {
-//         console.log("Reader result: ", reader.result);
-//         resolve([fileObj, reader.result]);
-//       };
+    if (!fileObj) {
+      reject(new Error("No file selected"));
+    } else {
+      const reader = new FileReader();
 
-//       reader.onerror = (error) => {
-//         reject(error);
-//       };
-//     }
-//   });
-// }
+      reader.readAsDataURL(fileObj);
+      reader.onloadend = () => {
+        console.log("Reader result: ", reader.result);
+        resolve([fileObj, reader.result]);
+      };
+
+      reader.onerror = (error) => {
+        reject(error);
+      };
+    }
+  });
+}

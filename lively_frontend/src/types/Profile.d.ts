@@ -10,4 +10,6 @@ interface IUser {
   following: Array<string>;
 }
 
-interface IOptionalUser extends Partial<IUser> {}
+interface IOptionalUser extends Omit<Partial<IUser>, "avatar"> {
+  avatar?: string | ArrayBuffer | null;
+}
