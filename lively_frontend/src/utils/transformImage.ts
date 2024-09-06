@@ -16,7 +16,7 @@ export default function transformImage(
       reader.readAsDataURL(fileObj);
       reader.onloadend = () => {
         console.log("Reader result: ", reader.result);
-        resolve([fileObj, reader.result]);
+        resolve([fileObj, reader.result as string]);
       };
 
       reader.onerror = (error) => {

@@ -3,7 +3,7 @@ import { addFollower, removeFriend } from "../../API/followersAPI";
 
 interface AddFriendProps {
   isLoading: boolean;
-  followersDetails: IFollower[] | null | undefined;
+  followersDetails: IFollower[] | null;
   setFollowersList: Dispatch<SetStateAction<string[]>>;
 }
 const AddFriend: React.FC<AddFriendProps> = ({
@@ -43,14 +43,14 @@ const AddFriend: React.FC<AddFriendProps> = ({
           <div className="friend-list-item">
             <div className="friend-image__container"></div>
           </div>
-        ) : followersDetails?.length > 0 ? (
+        ) : followersDetails?.length ? (
           followersDetails.map((follower) => (
             <div className="friend-list-item" key={follower?._id}>
               <div className="friend-image__container">
                 <img
                   className="follower-image"
                   loading="lazy"
-                  src={sessionStorage.getItem(follower._id) || follower.avatar}
+                  src={follower.avatar}
                   style={{ flex: 1 }}
                 ></img>
               </div>
@@ -60,7 +60,7 @@ const AddFriend: React.FC<AddFriendProps> = ({
               <button
                 className="follower-button__remove"
                 style={{ flex: 1 }}
-                onClick={() => handleRemoveFriend(follower._id)}
+                onClick={() => handleRemoveFriend(follower?._id || "")}
               >
                 Remove
               </button>
