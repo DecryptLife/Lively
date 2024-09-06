@@ -1,7 +1,7 @@
 // import axios from "axios";
 // import { BASE_URL } from "../config";
 
-// const getFollowers = async (followerIDs) => {
+// const getFollowers = async (followerIDs: Array<string>) => {
 //   try {
 //     const response = await axios.get(`${BASE_URL}/following`, followerIDs);
 
@@ -21,7 +21,7 @@
 //   }
 // };
 
-// const removeFriend = async (friendID) => {
+// const removeFriend = async (friendID: string) => {
 //   try {
 //     const response = await axios.delete(`${BASE_URL}/following/${friendID}`);
 
