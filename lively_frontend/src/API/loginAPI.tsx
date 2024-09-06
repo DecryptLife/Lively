@@ -14,8 +14,8 @@ export const loginUser = async (userDetails: LoginDetails) => {
         "Content-Type": "application/json",
       },
     });
-  } catch (err) {
-    console.log("Login error: " + err.message);
+  } catch (err: unknown) {
+    if (err instanceof Error) console.log("Login error: " + err.message);
   }
 };
 

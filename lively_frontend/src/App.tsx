@@ -11,10 +11,10 @@ function App() {
     <Router>
       <Layout>
         <Routes>
-          <Route exact path="/" element={<Login />}></Route>
-          <Route exact path="/home" element={<Home />}></Route>
-          <Route exact path="/register" element={<Register />}></Route>
-          <Route exact path="/profile" element={<Profile />}></Route>
+          <Route path="/" element={<Login />}></Route>
+          <Route path="/home" element={<Home />}></Route>
+          <Route path="/register" element={<Register />}></Route>
+          <Route path="/profile" element={<Profile />}></Route>
         </Routes>
       </Layout>
     </Router>

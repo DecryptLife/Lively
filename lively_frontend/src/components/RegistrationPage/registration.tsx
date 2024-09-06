@@ -1,24 +1,36 @@
-import { FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./registration.css";
-import { BASE_URL } from "../../config";
+import { registerUser } from "../../API/registrationAPI";
 
 const Register = () => {
   const navigate = useNavigate();
-  const [uname, setUname] = useState("");
-  const [email, setEmail] = useState("");
-  const [mobNo, setMobNo] = useState("");
-  const [pincode, setPinCode] = useState("");
-  const [pwd, setPwd] = useState("");
-  const [coPwd, setCoPwd] = useState("");
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [pwdMatch, setPwdMatch] = useState(null);
+
+  const [registration, setRegistration] = useState<IRegistration<string>>({
+    username: "",
+    email: "",
+    mobile: "",
+    dob: "",
+    pincode: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [isRegistered, setIsRegistered] = useState<boolean>(false);
+  const [isPasswordMatch, setIsPasswordMatch] = useState<boolean>(true);
   const [date, setDate] = useState("");
-  const [emailError, setEmailError] = useState(null);
-  const [mobError, setMobError] = useState(null);
-  const [zipError, setZipError] = useState(null);
-  const [usernameError, setUsernameError] = useState(null);
-  const [pwdFormatError, setPwdFormatError] = useState(null);
+
+  const [registrationError, setRegistrationError] = useState<
+    IRegistration<boolean>
+  >({
+    username: false,
+    email: false,
+    mobile: false,
+    dob: false,
+    pincode: false,
+    password: false,
+    confirmPassword: false,
+  });
 
   const handleValidation = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,89 +46,58 @@ const Register = () => {
     const zip_re = /\b\d{5}\b/;
     const pwd_re = /[a-zA-Z0-9]{6}/;
 
-    unmError = uname === "";
-    emError = !email_re.test(email);
-    mbError = !mob_re.test(mobNo);
-    zpError = !zip_re.test(pincode);
-    pwdError = !pwd_re.test(pwd);
-
-    unmError ? setUsernameError(true) : setUsernameError(false);
-    emError ? setEmailError(true) : setEmailError(false);
-    mbError ? setMobError(true) : setMobError(false);
-    zpError ? setZipError(true) : setZipError(false);
-    pwdError ? setPwdFormatError(true) : setPwdFormatError(false);
+    unmError = registration.username === "";
+    emError = !email_re.test(registration.email);
+    mbError = !mob_re.test(registration.mobile);
+    zpError = !zip_re.test(registration.pincode);
+    pwdError = !pwd_re.test(registration.password);
 
     if (unmError || emError || mbError || zpError || unmError || pwdError)
       formValidated = false;
     else formValidated = true;
 
-    if (formValidated && pwdMatch) {
-      updateUserDetails();
+    setRegistrationError({
+      username: unmError,
+      email: emError,
+      mobile: mbError,
+      pincode: zpError,
+      password: pwdError,
+    });
 
-      let userReg = {
-        username: uname,
-        email: email,
-        mobile: mobNo,
-        zipcode: pincode,
-        dob: date,
-        password: pwd,
-      };
+    if (formValidated && isPasswordMatch) handleRegisterUser();
+  };
 
-      fetch(url("/register"), {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userReg),
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((res) => {
-          if (res.result === "success") navigate("/");
-        });
-      // navigate("/home");
+  const handleRegisterUser = async () => {
+    try {
+      await registerUser(registration);
+
+      handleNavigateToLogin();
+    } catch (err: unknown) {
+      if (err instanceof Error)
+        console.log("Registration error: " + err.message);
     }
-  };
-
-  const postDetails = () => {};
-
-  const saveToStorage = () => {
-    var randum = Math.floor(Math.random() * 10) + 1;
-    const currUser = {
-      username: uname,
-      email: email,
-      phone: mobNo,
-      id: randum,
-      company: {
-        catchPhrase: "Please add a fun status",
-      },
-      address: {
-        street: coPwd,
-        zipcode: pincode,
-      },
-      new: true,
-    };
-    localStorage.setItem("currUser", JSON.stringify(currUser));
-  };
-  const updateUserDetails = () => {
-    postDetails();
-    saveToStorage();
-  };
-
-  const goToSignIn = () => {
-    navigate("/");
   };
 
   const handleNavigateToLogin = () => {
     navigate("/");
   };
 
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    let { name, value } = e.target;
+
+    setRegistration((prev) => ({ ...prev, [name]: value }));
+  };
+
   useEffect(() => {
-    if (pwd !== "" && pwd === coPwd) {
-      setPwdMatch(true);
+    if (
+      registration.password !== "" &&
+      registration.password === registration.confirmPassword
+    ) {
+      setIsPasswordMatch(true);
     } else {
-      setPwdMatch(false);
+      setIsPasswordMatch(false);
     }
-  }, [coPwd]);
+  }, [registration.confirmPassword]);
 
   useEffect(() => {
     if (isRegistered) navigate("/home");
@@ -135,10 +116,11 @@ const Register = () => {
             className="reg_input"
             type="text"
             placeholder="Username"
-            value={uname}
-            onChange={(e) => setUname(e.target.value)}
+            name="username"
+            value={registration.username}
+            onChange={handleInputChange}
           />
-          {usernameError && (
+          {registrationError.username && (
             <span className="redText">Username can't be empty</span>
           )}
 
@@ -146,52 +128,59 @@ const Register = () => {
             className="reg_input"
             type="text"
             placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="email"
+            value={registration.email}
+            onChange={handleInputChange}
           />
-          {emailError && <span className="redText">Not a valid email-id</span>}
+          {registrationError.email && (
+            <span className="redText">Not a valid email-id</span>
+          )}
 
           <input
             className="reg_input"
             type="text"
             placeholder="Mobile no (XXX-XXX-XXXX)"
-            value={mobNo}
-            onChange={(e) => setMobNo(e.target.value)}
+            value={registration.mobile}
+            onChange={handleInputChange}
           />
-          {mobError && <span className="redText">Not a valid number</span>}
+          {registrationError.mobile && (
+            <span className="redText">Not a valid number</span>
+          )}
 
           <input
             type="number"
             className="reg_input"
             placeholder="Pincode (XXXXX)"
-            value={pincode}
-            onChange={(e) => setPinCode(e.target.value)}
+            value={registration.pincode}
+            onChange={handleInputChange}
           />
-          {zipError && <span className="redText">Not a valid zip-code</span>}
+          {registrationError.pincode && (
+            <span className="redText">Not a valid zip-code</span>
+          )}
 
           <input
             type="date"
             className="reg_input"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
+            value={registration.dob}
+            onChange={handleInputChange}
           />
           <input
             type="password"
             className="reg_input"
             placeholder="Password(Minimum 6 and no special characters)"
-            value={pwd}
-            onChange={(e) => setPwd(e.target.value)}
+            value={registration.password}
+            onChange={handleInputChange}
           />
           <input
             type="password"
             className="confirmPassIp"
             placeholder="Confirm password"
-            value={coPwd}
-            onChange={(e) => setCoPwd(e.target.value)}
+            value={registration.confirmPassword}
+            onChange={handleInputChange}
           />
 
-          {pwdMatch && <span className="greenText">Passwords matc</span>}
-          {pwdFormatError && (
+          {isPasswordMatch && <span className="greenText">Passwords matc</span>}
+          {registrationError.password && (
             <span className="redText">Invalid password format</span>
           )}
           <button
@@ -205,9 +194,9 @@ const Register = () => {
       </div>
 
       <div className="navigate__to__login-text">
-        <span onClick={handleNavigateToLogin}>
+        <button onClick={handleNavigateToLogin}>
           Already signed up? Login here
-        </span>
+        </button>
       </div>
     </div>
   );
