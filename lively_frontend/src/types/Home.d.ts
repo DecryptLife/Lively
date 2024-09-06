@@ -1,5 +1,5 @@
 interface IUserState {
   userDetails: IUser | null;
-  followersDetails: Array<IFollower> | null | undefined;
-  articles: Array<IArticle>;
+  followersDetails: Array<IFollower>;
+  articles: Array<IDisplayArticle>;
 }

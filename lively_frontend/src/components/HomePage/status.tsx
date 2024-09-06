@@ -4,7 +4,7 @@ import { memo } from "react";
 
 interface StatusProps {
   isLoading: boolean;
-  userDetails: IUser;
+  userDetails: IUser | null;
 }
 
 const Status: React.FC<StatusProps> = memo(({ isLoading, userDetails }) => {
@@ -41,18 +41,18 @@ const Status: React.FC<StatusProps> = memo(({ isLoading, userDetails }) => {
             width={150}
             height={150}
             loading="lazy"
-            src={userDetails.avatar !== "" ? userDetails.avatar : req[1]}
+            src={userDetails?.avatar || req[1]}
           ></img>
         )}
       </div>
       <div style={{ height: "2rem" }}>
         <span className="statusUsername">
-          {isLoading ? " " : userDetails.username}
+          {isLoading ? " " : userDetails?.username}
         </span>
       </div>
       <div className="userCatchPhrase" style={{ height: "2rem" }}>
         <span className="statusStatus">
-          {isLoading ? "  " : userDetails.headline}
+          {isLoading ? "  " : userDetails?.headline}
         </span>
       </div>
       <div className="flex-col update-status__container">

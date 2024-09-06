@@ -3,9 +3,9 @@ import transformImage from "../../utils/transformImage";
 import { updateArticle } from "../../API/homeAPI";
 
 interface PostEditProps {
-  article: IDisplayArticle;
+  article: IDisplayArticle | null;
   setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
-  setUserState: Dispatch<SetStateAction<IUserState>>;
+  setUserState: Dispatch<SetStateAction<IUserState | null>>;
 }
 
 interface IEditArticle {
@@ -44,17 +44,20 @@ const EditPost: React.FC<PostEditProps> = ({
           modifiedArticle
         );
 
-        setUserState((prev) => ({
-          ...prev,
-          articles: prev.articles.map((prevArticle) => {
-            if (prevArticle._id === article._id)
-              return {
-                ...{ author: article.author, avatar: article.avatar },
-                ...newArticle,
-              };
-            else return prevArticle;
-          }),
-        }));
+        setUserState((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            articles: prev.articles.map((prevArticle) => {
+              if (prevArticle._id === article._id)
+                return {
+                  ...{ author: article.author, avatar: article.avatar },
+                  ...newArticle,
+                };
+              else return prevArticle;
+            }),
+          };
+        });
       } catch (err: unknown) {
         if (err instanceof Error)
           console.log(`Edit post error - ${err.message} :EditPost.js`);
@@ -76,7 +79,7 @@ const EditPost: React.FC<PostEditProps> = ({
         if (!prev) return prev;
         return {
           ...prev,
-          preview_image: { url: URL.createObjectURL(file) },
+          preview_image: URL.createObjectURL(file) as string,
           image: image ? (image as string) : "",
         };
       });
@@ -100,11 +103,7 @@ const EditPost: React.FC<PostEditProps> = ({
         </div>
         <div className="dialog-image__layout">
           <img
-            src={
-              editedArticle &&
-              editedArticle.preview_image &&
-              editedArticle.preview_image.url
-            }
+            src={(editedArticle && editedArticle.preview_image) || ""}
             alt="change post"
             onClick={triggerImageSelect}
           ></img>

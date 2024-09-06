@@ -24,7 +24,7 @@ interface INewArticle {
   post_image: string;
 }
 interface IDisplayArticle extends Partial<IArticle> {
-  author: string;
-  avatar: string;
+  author?: string;
+  avatar?: string;
 }
 // interface IUpdateArticle extends Partial<IArticle> {}

@@ -3,7 +3,7 @@ import { addPost } from "../../API/homeAPI";
 import { memo } from "react";
 
 interface NewPostProps {
-  setUserState: Dispatch<SetStateAction<IUserState>>;
+  setUserState: Dispatch<SetStateAction<IUserState | null>>;
 }
 
 interface IPostContent {

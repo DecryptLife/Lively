@@ -9,7 +9,7 @@ interface DisplayPostsProps {
   comment: string;
   setComment: Dispatch<SetStateAction<string>>;
   handlePostDelete: (postID: string) => void;
-  userDetails: IUser;
+  userDetails: IUser | null;
   isLoading: boolean;
 }
 
@@ -32,7 +32,7 @@ const ShowPosts: React.FC<DisplayPostsProps> = ({
     return readableTime;
   };
 
-  const isArticleOwner = (authorID: string) => userDetails._id === authorID;
+  const isArticleOwner = (authorID: string) => userDetails?._id === authorID;
 
   return (
     <div

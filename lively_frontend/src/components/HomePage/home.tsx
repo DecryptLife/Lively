@@ -15,6 +15,12 @@ import {
   deleteArticle,
 } from "../../API/homeAPI";
 
+interface IEditArticle {
+  text: string;
+  preview_image: string | object;
+  image: string;
+}
+
 const Home = () => {
   console.log("Home rendered");
   const isInitialMount = useRef(true);
@@ -22,7 +28,7 @@ const Home = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [comment, setComment] = useState("");
   const [followersList, setFollowersList] = useState<Array<string>>([]);
-  const [editArticle, setEditArticle] = useState<IUpdateArticle>();
+  const [editArticle, setEditArticle] = useState<IEditArticle>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -73,7 +79,7 @@ const Home = () => {
             if (article._id === articleID) {
               return {
                 ...article,
-                comments: [...article.commentsID, commentContent],
+                comments: [...(article.commentsID || []), commentContent],
               };
             }
             return article;
@@ -87,7 +93,7 @@ const Home = () => {
     }
   };
 
-  const handleOptionsClick = (article: IDisplayArticle) => {
+  const handleOptionsClick = (article: IEditArticle) => {
     if (article) {
       setEditArticle(article);
       setIsDialogOpen((prev) => !prev);
@@ -211,17 +217,20 @@ const Home = () => {
     >
       {isDialogOpen && (
         <EditPost
-          article={editArticle}
+          article={editArticle || null}
           setIsDialogOpen={setIsDialogOpen}
           setUserState={setUserState}
         />
       )}
       <div className="flex-col home_container-left" style={{ flex: 1 }}>
-        <Status isLoading={isLoading} userDetails={userState?.userDetails} />
+        <Status
+          isLoading={isLoading}
+          userDetails={userState?.userDetails || null}
+        />
 
         <AddFriend
           isLoading={isLoading}
-          followersDetails={userState?.followersDetails}
+          followersDetails={userState?.followersDetails || null}
           setFollowersList={setFollowersList}
         />
       </div>
@@ -242,14 +251,14 @@ const Home = () => {
             ></input>
           </div>
           <ShowPosts
-            articles={userState?.articles}
+            articles={userState?.articles || []}
             handleOptionsClick={handleOptionsClick}
             handleCommentsClick={handleCommentsClick}
             handleAddComment={handleAddComment}
             comment={comment}
             setComment={setComment}
             handlePostDelete={handlePostDelete}
-            userDetails={userState?.userDetails}
+            userDetails={userState?.userDetails || null}
             isLoading={isLoading}
           />
         </div>
