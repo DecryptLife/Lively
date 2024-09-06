@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { addFollower, removeFriend } from "../../API/followersAPI";
 
 interface AddFriendProps {
   isLoading: boolean;
-  followersDetails: Array<object>;
+  followersDetails: IFollower[] | null | undefined;
+  setFollowersList: Dispatch<SetStateAction<string[]>>;
 }
 const AddFriend: React.FC<AddFriendProps> = ({
   isLoading,

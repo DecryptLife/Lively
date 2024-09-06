@@ -58,7 +58,7 @@ const addPost = async (article: IArticle) => {
   }
 };
 
-const addComment = async (articleID: string, commentDetails: string) => {
+const addComment = async (articleID: string, commentDetails: IComment) => {
   console.log("inside add comment");
   try {
     const response = await axios.post(

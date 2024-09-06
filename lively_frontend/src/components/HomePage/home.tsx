@@ -21,55 +21,63 @@ const Home = () => {
   const prevSearchKeyWord = useRef("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [comment, setComment] = useState("");
-  const [followersList, setFollowersList] = useState([]);
-  const [editArticle, setEditArticle] = useState();
+  const [followersList, setFollowersList] = useState<Array<string>>([]);
+  const [editArticle, setEditArticle] = useState<IUpdateArticle>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const [userState, setUserState] = useState({
+  const [userState, setUserState] = useState<IUserState | null>({
     userDetails: null,
     followersDetails: [],
     articles: [],
   });
 
   const handleCommentsClick = (articleID: string) => {
-    setUserState((prev) => ({
-      ...prev,
-      articles: prev.articles.map((article) => {
-        if (article._id === articleID) {
-          return {
-            ...article,
-            commentsDisplayed: !article["commentsDisplayed"],
-          };
-        }
-        return article;
-      }),
-    }));
-  };
-
-  const handleAddComment = async (articleID: string, newComment) => {
-    const commentContent = {
-      comment: newComment,
-      author: userState.userDetails.username,
-      author_image: userState.userDetails.avatar,
-    };
-
-    try {
-      await addComment(articleID, commentContent);
-
-      setUserState((prev) => ({
+    setUserState((prev) => {
+      if (!prev) return prev;
+      return {
         ...prev,
         articles: prev.articles.map((article) => {
           if (article._id === articleID) {
             return {
               ...article,
-              comments: [...article.commentsID, commentContent],
+              commentsDisplayed: !article?.commentsDisplayed,
             };
           }
           return article;
         }),
-      }));
+      };
+    });
+  };
+
+  const handleAddComment = async (articleID: string, newComment: string) => {
+    if (newComment === "" || !userState?.userDetails) return;
+
+    const commentContent = {
+      comment: newComment,
+      author: userState?.userDetails?.username,
+      author_image: userState?.userDetails?.avatar,
+    };
+
+    try {
+      await addComment(articleID, commentContent);
+
+      setUserState((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          articles: prev.articles.map((article) => {
+            if (article._id === articleID) {
+              return {
+                ...article,
+                comments: [...article.commentsID, commentContent],
+              };
+            }
+            return article;
+          }),
+        };
+      });
 
       setComment("");
     } catch (err) {
@@ -77,7 +85,7 @@ const Home = () => {
     }
   };
 
-  const handleOptionsClick = (article) => {
+  const handleOptionsClick = (article: IArticle) => {
     setEditArticle(article);
     setIsDialogOpen((prev) => !prev);
   };
@@ -86,18 +94,21 @@ const Home = () => {
     try {
       const deletedPostID = await deleteArticle(postID);
 
-      setUserState((prev) => ({
-        ...prev,
-        articles: prev.articles.filter(
-          (article) => article._id !== deletedPostID
-        ),
-      }));
+      setUserState((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          articles: prev.articles.filter(
+            (article) => article._id !== deletedPostID
+          ),
+        };
+      });
     } catch (err: unknown) {
       if (err instanceof Error) console.log("Post Delete Error: ", err.message);
     }
   };
 
-  const modifyArticlesFn = (allArticles) => {
+  const modifyArticlesFn = (allArticles: Array<IArticle>) => {
     if (!allArticles) return [];
 
     return allArticles.map((article) => ({
@@ -112,10 +123,13 @@ const Home = () => {
         try {
           const posts = await getArticles(searchKeyword);
 
-          setUserState((prev) => ({
-            ...prev,
-            articles: modifyArticlesFn(posts),
-          }));
+          setUserState((prev) => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              articles: modifyArticlesFn(posts),
+            };
+          });
         } catch (err: unknown) {
           if (err instanceof Error)
             console.log(`Search Post Error: ${err.message}`);
@@ -144,11 +158,14 @@ const Home = () => {
       ]);
 
       const modifiedArticles = modifyArticlesFn(allArticles);
-      setUserState((prev) => ({
-        ...prev,
-        followersDetails: followers,
-        articles: modifiedArticles,
-      }));
+      setUserState((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          followersDetails: followers,
+          articles: modifiedArticles,
+        };
+      });
     }
 
     fetchFollowerData();
@@ -197,12 +214,12 @@ const Home = () => {
       <div className="flex-col home_container-left" style={{ flex: 1 }}>
         <Status
           isLoading={isLoading}
-          userDetails={userState.userDetails || []}
+          userDetails={userState?.userDetails || []}
         />
 
         <AddFriend
           isLoading={isLoading}
-          followersDetails={userState.followersDetails}
+          followersDetails={userState?.followersDetails}
           setFollowersList={setFollowersList}
         />
       </div>
@@ -223,14 +240,14 @@ const Home = () => {
             ></input>
           </div>
           <ShowPosts
-            articles={userState.articles}
+            articles={userState?.articles}
             handleOptionsClick={handleOptionsClick}
             handleCommentsClick={handleCommentsClick}
             handleAddComment={handleAddComment}
             comment={comment}
             setComment={setComment}
             handlePostDelete={handlePostDelete}
-            userDetails={userState.userDetails}
+            userDetails={userState?.userDetails}
             isLoading={isLoading}
           />
         </div>

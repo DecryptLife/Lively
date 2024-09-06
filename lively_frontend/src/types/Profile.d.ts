@@ -1,3 +1,9 @@
+interface IFollower {
+  username: string;
+  avatar: string;
+  _id?: string;
+}
+
 interface IUser {
   _id: string;
   username: string;
@@ -7,7 +13,7 @@ interface IUser {
   mobile: string;
   zipcode: string;
   avatar: string;
-  following: Array<string>;
+  following: Array<IFollower>;
 }
 
 interface IOptionalUser extends Omit<Partial<IUser>, "avatar"> {

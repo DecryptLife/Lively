@@ -12,6 +12,9 @@ interface IArticle {
   authorID: string;
   image: object;
   date: string;
-  comments: Array<IComment>;
+  commentsID: Array<IComment>;
+  commentsDisplayed?: boolean;
   __v?: string | number;
 }
+
+interface IUpdateArticle extends Partial<IArticle> {}
