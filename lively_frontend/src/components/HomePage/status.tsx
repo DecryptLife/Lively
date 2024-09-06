@@ -1,8 +1,13 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { updateStatus } from "../../API/homeAPI";
 import { memo } from "react";
 
-const Status = memo(({ isLoading, userDetails }) => {
+interface StatusProps {
+  isLoading: boolean;
+  userDetails: IUser;
+}
+
+const Status: React.FC<StatusProps> = memo(({ isLoading, userDetails }) => {
   console.log("status rendered");
   const req = [
     require("../../images/img1.png"),
@@ -12,17 +17,15 @@ const Status = memo(({ isLoading, userDetails }) => {
     require("../../images/img5.png"),
   ];
 
-  const [headline, setHeadline] = useState("Please add headline!");
   const [updatedHeadline, setUpdatedHeadline] = useState("");
 
-  const modifyStatus = async (e) => {
+  const modifyStatus = async () => {
     console.log("modifying status: status.js");
     if (updatedHeadline !== "") {
-      let new_status = { headline: updatedHeadline };
+      let new_status = updatedHeadline;
 
       const new_headline = await updateStatus(new_status);
 
-      setHeadline(new_headline);
       setUpdatedHeadline("");
     }
   };
@@ -60,7 +63,7 @@ const Status = memo(({ isLoading, userDetails }) => {
           onChange={(e) => setUpdatedHeadline(e.target.value)}
           value={updatedHeadline}
         />
-        <button className="update-status__btn" onClick={(e) => modifyStatus(e)}>
+        <button className="update-status__btn" onClick={() => modifyStatus()}>
           Update
         </button>
       </div>
