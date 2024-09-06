@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Status from "./status";
 import "./home.css";
 import ShowPosts from "./showPosts";
@@ -33,7 +33,7 @@ const Home = () => {
     articles: [],
   });
 
-  const handleCommentsClick = (articleID) => {
+  const handleCommentsClick = (articleID: string) => {
     setUserState((prev) => ({
       ...prev,
       articles: prev.articles.map((article) => {
@@ -48,7 +48,7 @@ const Home = () => {
     }));
   };
 
-  const handleAddComment = async (articleID, newComment) => {
+  const handleAddComment = async (articleID: string, newComment) => {
     const commentContent = {
       comment: newComment,
       author: userState.userDetails.username,
@@ -82,7 +82,7 @@ const Home = () => {
     setIsDialogOpen((prev) => !prev);
   };
 
-  const handlePostDelete = async (postID) => {
+  const handlePostDelete = async (postID: string) => {
     try {
       const deletedPostID = await deleteArticle(postID);
 
@@ -92,8 +92,8 @@ const Home = () => {
           (article) => article._id !== deletedPostID
         ),
       }));
-    } catch (err) {
-      console.log("Post Delete Error: ", err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) console.log("Post Delete Error: ", err.message);
     }
   };
 
@@ -116,8 +116,9 @@ const Home = () => {
             ...prev,
             articles: modifyArticlesFn(posts),
           }));
-        } catch (err) {
-          console.log(`Search Post Error: ${err.message}`);
+        } catch (err: unknown) {
+          if (err instanceof Error)
+            console.log(`Search Post Error: ${err.message}`);
         }
       }
 
@@ -171,8 +172,9 @@ const Home = () => {
           followersDetails: followers,
           articles: modifiedArticles,
         });
-      } catch (err) {
-        console.log("User details error: ", err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error)
+          console.log("User details error: ", err.message);
       } finally {
         setIsLoading(false);
       }
