@@ -17,16 +17,22 @@ const Status: React.FC<StatusProps> = memo(({ isLoading, userDetails }) => {
     require("../../images/img5.png"),
   ];
 
+  const [headline, setHeadline] = useState<string>(userDetails?.headline || "");
   const [updatedHeadline, setUpdatedHeadline] = useState("");
 
   const modifyStatus = async () => {
     console.log("modifying status: status.js");
     if (updatedHeadline !== "") {
-      let new_status = updatedHeadline;
-
-      const new_headline = await updateStatus(new_status);
-
-      setUpdatedHeadline("");
+      try {
+        let new_status = updatedHeadline;
+        await updateStatus(new_status);
+        setHeadline(new_status);
+      } catch (err: unknown) {
+        if (err instanceof Error)
+          console.log(" Headline error: " + err.message);
+      } finally {
+        setUpdatedHeadline("");
+      }
     }
   };
 
@@ -52,7 +58,7 @@ const Status: React.FC<StatusProps> = memo(({ isLoading, userDetails }) => {
       </div>
       <div className="userCatchPhrase" style={{ height: "2rem" }}>
         <span className="statusStatus">
-          {isLoading ? "  " : userDetails?.headline}
+          {isLoading ? "  " : headline || userDetails?.headline}
         </span>
       </div>
       <div className="flex-col update-status__container">

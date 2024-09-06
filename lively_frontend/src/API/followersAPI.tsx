@@ -1,7 +1,9 @@
 import axios from "axios";
 import { BASE_URL } from "../config";
 
-const getFollowers = async (followerIDs: Array<string>) => {
+const getFollowers = async (followerIDs: any) => {
+  if (!followerIDs || followerIDs.length === 0) return; // Ensure followerIDs is not empty
+
   try {
     const response = await axios.get(`${BASE_URL}/following`, followerIDs);
 
@@ -11,7 +13,7 @@ const getFollowers = async (followerIDs: Array<string>) => {
   }
 };
 
-const addFollower = async (newFriend) => {
+const addFollower = async (newFriend: string) => {
   try {
     const response = await axios.patch(`${BASE_URL}/following/${newFriend}`);
 

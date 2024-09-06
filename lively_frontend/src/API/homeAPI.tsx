@@ -46,8 +46,11 @@ const getAvatar = async () => {
 };
 
 const updateStatus = async (new_headline: string) => {
+  console.log("Headline api: ", new_headline);
   try {
-    const res = await axios.put(`${BASE_URL}/headline`, new_headline);
+    const res = await axios.put(`${BASE_URL}/headline`, {
+      headline: new_headline,
+    });
     return res.data.headline;
   } catch (err: unknown) {
     if (err instanceof Error) console.log(err.message);
