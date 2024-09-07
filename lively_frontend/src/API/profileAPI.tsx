@@ -2,8 +2,9 @@ import axios from "axios";
 import { BASE_URL } from "../config";
 
 const updateProfile = async (userID: string, newDetails: IOptionalUser) => {
-  const updatedDetails = { userID, ...newDetails };
+  const updatedDetails = { ...newDetails };
 
+  console.log("Updated details: ", updatedDetails);
   try {
     const response = await axios.patch(
       `${BASE_URL}/userDetails`,

@@ -51,6 +51,7 @@ const AddFriend: React.FC<AddFriendProps> = ({
                   className="follower-image"
                   loading="lazy"
                   src={follower.avatar}
+                  alt={`${follower.username}`}
                   style={{ flex: 1 }}
                 ></img>
               </div>

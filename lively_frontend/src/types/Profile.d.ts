@@ -13,9 +13,7 @@ interface IUser {
   mobile: string;
   zipcode: string;
   avatar: string;
-  following: Array<IFollower>;
+  following?: IFollower[];
 }
 
-interface IOptionalUser extends Omit<Partial<IUser>, "avatar"> {
-  avatar?: string | ArrayBuffer | null;
-}
+interface IOptionalUser extends Omit<Partial<IUser>, "following"> {}

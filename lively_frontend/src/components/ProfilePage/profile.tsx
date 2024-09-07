@@ -21,6 +21,7 @@ const Profile = () => {
     e: ChangeEvent<HTMLInputElement>,
     field: string
   ) => {
+    console.log(`Updating ${field}: ${e.target.value}`);
     if (field !== "image")
       setUpdateDetails((prev) => ({
         ...prev,
@@ -30,7 +31,7 @@ const Profile = () => {
 
   const handleReset = () => {
     const resetValues = {
-      name: "",
+      username: "",
       headline: "",
       email: "",
       mobile: "",
@@ -45,20 +46,35 @@ const Profile = () => {
   const handleProfileUpdate = async () => {
     if (user) {
       try {
-        const updatedDetails = await updateProfile(user?._id, updateDetails);
-        console.log("response: ", updateDetails);
+        const toUpdateDetails: Partial<IOptionalUser> = {};
 
+        // Loop through updateDetails and exclude the 'following' field
+        for (const key in updateDetails) {
+          if (
+            key !== "following" && // Ensure we don't modify 'following'
+            updateDetails[key as keyof IOptionalUser] !== "" // Ensure the field is not empty
+          ) {
+            const value = updateDetails[key as keyof IOptionalUser];
+
+            // Narrow the type: Ensure the value is a string before assigning
+            if (typeof value === "string") {
+              toUpdateDetails[key as keyof IOptionalUser] = value;
+            }
+          }
+        }
+
+        // Call the updateProfile function with filtered data
+        const updatedDetails = await updateProfile(user._id, toUpdateDetails);
+        console.log("response: ", updatedDetails);
+
+        // Update the user state, making sure 'following' remains unchanged
         setUser((prev) => {
-          if (!prev) return prev; // If prev is null, return null
+          if (!prev) return prev;
 
           return {
-            ...prev, // Spread previous state
-            ...Object.fromEntries(
-              Object.entries(updatedDetails).map(([key, value]) => [
-                key,
-                value === "" ? prev[key as keyof IUser] : value,
-              ])
-            ),
+            ...prev, // Keep previous state
+            ...toUpdateDetails, // Apply only updated details
+            following: prev.following, // Ensure 'following' remains unchanged
           };
         });
       } catch (err: unknown) {
@@ -77,7 +93,7 @@ const Profile = () => {
 
       setUpdateDetails((prev) => ({
         ...prev,
-        avatar: image,
+        avatar: image as string,
       }));
     } catch (err: unknown) {
       if (err instanceof Error)
@@ -148,7 +164,7 @@ const Profile = () => {
                   type="text"
                   placeholder="Username"
                   value={updateDetails.username}
-                  onChange={(e) => handleProfileChange(e, "name")}
+                  onChange={(e) => handleProfileChange(e, "username")}
                 />
               </div>
               <div>
