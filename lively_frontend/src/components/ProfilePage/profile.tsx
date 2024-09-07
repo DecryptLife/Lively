@@ -21,7 +21,6 @@ const Profile = () => {
     e: ChangeEvent<HTMLInputElement>,
     field: string
   ) => {
-    console.log(`Updating ${field}: ${e.target.value}`);
     if (field !== "image")
       setUpdateDetails((prev) => ({
         ...prev,
@@ -65,7 +64,6 @@ const Profile = () => {
 
         // Call the updateProfile function with filtered data
         const updatedDetails = await updateProfile(user._id, toUpdateDetails);
-        console.log("response: ", updatedDetails);
 
         // Update the user state, making sure 'following' remains unchanged
         setUser((prev) => {
@@ -84,8 +82,6 @@ const Profile = () => {
       }
     }
   };
-
-  console.log("User details: ", user);
 
   const handleImageSelect = async (e: ChangeEvent<HTMLInputElement>) => {
     try {

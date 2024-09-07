@@ -8,7 +8,6 @@ interface StatusProps {
 }
 
 const Status: React.FC<StatusProps> = memo(({ isLoading, userDetails }) => {
-  console.log("status rendered");
   const req = [
     require("../../images/img1.png"),
     require("../../images/img2.png"),

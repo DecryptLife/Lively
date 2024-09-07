@@ -16,7 +16,6 @@ import {
 } from "../../API/homeAPI";
 
 const Home = () => {
-  console.log("Home rendered");
   const isInitialMount = useRef(true);
   const prevSearchKeyWord = useRef("");
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -82,8 +81,9 @@ const Home = () => {
       });
 
       setComment("");
-    } catch (err) {
-      console.log(err);
+    } catch (err: unknown) {
+      if (err instanceof Error)
+        console.log("handleAddComment error: " + err.message);
     }
   };
 

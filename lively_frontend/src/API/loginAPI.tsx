@@ -7,7 +7,6 @@ interface LoginDetails {
 }
 
 export const loginUser = async (userDetails: LoginDetails) => {
-  console.log("In login user API: ", userDetails);
   try {
     await axios.post(`${BASE_URL}/login`, userDetails, {
       headers: {

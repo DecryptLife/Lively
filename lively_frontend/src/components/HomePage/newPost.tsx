@@ -12,7 +12,6 @@ interface IPostContent {
 }
 
 const NewPost: React.FC<NewPostProps> = memo(({ setUserState }) => {
-  console.log("new post rendered");
   const [imageText, setImageText] = useState("Add image");
   const [postContent, setPostContent] = useState<IPostContent>({
     image: "",

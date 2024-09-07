@@ -10,20 +10,20 @@ const getUser = async () => {
   try {
     const res = await axios.get(`${BASE_URL}/userDetails`);
     return res.data.user;
-  } catch (err) {
-    console.log(err);
+  } catch (err: unknown) {
+    if (err instanceof Error) console.log("getUser API Error: " + err.message);
   }
 };
 
 const getArticles = async (searchQuery = "") => {
-  console.log("Get articles API: ", searchQuery);
   const params = searchQuery ? { search: searchQuery } : {};
   try {
     const res = await axios.get(`${BASE_URL}/articles`, { params });
 
     return res.data.articles;
-  } catch (err) {
-    console.log(err);
+  } catch (err: unknown) {
+    if (err instanceof Error)
+      console.log("getArticles API error: " + err.message);
   }
 };
 
@@ -40,13 +40,13 @@ const getAvatar = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/avatar`);
     return response.data.avatar;
-  } catch (err) {
-    console.log(err);
+  } catch (err: unknown) {
+    if (err instanceof Error)
+      console.log("getAvatar API error: " + err.message);
   }
 };
 
 const updateStatus = async (new_headline: string) => {
-  console.log("Headline api: ", new_headline);
   try {
     const res = await axios.put(`${BASE_URL}/headline`, {
       headline: new_headline,
