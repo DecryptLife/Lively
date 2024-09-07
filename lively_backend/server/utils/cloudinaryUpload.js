@@ -13,8 +13,6 @@ const cloudinaryUpload = async (image) => {
       ],
     });
 
-    console.log("Cloudinary util: ", cloudUploadRes);
-
     return cloudUploadRes;
   } catch (err) {
     console.log("Cloudinary Error: ", err.message);

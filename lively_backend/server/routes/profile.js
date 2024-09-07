@@ -104,16 +104,15 @@ async function getUserDetails(req, res) {
 }
 
 async function updateDetails(req, res) {
-  let { userID, name: username, avatar, ...values } = req.body;
-  values["username"] = username;
-  let updatedDetails = {};
+  let userID = req.user.id;
+  let updatedDetails = req.body;
 
-  for (const [key, value] of Object.entries(values)) {
-    if (value !== "") updatedDetails[key] = value;
-  }
+  // console.log("Req body: " + req.body.avatar);
+  // console.log("Updated details: " + updatedDetails);
+
   try {
-    if (avatar && avatar !== "") {
-      const cloudinaryRes = await cloudinaryUpload(avatar);
+    if (updatedDetails.avatar && updatedDetails.avatar !== "") {
+      const cloudinaryRes = await cloudinaryUpload(updatedDetails.avatar);
       updatedDetails["avatar"] = cloudinaryRes.secure_url; // Assuming you want to store the URL returned by Cloudinary
     }
     const profile = await Profile.findByIdAndUpdate(userID, updatedDetails, {
@@ -132,6 +131,6 @@ module.exports = (app) => {
   app.put("/headline", updateHeadline);
   app.get("/avatar/:user?", getAvatar);
   app.get("/userDetails", getUserDetails);
-  app.patch("/userDetails", updateDetails);
+  app.patch("/userDetails/:userID?", updateDetails);
   app.put("/avatar", updateAvatar);
 };
