@@ -16,6 +16,7 @@ import {
 } from "../../API/homeAPI";
 
 const Home = () => {
+  console.log("jazucci");
   const isInitialMount = useRef(true);
   const prevSearchKeyWord = useRef("");
   const [searchKeyword, setSearchKeyword] = useState("");

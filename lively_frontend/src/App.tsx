@@ -5,8 +5,11 @@ import Home from "./components/HomePage/home";
 import Register from "./components/RegistrationPage/registration";
 import Profile from "./components/ProfilePage/profile";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import useAxiosInterceptors from "./utils/useAxiosInterceptor";
 
 function App() {
+  useAxiosInterceptors();
+  console.log("In APP");
   return (
     <Router>
       <Layout>
