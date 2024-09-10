@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../API/loginAPI";
 
@@ -9,6 +9,7 @@ interface LoginDetails {
 
 const LoginField = () => {
   const navigate = useNavigate();
+  const inputRef = useRef<HTMLInputElement>(null);
   const [loginDetails, setLoginDetails] = useState({
     username: "",
     password: "",
@@ -28,6 +29,10 @@ const LoginField = () => {
     }
   };
 
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
     <div className="login-fields">
       <form
@@ -41,6 +46,7 @@ const LoginField = () => {
           className="unameField"
           name="unameField"
           placeholder="Username"
+          ref={inputRef}
           value={loginDetails.username}
           onChange={(e) =>
             setLoginDetails((prev) => ({
