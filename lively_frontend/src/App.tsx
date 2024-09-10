@@ -5,21 +5,31 @@ import Home from "./components/HomePage/home";
 import Register from "./components/RegistrationPage/registration";
 import Profile from "./components/ProfilePage/profile";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import useAxiosInterceptors from "./utils/useAxiosInterceptor";
+import MissingPage from "./components/MissingPage";
+import ProtectedRoutes from "./components/ProtectedRoutes";
+// import useAxiosInterceptors from "./utils/useAxiosInterceptor";
 
 function App() {
-  useAxiosInterceptors();
-  console.log("In APP");
+  // useAxiosInterceptors();
+
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Login />}></Route>
-          <Route path="/register" element={<Register />}></Route>
+      <Routes>
+        <Route path="/" element={<Login />}></Route>
+        <Route path="/register" element={<Register />}></Route>
+        <Route element={<ProtectedRoutes />}>
           <Route path="/home" element={<Home />}></Route>
           <Route path="/profile" element={<Profile />}></Route>
-        </Routes>
-      </Layout>
+          <Route
+            path="/*"
+            element={<MissingPage route={"/home"} displayText={"homepage"} />}
+          ></Route>
+        </Route>
+        <Route
+          path="/*"
+          element={<MissingPage route={"/"} displayText={"login"} />}
+        ></Route>
+      </Routes>
     </Router>
   );
 }
